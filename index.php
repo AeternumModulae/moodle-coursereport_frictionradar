@@ -13,7 +13,7 @@ require_capability('tool/frictionradar:view', $context);
 $PAGE->set_url(new moodle_url('/admin/tool/frictionradar/index.php', ['id' => $course->id]));
 $PAGE->set_context($context);
 $PAGE->set_course($course);
-$PAGE->requires->css('/admin/tool/frictionradar/styles.css');
+$PAGE->requires->css('/admin/tool/frictionradar/styles.css?time=202601050000');
 $PAGE->set_pagelayout('incourse');
 $PAGE->set_title(get_string('page_title', 'tool_frictionradar'));
 $PAGE->set_heading($course->fullname);
