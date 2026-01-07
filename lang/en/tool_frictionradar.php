@@ -56,4 +56,25 @@ $string['action_f10'] = 'Make prerequisites visible. Clearly communicate depende
 $string['action_f11'] = 'Reduce scrolling friction. Break long pages into segments with headings, add a table of contents, and move key actions or links to the top. Prefer multiple short pages over one endless page and ensure important content is not buried.';
 $string['action_f12'] = 'De-cluster deadlines. Spread due dates, avoid multiple submissions in the same period, and provide earlier milestones. Use consistent weekly rhythms, add calendar visibility, and clarify submission windows to reduce last-minute pressure.';
 
+$string['notes_f01'] = 'Calculated over the last {$a} days. A increases when many mandatory activities occur in parallel. B increases when mandatory activities are supported by many mandatory resources. C increases with high average textual complexity of activity descriptions and content.';
+$string['notes_f02'] = 'Calculated over the last {$a} days. A increases when activity types change frequently. B increases when demanding activities lack nearby supporting resources. C is currently a placeholder (0.0) until attempt/delay metrics are implemented.';
+$string['notes_f03'] = 'Calculated over the last {$a} days. A increases with many non-empty sections (fragmentation). B increases when activities are unevenly distributed across sections. C increases when many different activity types are mixed (type entropy).';
+$string['notes_f04'] = 'Calculated over the last {$a} days. A increases with many mandatory activities at the beginning of the course. B reflects early workload caused by demanding activities. C increases with complex introductory content.';
+$string['notes_f05'] = 'Calculated over the last {$a} days. A counts students who repeatedly view the course but perform no substantive actions. B reflects low interaction depth (few meaningful actions per viewer). C captures the gap between viewers and engaged learners. Substantive actions are approximated from logstore_standard_log (e.g., created/submitted/posted).';
+$string['notes_f06'] = 'Calculated over the last {$a} days. A increases when quizzes receive zero attempts (zombies). B increases when many attempts are not finished (abandonment). C increases when quizzes are attempted by very few learners (low participation). Attempts are derived from quiz_attempts and filtered to student-like roles.';
+$string['notes_f07'] = 'Calculated over the last {$a} days. A increases when mandatory activities lack clear due dates. B increases when graded activities have no meaningful description. C increases when the course lacks a central overview or expectation anchor at the beginning.';
+$string['notes_f08'] = 'Calculated over the last {$a} days. A increases with dense formal structure (many modules per section). B increases when many redundant structure elements (labels, books, folders) compete for attention. C increases when section sizes vary strongly, reducing structural predictability.';
+$string['notes_f09'] = 'Calculated over the last {$a} days. A increases when there are many resources per section (resource density). B increases when resources dominate compared to activities (resource share). C increases when many resources are plain file resources (redundancy proxy).';
+$string['notes_f10'] = 'Calculated over the last {$a} days. A increases when many activities have access restrictions. B increases when restricted activities do not show an explanation to learners. C increases when access depends on multiple chained conditions.';
+$string['notes_f11'] = 'Calculated over the last {$a} days. A increases with overall course length and density. B increases when sections contain many items, forcing excessive scrolling. C increases when few navigational anchors (labels) structure the course.';
+$string['notes_f12'] = 'Calculated over the last {$a} days. A increases with a high density of deadlines. B increases when deadlines cluster on the same day. C increases when deadlines are set with very short notice, leaving little time for preparation.';
+
 $string['privacy:metadata'] = 'The Friction Radar tool stores only aggregated, course-level scores in cache and does not store personal data.';
+
+$string['ui_score'] = 'Score';
+$string['ui_formula'] = 'Formula';
+$string['ui_inputs'] = 'Calculation inputs';
+$string['ui_param'] = 'Parameter';
+$string['ui_value'] = 'Value';
+$string['ui_notes'] = 'Notes';
+

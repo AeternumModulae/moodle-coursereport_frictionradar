@@ -56,4 +56,24 @@ $string['action_f10'] = 'Voraussetzungen sichtbar machen. Abhängigkeiten und Zu
 $string['action_f11'] = 'Scroll-Reibung reduzieren. Lange Seiten in Abschnitte mit Überschriften gliedern, Inhaltsverzeichnis ergänzen und wichtige Aktionen/Links nach oben ziehen. Lieber mehrere kurze Seiten statt einer endlosen Seite, und zentrale Inhalte nicht „vergraben“.';
 $string['action_f12'] = 'Deadlines entzerren. Abgabetermine verteilen, mehrere Abgaben im selben Zeitraum vermeiden und frühere Zwischenmeilensteine anbieten. Einen konsistenten Wochenrhythmus nutzen, Kalender sichtbar machen und Abgabefenster klar kommunizieren, um Last-Minute-Druck zu senken.';
 
+$string['notes_f01'] = 'Berechnet über die letzten {$a} Tage. A steigt, wenn viele verpflichtende Aktivitäten parallel auftreten. B steigt, wenn verpflichtende Aktivitäten von vielen verpflichtenden Ressourcen begleitet werden. C steigt bei hoher durchschnittlicher textueller Komplexität von Beschreibungen und Inhalten.';
+$string['notes_f02'] = 'Berechnet über die letzten {$a} Tage. A steigt, wenn Aktivitätstypen häufig wechseln. B steigt, wenn anspruchsvolle Aktivitäten ohne unterstützende Materialien in der Nähe stehen. C ist aktuell ein Platzhalter (0,0), bis Versuchs-/Verzögerungsmetriken implementiert sind.';
+$string['notes_f03'] = 'Berechnet über die letzten {$a} Tage. A steigt bei vielen nicht-leeren Abschnitten (Fragmentierung). B steigt, wenn Aktivitäten ungleich auf Abschnitte verteilt sind. C steigt, wenn viele unterschiedliche Aktivitätstypen gemischt werden (Typ-Entropie).';
+$string['notes_f04'] = 'Berechnet über die letzten {$a} Tage. A steigt bei vielen verpflichtenden Aktivitäten zu Kursbeginn. B spiegelt eine hohe frühe Arbeitsbelastung wider. C steigt bei komplexen einführenden Inhalten.';
+$string['notes_f05'] = 'Berechnet über die letzten {$a} Tage. A zählt Lernende, die den Kurs wiederholt aufrufen, aber keine substanziellen Aktionen ausführen. B spiegelt geringe Interaktionstiefe wider (wenige sinnvolle Aktionen pro Betrachter). C erfasst die Lücke zwischen Betrachtenden und tatsächlich Engagierten. Substantielle Aktionen werden über logstore_standard_log angenähert (z. B. erstellt/eingereicht/gepostet).';
+$string['notes_f06'] = 'Berechnet über die letzten {$a} Tage. A steigt, wenn Quizze keinerlei Versuche erhalten (Zombie-Quizze). B steigt, wenn viele Versuche nicht abgeschlossen werden (Abbruch). C steigt, wenn Quizze nur von sehr wenigen Lernenden bearbeitet werden (geringe Teilnahme). Versuche werden aus quiz_attempts abgeleitet und auf studierendenähnliche Rollen gefiltert.';
+$string['notes_f07'] = 'Berechnet über die letzten {$a} Tage. A steigt, wenn verpflichtende Aktivitäten kein klares Fälligkeitsdatum haben. B steigt, wenn bewertete Aktivitäten keine aussagekräftige Beschreibung enthalten. C steigt, wenn zu Kursbeginn eine zentrale Übersicht oder Erwartungsklärung fehlt.';
+$string['notes_f08'] = 'Berechnet über die letzten {$a} Tage. A steigt bei hoher formaler Strukturdichte (viele Module pro Abschnitt). B steigt, wenn viele redundante Strukturelemente (Labels, Bücher, Ordner) konkurrieren. C steigt bei stark variierenden Abschnittsgrößen, was die Vorhersagbarkeit der Struktur verringert.';
+$string['notes_f09'] = 'Berechnet über die letzten {$a} Tage. A steigt bei vielen Ressourcen pro Abschnitt (Ressourcendichte). B steigt, wenn Ressourcen gegenüber Aktivitäten dominieren (Ressourcenanteil). C steigt, wenn viele Ressourcen reine Datei-Ressourcen sind (Redundanz-Proxy).';
+$string['notes_f10'] = 'Berechnet über die letzten {$a} Tage. A steigt, wenn viele Aktivitäten Zugriffsbeschränkungen haben. B steigt, wenn diese Beschränkungen ohne sichtbare Erklärung dargestellt werden. C steigt bei Abhängigkeiten von mehreren Bedingungen.';
+$string['notes_f11'] = 'Berechnet über die letzten {$a} Tage. A steigt mit zunehmender Kurslänge und -dichte. B steigt bei sehr großen Abschnitten, die intensives Scrollen erzwingen. C steigt, wenn wenige Orientierungselemente (Labels) zur Strukturierung genutzt werden.';
+$string['notes_f12'] = 'Berechnet über die letzten {$a} Tage. A steigt bei hoher Dichte von Abgabeterminen. B steigt, wenn mehrere Deadlines auf denselben Tag fallen. C steigt, wenn Abgaben sehr kurzfristig gesetzt werden und wenig Vorbereitungszeit bleibt.';
+
 $string['privacy:metadata'] = 'Friction Radar speichert nur aggregierte kursbezogene Scores im Cache und keine personenbezogenen Daten.';
+
+$string['ui_score'] = 'Score';
+$string['ui_formula'] = 'Formel';
+$string['ui_inputs'] = 'Berechnungswerte';
+$string['ui_param'] = 'Parameter';
+$string['ui_value'] = 'Wert';
+$string['ui_notes'] = 'Hinweise';

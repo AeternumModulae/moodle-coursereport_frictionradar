@@ -15,12 +15,12 @@ class renderer extends \plugin_renderer_base {
 
         // Color palette
         $colors = function(int $score): string {
-	    if ($score <= 15) return '#E6EEF6'; // Mist Blue
-	    if ($score <= 30) return '#C9DBEE'; // Ice Blue
-	    if ($score <= 50) return '#9FBAD6'; // Steel Blue Light
-	    if ($score <= 70) return '#6F8FB3'; // Slate Blue
-	    if ($score <= 85) return '#3F658F'; // Deep Steel Blue
-	    return '#1F3A5F';                  // Midnight Blue
+            if ($score <= 15) return '#E6EEF6'; // Mist Blue
+            if ($score <= 30) return '#C9DBEE'; // Ice Blue
+            if ($score <= 50) return '#9FBAD6'; // Steel Blue Light
+            if ($score <= 70) return '#6F8FB3'; // Slate Blue
+            if ($score <= 85) return '#3F658F'; // Deep Steel Blue
+            return '#1F3A5F';                  // Midnight Blue
         };
 
         $order = ['f01','f02','f03','f04','f05','f06','f07','f08','f09','f10','f11','f12'];
@@ -64,7 +64,7 @@ class renderer extends \plugin_renderer_base {
             $paths .= '<path d="'.$p.'" fill="'.$fill.'" stroke="#E5E7EB" stroke-width="1"/>';
 
             // Icon.
-	    if (isset($iconmap[$k])) {
+            if (isset($iconmap[$k])) {
                 $iconurl = $this->image_url(
                     $iconmap[$k],
                     'tool_frictionradar'
@@ -115,27 +115,39 @@ class renderer extends \plugin_renderer_base {
         // Legend.
         $legend  = '<div class="mt-4"><div class="row">';
 
-	$labels = [];
+        $labels = [];
+
+        $ui_score   = get_string('ui_score', 'tool_frictionradar');
+        $ui_formula = get_string('ui_formula', 'tool_frictionradar');
+        $ui_inputs  = get_string('ui_inputs', 'tool_frictionradar');
+        $ui_param   = get_string('ui_param', 'tool_frictionradar');
+        $ui_value   = get_string('ui_value', 'tool_frictionradar');
+        $ui_notes   = get_string('ui_notes', 'tool_frictionradar');
 
         foreach ($order as $k) {
 
-	    $iconhtml = '';
-	    if (isset($iconmap[$k])) {
-	        $iconurl = $this->image_url(
-	            $iconmap[$k],
-	            'tool_frictionradar'
-	        );
-	        $iconhtml = html_writer::empty_tag('img', [
-	            'src'   => $iconurl,
-	            'alt'   => '',
-	            'aria-hidden' => 'true',
-	            'style' => 'width:48px; height:48px; margin-right:8px; opacity:0.85;',
-	        ]);
-	    }
+            $iconhtml = '';
+            if (isset($iconmap[$k])) {
+                $iconurl = $this->image_url(
+                    $iconmap[$k],
+                    'tool_frictionradar'
+                );
+                $iconhtml = html_writer::empty_tag('img', [
+                    'src'   => $iconurl,
+                    'alt'   => '',
+                    'aria-hidden' => 'true',
+                    'style' => 'width:48px; height:48px; margin-right:8px; opacity:0.85;',
+                ]);
+            }
 
             $score = (int)($segments[$k] ?? 0);
 
-	    $explanations = [
+            $bd = $data['breakdown'][$k] ?? [];
+            $formula = $bd['formula'] ?? '';
+            $inputsjson = json_encode($bd['inputs'] ?? [], JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
+            $notes = $bd['notes'] ?? '';
+
+            $explanations = [
                 'f01' => get_string('explain_f01', 'tool_frictionradar'),
                 'f02' => get_string('explain_f02', 'tool_frictionradar'),
                 'f03' => get_string('explain_f03', 'tool_frictionradar'),
@@ -169,18 +181,27 @@ class renderer extends \plugin_renderer_base {
 
             $legend .= '<div class="col-12 col-md-6 col-lg-4 mb-2">'
                 . '<div class="d-flex align-items-center">'
-		. $iconhtml
+                . $iconhtml
                 . '<span style="display:inline-block; width:16px; height:32px; border-radius:3px;'
                 . 'background:'.$colors($score).';border:1px solid #E5E7EB; margin-right:10px;"></span>'
-		. '<button type="button"
-		    class="btn btn-link p-0 me-auto friction-info p-2"
-		    data-friction="'.$k.'"
-		    data-score="'.$score.'"
-		    data-explanation="'.s($explanations[$k]).'"
-		    data-what ="'.s(get_string('what_to_do', 'tool_frictionradar')).'"
-		    data-action="'.s($actions[$k]).'">'
-		. $labels[$k]
-		. '</button>'
+                . '<button type="button"
+                    class="btn btn-link p-0 me-auto friction-info p-2 text-decoration-none"
+                    data-friction="'.$k.'"
+                    data-score="'.$score.'"
+                    data-explanation="'.s($explanations[$k]).'"
+                    data-what="'.s(get_string('what_to_do', 'tool_frictionradar')).'"
+                    data-action="'.s($actions[$k]).'"
+                    data-formula="'.s($formula).'"
+                    data-inputs="'.s($inputsjson).'"
+                    data-notes="'.s($notes).'"
+                    data-ui-score="'.s($ui_score).'"
+                    data-ui-formula="'.s($ui_formula).'"
+                    data-ui-inputs="'.s($ui_inputs).'"
+                    data-ui-param="'.s($ui_param).'"
+                    data-ui-value="'.s($ui_value).'"
+                    data-ui-notes="'.s($ui_notes).'">'
+                . $labels[$k]
+                . '</button>'
                 . '<strong>'.$score.'</strong>'
                 . '</div></div>';
         }
@@ -197,10 +218,10 @@ class renderer extends \plugin_renderer_base {
             . $center
             . '</svg>';
 
-	$this->page->requires->js_call_amd(
-	    'tool_frictionradar/friction_info',
-	    'init'
-	);
+        $this->page->requires->js_call_amd(
+            'tool_frictionradar/friction_info',
+            'init'
+        );
 
         return '<div class="tool-frictionradar">'
             . '<div class="d-flex flex-column align-items-center">'.$svg.'</div>'
