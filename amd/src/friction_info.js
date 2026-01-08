@@ -51,11 +51,7 @@ define([
                 </button>
 
                 <div class="friction-details mt-2" style="display:none;">
-                    ${formula ? `
-                        <pre class="p-2 bg-light border rounded small">
-                            <code>${esc(formula)}</code>
-                        </pre>
-                    ` : ''}
+                    ${formula ? `<pre class="p-2 bg-light border rounded small" style="white-space: pre-wrap;"><code>${esc(formula)}</code></pre>` : ''}
 
                     ${inputs.length ? `
                         <div class="table-responsive">
