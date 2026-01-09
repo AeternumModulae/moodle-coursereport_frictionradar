@@ -115,7 +115,7 @@ class f04_overambitious_entry extends abstract_friction {
             'course = :courseid AND section BETWEEN 0 AND :maxsection',
             ['courseid'=>$courseid, 'maxsection'=>$sections],
             '',
-            'summary'
+            'id, summary'
         );
 
         $text = '';
