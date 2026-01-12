@@ -53,18 +53,115 @@ $string['explain_f11'] = 'Frust-Scroll misst ineffizientes Konsumverhalten von I
 $string['explain_f12'] = 'Deadline-Panik misst Zeitdruck, der durch gebündelte oder ungünstig verteilte Abgabetermine entsteht. Der Wert wird aus überlappenden Deadlines, kurzen Abgabeintervallen sowie erhöhter Last-Minute-Aktivität berechnet. Hohe Werte weisen auf stressfördernde Terminstrukturen hin.';
 
 $string['what_to_do'] = 'Was tun bei hohem Wert?';
-$string['action_f01'] = 'Gleichzeitige Anforderungen reduzieren. Pflichtmaterial pro Abschnitt begrenzen, lange Seiten in kleinere Einheiten teilen und am Abschnittsende kurze Zusammenfassungen ergänzen. Optionale Ressourcen klar als „Vertiefung“ kennzeichnen statt als Pflichtschritt.';
-$string['action_f02'] = 'Didaktische Progression sichtbar machen. Pro Abschnitt kurze Lernziele ergänzen, Aktivitätstypen konsistent einsetzen und neue Formate kurz einführen. Redundante Schritte entfernen und für jede Aktivität den Zweck im Lernpfad klar machen.';
-$string['action_f03'] = 'Orientierung verbessern. Zu tiefe Strukturen abflachen, Querverweise zwischen weit entfernten Bereichen reduzieren und pro Abschnitt einen kurzen „Wo bin ich?“-Einstieg ergänzen. Einheitliche Benennung nutzen und einen stabilen Navigationspfad (z. B. Wochenstruktur) bevorzugen.';
-$string['action_f04'] = 'Einstiegshürde senken. Komplexe Aufgaben aus den ersten Abschnitten herausnehmen, ein kurzes Onboarding bereitstellen und eine niedrigschwellige erste Aktivität anbieten. Erwartungen früh klären, aber Arbeitslast in den ersten Wochen gleichmäßiger verteilen.';
-$string['action_f05'] = 'Substanzielle Interaktion erhöhen. Passive Aufrufe durch konkrete Micro-Prompts ersetzen (z. B. ein Reflexionspost, eine Peer-Antwort). Abschlusskriterien so setzen, dass echte Beteiligung zählt, nicht nur Zugriff. Beispiele für „gute Beteiligung“ geben und leere Checklisten vermeiden.';
-$string['action_f06'] = 'Quiz-Lerneffekt erhöhen. Wiederholte Versuche ohne Feedback reduzieren, aussagekräftiges Feedback pro Frage ergänzen und Frageformate variieren. Lieber weniger, dafür hochwertige Quizzes einsetzen und Reflexion fördern (z. B. kurze Begründung bei falschen Antworten).';
-$string['action_f07'] = 'Anforderungen klären. Aufgabenbeschreibungen, Bewertungskriterien und Beispiele bereitstellen. Deadlines möglichst stabil halten und Änderungen früh kommunizieren. Einen eigenen Abschnitt „Erwartungen & Bewertung“ als zentrale Quelle für Regeln und Termine anlegen.';
-$string['action_f08'] = 'Struktur funktional machen, nicht nur formal. Verschachtelung reduzieren, pro Abschnitt eine inhaltlich geschlossene Lerneinheit sicherstellen und leere Container-Abschnitte vermeiden. Prüfen, ob die Struktur dem realen Navigationsverhalten entspricht, und entsprechend anpassen.';
-$string['action_f09'] = 'Ressourcen kuratieren. Duplikate entfernen, Materialien nach Zweck bündeln (Kern vs. optional) und die Anzahl der Elemente pro Abschnitt begrenzen. Kurze Annotationen („Warum ist das relevant?“) ergänzen und Links bei Bedarf in einer gut strukturierten Übersichtsseite zusammenführen.';
-$string['action_f10'] = 'Voraussetzungen sichtbar machen. Abhängigkeiten und Zugriffsvoraussetzungen früh kommunizieren, bevor Lernende an Sperren stoßen. Hinweise „Benötigt vorher“ ergänzen, auf Vorleistungen verlinken und Abhängigkeitsketten kurz halten. Bedingungen, wo möglich, vereinfachen.';
-$string['action_f11'] = 'Scroll-Reibung reduzieren. Lange Seiten in Abschnitte mit Überschriften gliedern, Inhaltsverzeichnis ergänzen und wichtige Aktionen/Links nach oben ziehen. Lieber mehrere kurze Seiten statt einer endlosen Seite, und zentrale Inhalte nicht „vergraben“.';
-$string['action_f12'] = 'Deadlines entzerren. Abgabetermine verteilen, mehrere Abgaben im selben Zeitraum vermeiden und frühere Zwischenmeilensteine anbieten. Einen konsistenten Wochenrhythmus nutzen, Kalender sichtbar machen und Abgabefenster klar kommunizieren, um Last-Minute-Druck zu senken.';
+
+$string['action_f01'] = <<<TXT
+Ein hoher Wert für Kognitive Überlastung bedeutet, dass Lernende gleichzeitig mit zu vielen verpflichtenden Aktivitäten, zu dichter Materialsammlung oder übermäßig komplexen Inhalten konfrontiert sind. Um diese Reibung zu senken, hilft vor allem konsequentes Reduzieren und kluges Sequenzieren.
+
+Prüfe zunächst die ersten Kursabschnitte und entscheide, was wirklich zwingend notwendig ist. Wenn mehrere Aufgaben denselben Zweck erfüllen, fasse sie zusammen oder mache Teile davon optional. Lernende profitieren eher von wenigen, gut erklärten Schritten als von langen Pflichtlisten.
+
+Verringere die Textkomplexität, wo immer es geht. Lange Fließtexte, verschachtelte Anweisungen und abstrakte Formulierungen erhöhen die kognitive Last. Teile Inhalte in kürzere Absätze, nutze Überschriften und formuliere Erwartungen einfach und eindeutig. Ergänze komplexe Passagen durch Beispiele, Grafiken oder kurze Videos.
+
+Verteile Anforderungen über die Zeit. Vermeide es, viele Pflichtaufgaben in derselben Woche oder demselben Abschnitt zu bündeln. Eine klare Progression von leicht zu anspruchsvoll gibt Lernenden Orientierung und baut Selbstvertrauen auf.
+TXT;
+$string['action_f02'] = <<<TXT
+Didaktische Engstellen entstehen, wenn Aktivitäten schlecht an Lernzielen ausgerichtet sind oder wenn Aufgabenbeschreibungen unklar, missverständlich oder widersprüchlich sind. Lernende erledigen dann Aufgaben, ohne den Sinn zu verstehen, was schnell zu Frust und Rückzug führt.
+
+Überprüfe jede Aktivität darauf, ob sie ein konkretes Lernziel unterstützt. Formuliere explizit, warum es die Aktivität gibt und was Lernende daraus mitnehmen sollen. Wenn ein klarer Beitrag zum Lernziel fehlt, lohnt sich eine Überarbeitung oder das Entfernen.
+
+Verbessere Aufgabenbeschreibungen, indem du Eingaben, erwartete Ergebnisse und Bewertungskriterien klar benennst. Vermeide implizite Annahmen über Vorwissen. Wo möglich, ergänze kurze Beispiele für eine gelungene Abgabe oder typische Fehler, die vermieden werden sollten.
+
+Achte auf Konsistenz. Nutze ähnliche Formate, Begriffe und Strukturen über den Kurs hinweg. Wiedererkennbare Muster reduzieren „Entschlüsselungsarbeit“ und geben Lernenden Raum, sich auf Inhalte statt auf Interpretation zu konzentrieren.
+TXT;
+$string['action_f03'] = <<<TXT
+Navigationschaos entsteht, wenn Lernende Materialien, Aktivitäten oder Orientierungspunkte im Kurs nur schwer finden. Häufige Ursachen sind uneinheitliche Benennungen, wechselnde Strukturen oder zu tiefe Verschachtelungen.
+
+Schaffe eine klare, wiederholbare Kursstruktur. Verwende ein konsistentes Namensschema für Abschnitte und Aktivitäten. Bewährt ist zum Beispiel: Überblick, Materialien, Aktivitäten, ggf. Reflexion oder Abgabe.
+
+Begrenze unnötige Verschachtelung. Tiefe Ebenen aus Ordnern, Seiten und Links erhöhen das Risiko, dass Lernende sich „verlaufen“. Wenn Gruppierung nötig ist, erkläre kurz, warum sie existiert und welcher nächste Schritt erwartet wird.
+
+Nutze Labels und Abschnittszusammenfassungen als Orientierung. Ein kurzer Satz, was in einem Abschnitt passiert und wie er in den Kursablauf passt, reduziert Suchaufwand spürbar.
+TXT;
+$string['action_f04'] = <<<TXT
+Ein überambitionierter Einstieg bedeutet, dass Lernende direkt zu Kursbeginn stark gefordert werden. Das kann überfordern, bevor Routinen entstehen und bevor Lernende Sicherheit im Kursaufbau gewinnen.
+
+Sieh dir die ersten ein bis zwei Abschnitte an und zähle, wie viele verpflichtende Aktivitäten und Ressourcen dort sofort anstehen. Verschiebe anspruchsvolle Aufgaben, umfangreiche Lektüre oder bewertete Abgaben nach Möglichkeit in spätere Phasen.
+
+Nutze die Startphase zur Orientierung. Führe Ziele, Struktur und Erwartungen schrittweise ein. Niedrigschwellige Einstiegsaufgaben wie kurze Vorstellungsrunden, einfache Selbsttests oder geführte Rundgänge helfen, sich zu akklimatisieren.
+
+Frühe Erfolgserlebnisse sind wichtig. Gestalte die ersten Aufgaben so, dass die Mehrheit sie gut bewältigen kann. Das reduziert Abbruchrisiken und stärkt die Motivation.
+TXT;
+$string['action_f05'] = <<<TXT
+„Passive Anwesenheit“ bzw. Participation Theatre beschreibt Situationen, in denen Lernende zu Beteiligung verpflichtet werden, ohne dass diese Beteiligung spürbare Wirkung oder sinnvolles Feedback hat. Aktivität wird dann zur Pflichtübung statt zum Lernprozess.
+
+Prüfe, ob Beteiligungsaufgaben tatsächlich zu Reflexion, Austausch oder Erkenntnis führen. Wenn Forenbeiträge oder Abgaben verpflichtend sind, sorge dafür, dass sie beantwortet, kommentiert oder später weiterverwendet werden.
+
+Reduziere künstliche Beteiligungsanforderungen. Pflichtposts ohne Interaktion fördern oberflächliche Beiträge. Besser sind wenige, gut fokussierte Impulse mit klaren Leitfragen, die echte Diskussion auslösen können.
+
+Setze stärker auf authentische Aufgabenformate. Kollaborative Dokumente, Peer-Feedback oder optionale Diskussionsanlässe erzeugen oft mehr echte Beteiligung als formale Nachweispflichten.
+TXT;
+$string['action_f06'] = <<<TXT
+Zombie-Quizze sind Tests, die über lange Zeit unverändert wiederverwendet werden und kaum diagnostischen oder lernförderlichen Nutzen bieten. Lernende klicken sich dann mechanisch durch, ohne wirklich etwas mitzunehmen.
+
+Überarbeite regelmäßig die Fragen. Entferne veraltete, unklare oder missverständliche Items und stelle sicher, dass alle Fragen zum aktuellen Kursinhalt passen.
+
+Nutze Feedback gezielt. Sofortiges, erklärendes Feedback macht ein Quiz zu einem Lernwerkzeug. Schon kurze Begründungen, warum eine Antwort richtig oder falsch ist, steigern den Lerneffekt deutlich.
+
+Variiere Quizformate. Eine Mischung aus formativen Übungsquizzen, mehreren Versuchen und Selbsttests reduziert Monotonie und erhöht die Motivation.
+TXT;
+$string['action_f07'] = <<<TXT
+Unklare Erwartungen entstehen, wenn Lernende nicht sicher wissen, was genau verlangt wird, um erfolgreich zu sein. Das betrifft unpräzise Bewertungsmaßstäbe, fehlende Beschreibungen oder implizite Annahmen.
+
+Stelle sicher, dass alle bewerteten Aktivitäten eine klare Beschreibung haben und, wo sinnvoll, Kriterien oder Rubrics enthalten. Lernende sollten vor der Abgabe verstehen, wie bewertet wird.
+
+Mache Arbeitsaufwand transparent. Gib grobe Zeitangaben und nenne Formatvorgaben (z.B. Umfang, Dateityp, Abgabemodus). Das erleichtert Planung und reduziert Stress.
+
+Prüfe Aufgaben aus Lernendenperspektive. Was Lehrenden offensichtlich erscheint, ist für Studierende oft nicht explizit genug. Formuliere daher lieber einmal zu klar als zu knapp.
+TXT;
+$string['action_f08'] = <<<TXT
+Strukturelle Desorientierung entsteht, wenn Lernende kein stabiles mentales Modell der Kursstruktur aufbauen können. Ursachen sind häufig inkonsistente Organisation oder nachträgliche Strukturänderungen.
+
+Halte die Kursstruktur über das Semester möglichst stabil. Vermeide es, Aktivitäten zu verschieben oder Abschnitte umzubenennen, sobald Lernende begonnen haben, damit zu arbeiten.
+
+Arbeite mit wiederkehrenden Mustern. Beispiel: Jeder Abschnitt folgt derselben Reihenfolge: Überblick, Materialien, Aktivitäten, ggf. Abgabe. Wiederholung schafft Orientierung.
+
+Setze strukturelle Signale. Abschnittszusammenfassungen, visuelle Trennelemente und konsistente Icons helfen, die Struktur schnell zu erfassen und reduzieren Verwirrung.
+TXT;
+$string['action_f09'] = <<<TXT
+Ressourcenüberlastung entsteht durch eine zu große Menge an Dateien, Links und externen Materialien. Lernende verlieren den Überblick und können schwer entscheiden, was wirklich wichtig ist.
+
+Führe regelmäßig einen Ressourcen-Check durch. Entferne veraltete oder doppelte Materialien und markiere optionale Ressourcen klar als „optional“.
+
+Setze auf Qualität statt Masse. Wenige, gut ausgewählte Ressourcen sind oft wirksamer als eine umfassende Materialsammlung.
+
+Gib Orientierung durch kurze Hinweise. Ein Satz, warum eine Ressource relevant ist und wann sie genutzt werden soll, hilft Lernenden, Prioritäten zu setzen.
+TXT;
+$string['action_f10'] = <<<TXT
+Versteckte Voraussetzungen liegen vor, wenn Aktivitäten auf Vorwissen, Tools oder vorherigen Inhalten basieren, ohne dass dies ausdrücklich genannt wird. Lernende scheitern dann, ohne zu verstehen, warum.
+
+Identifiziere Voraussetzungen je Aktivität. Wenn bestimmte Inhalte, Fähigkeiten oder das Abschließen früherer Schritte nötig sind, benenne das sichtbar.
+
+Nutze Voraussetzungen und Verfügbarkeitsbedingungen transparent. Abhängigkeiten sollten nicht als Überraschung auftreten, sondern begründet und nachvollziehbar sein.
+
+Biete bei Bedarf kurze Auffrischungen oder Verweise auf Grundlagenmaterial an. Das unterstützt heterogene Lerngruppen und reduziert unnötige Frustration.
+TXT;
+$string['action_f11'] = <<<TXT
+Frustriertes Scrollen entsteht, wenn Seiten sehr lang sind und kaum Struktur bieten. Lernende müssen viel scrollen, um Anweisungen, Materialien oder den nächsten Schritt zu finden.
+
+Teile lange Seiten in kleinere Einheiten. Nutze Überschriften, Akkordeons oder mehrere Seiten, um die Lesbarkeit zu erhöhen.
+
+Platziere die wichtigste Information nach oben. Lernende sollten schnell erkennen können, was als Nächstes zu tun ist, ohne erst weit nach unten zu scrollen.
+
+Nutze visuelle Struktur bewusst. Weißraum, Zwischenüberschriften und kurze Absätze verbessern Orientierung deutlich und reduzieren Suchaufwand.
+TXT;
+$string['action_f12'] = <<<TXT
+Deadline-Panik entsteht, wenn viele Abgabetermine eng beieinanderliegen oder wenn Deadlines schlecht kommuniziert werden. Das erhöht Stress und führt häufiger zu verpassten Abgaben.
+
+Prüfe den Kurskalender auf Terminballungen. Verteile Deadlines möglichst gleichmäßig über die Wochen.
+
+Kommuniziere Termine klar und frühzeitig. Verwende konsistente Benennungen und stelle sicher, dass Deadlines sowohl in der Aktivität als auch im Kalender sichtbar sind.
+
+Denke über sinnvolle Flexibilität nach. Wo es fachlich vertretbar ist, helfen Kulanzzeiten, mehrere Versuche oder gestaffelte Abgaben, unnötigen Druck zu reduzieren, ohne akademische Standards zu senken.
+TXT;
 
 $string['notes_f01'] = 'Berechnet über die letzten {$a} Tage. A steigt, wenn viele verpflichtende Aktivitäten parallel auftreten. B steigt, wenn verpflichtende Aktivitäten von vielen verpflichtenden Ressourcen begleitet werden. C steigt bei hoher durchschnittlicher textueller Komplexität von Beschreibungen und Inhalten.';
 $string['notes_f02'] = 'Berechnet über die letzten {$a} Tage. A steigt, wenn Aktivitätstypen häufig wechseln. B steigt, wenn anspruchsvolle Aktivitäten ohne unterstützende Materialien in der Nähe stehen. C ist aktuell ein Platzhalter (0,0), bis Versuchs-/Verzögerungsmetriken implementiert sind.';

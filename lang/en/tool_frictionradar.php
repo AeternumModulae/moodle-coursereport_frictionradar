@@ -53,18 +53,114 @@ $string['explain_f11'] = 'Frust Scroll measures inefficient content consumption 
 $string['explain_f12'] = 'Deadline Panic measures time pressure resulting from clustered or poorly distributed deadlines. The score is calculated from overlapping due dates, short submission intervals, and increased last-minute submission activity. High values indicate stress-inducing deadline structures.';
 
 $string['what_to_do'] = 'What to do if the value is high:';
-$string['action_f01'] = 'Reduce simultaneous demands. Limit the number of required items per section, split long pages into smaller chunks, and add short “summary” blocks at the end of sections. Consider turning optional resources into clearly labelled “Further reading” instead of required steps.';
-$string['action_f02'] = 'Make the didactic progression explicit. Add brief learning objectives per section, keep activity types consistent, and introduce new formats with a short explanation. Remove redundant steps and ensure each activity has a clear purpose in the sequence.';
-$string['action_f03'] = 'Improve orientation. Flatten overly deep structures, reduce cross-links between distant areas, and add a “You are here” intro at the top of each section. Use consistent naming and provide one stable navigation spine (e.g., weekly sections) instead of multiple competing paths.';
-$string['action_f04'] = 'Lower the entry threshold. Move complex tasks out of the first sections, provide a short onboarding unit, and offer a low-stakes first activity. Make expectations explicit early, but distribute workload more evenly across the first weeks.';
-$string['action_f05'] = 'Increase meaningful interaction. Replace passive views with small, concrete prompts (e.g., one reflective post, one peer reply). Use completion criteria that require engagement, not only access. Provide examples of “good participation” and reduce empty checklists.';
-$string['action_f06'] = 'Improve quiz learning value. Reduce repetitive attempts without feedback, add meaningful feedback per question, and use varied question types. Consider fewer but higher-quality quizzes and encourage reflection (e.g., short explanations for wrong answers).';
-$string['action_f07'] = 'Clarify requirements. Provide clear task descriptions, grading criteria, and examples. Keep deadlines stable and communicate changes early. Add a dedicated “Expectations & Assessment” section with a single source of truth for rules and dates.';
-$string['action_f08'] = 'Make structure functional, not just formal. Reduce nesting, ensure each section contains a coherent learning unit, and avoid empty container sections. Check whether the structure matches how learners actually navigate and adjust accordingly.';
-$string['action_f09'] = 'Curate resources. Remove duplicates, group materials by purpose (core vs. optional), and limit the number of items per section. Provide short annotations (“why this matters”) and consolidate links into one well-structured overview page if needed.';
-$string['action_f10'] = 'Make prerequisites visible. Clearly communicate dependencies and access conditions before learners hit a restriction. Add “required before” notes, provide links to prerequisite items, and keep dependency chains short. Consider simplifying conditions where possible.';
-$string['action_f11'] = 'Reduce scrolling friction. Break long pages into segments with headings, add a table of contents, and move key actions or links to the top. Prefer multiple short pages over one endless page and ensure important content is not buried.';
-$string['action_f12'] = 'De-cluster deadlines. Spread due dates, avoid multiple submissions in the same period, and provide earlier milestones. Use consistent weekly rhythms, add calendar visibility, and clarify submission windows to reduce last-minute pressure.';
+$string['action_f01'] = <<<TXT
+A high value for Cognitive Overload indicates that learners are confronted with too many mandatory activities, dense resources, or complex materials at the same time. To reduce this friction, focus on deliberate reduction and sequencing.
+
+Start by reviewing the first course sections and identify which activities are truly essential. If multiple tasks serve a similar purpose, merge them or make some optional. Learners benefit more from a small number of clearly explained activities than from a long checklist of obligations.
+
+Reduce textual complexity where possible. Long descriptions, nested instructions, and highly abstract explanations increase cognitive load. Break texts into shorter paragraphs, use headings, and explain expectations in simple language. Supplement complex texts with visuals, examples, or short videos.
+
+Finally, stagger demands over time. Avoid placing many mandatory tasks within the same week or section. A clear progression from simple to complex allows learners to build confidence before facing higher demands.
+TXT;
+$string['action_f02'] = <<<TXT
+Didactic Pitfalls occur when learning activities are poorly aligned with objectives or when instructions are unclear or misleading. Learners may complete tasks without understanding their purpose, leading to frustration and disengagement.
+
+Begin by checking whether each activity clearly supports a learning outcome. Explicitly state why an activity exists and what learners should gain from it. If an activity does not clearly contribute to a goal, consider revising or removing it.
+
+Improve task descriptions by clarifying inputs, expected outputs, and assessment criteria. Avoid implicit assumptions about prior knowledge. Where possible, include short examples of a successful submission or common mistakes to avoid.
+
+Consistency is crucial. Use similar formats, terminology, and structures across activities. When learners recognize patterns, they can focus on learning instead of deciphering instructions.
+TXT;
+$string['action_f03'] = <<<TXT
+Navigation Chaos arises when learners struggle to find materials, activities, or orientation cues within the course. This often results from inconsistent structure or excessive depth in the course layout.
+
+To reduce this friction, establish a clear and repeatable structure. Use a consistent naming scheme for sections and activities. For example, start each week or topic with an overview, followed by materials, then activities.
+
+Limit unnecessary nesting. Deep hierarchies of folders, pages, and links increase the risk of learners getting lost. If content must be grouped, explain why and what learners are expected to do next.
+
+Use labels and section summaries to provide orientation. A short sentence explaining what a section contains and how it fits into the overall course can significantly reduce navigational effort.
+TXT;
+$string['action_f04'] = <<<TXT
+An overambitious entry means that learners are confronted with high demands immediately after course start. This can overwhelm learners before they have established routines or confidence.
+
+Review the first one or two sections of your course. Count how many mandatory activities and resources are required early on. Consider postponing complex tasks, assessments, or heavy reading to later sections.
+
+Use the opening phase to orient learners. Introduce the course goals, structure, and expectations gradually. Low-stakes activities such as short introductions, simple quizzes, or guided walkthroughs help learners acclimate.
+
+Early success matters. Design initial activities so that most learners can complete them successfully. This builds confidence and reduces early dropout risk.
+TXT;
+$string['action_f05'] = <<<TXT
+Participation Theatre describes situations where learners are required to participate without meaningful impact or feedback. Activities exist primarily to demonstrate activity, not learning.
+
+Evaluate whether participation activities lead to reflection, discussion, or knowledge construction. If forum posts or submissions are required, ensure that they receive feedback or are meaningfully integrated into subsequent activities.
+
+Reduce artificial participation requirements. Mandatory posts without interaction often lead to superficial contributions. Instead, encourage fewer but more focused contributions with clear prompts.
+
+Where possible, replace formal participation with authentic tasks. For example, collaborative documents, peer feedback, or optional discussion prompts often result in more genuine engagement.
+TXT;
+$string['action_f06'] = <<<TXT
+Zombie Quizzes are assessments that are reused repeatedly without revision and provide little diagnostic or learning value. Learners may complete them mechanically without reflection.
+
+Review quiz questions for relevance and clarity. Remove outdated or ambiguous items and ensure that questions align with current course content.
+
+Use feedback strategically. Immediate, explanatory feedback transforms quizzes into learning tools. Even short explanations for correct and incorrect answers can significantly improve learning outcomes.
+
+Consider varying quiz formats. Mixing formative quizzes, practice attempts, and self-assessment questions reduces monotony and increases engagement.
+TXT;
+$string['action_f07'] = <<<TXT
+Unclear Expectations arise when learners are unsure what is required to succeed. This includes vague grading criteria, missing descriptions, or implicit assumptions.
+
+Ensure that all graded activities include clear descriptions and, where applicable, grading criteria or rubrics. Learners should understand how their work will be evaluated before submitting it.
+
+Clarify workload expectations. Indicate approximate time requirements and submission formats. This helps learners plan and reduces anxiety.
+
+Revisit activities from a learner perspective. If expectations are obvious only to experienced instructors, they are likely unclear to students.
+TXT;
+$string['action_f08'] = <<<TXT
+Structural Disorientation occurs when learners cannot form a mental model of the course structure. This often results from inconsistent organization or frequent structural changes.
+
+Maintain a stable course structure throughout the term. Avoid moving activities or renaming sections once learners have started working with them.
+
+Use recurring patterns. For example, each section could follow the same internal order: overview, materials, activities, assessment.
+
+Provide structural signals. Section summaries, visual separators, and consistent icon usage help learners recognize structure and reduce confusion.
+TXT;
+$string['action_f09'] = <<<TXT
+Resource Overload is caused by an excessive number of files, links, and external resources. Learners may struggle to identify what is essential.
+
+Audit your resources regularly. Remove outdated or redundant materials and clearly mark optional resources as such.
+
+Prioritize quality over quantity. A small number of well-chosen resources is often more effective than a comprehensive collection.
+
+Provide guidance. Short annotations explaining why a resource is relevant and when it should be used help learners make informed choices.
+TXT;
+$string['action_f10'] = <<<TXT
+Hidden Dependencies occur when activities rely on prior knowledge, tools, or content that are not explicitly stated. Learners may fail tasks without understanding why.
+
+Identify prerequisites for each activity. If prior knowledge or completion of earlier tasks is required, state this explicitly.
+
+Use conditional availability carefully. Make dependencies visible and explain their purpose rather than letting learners discover them through trial and error.
+
+Where possible, provide refreshers or links to prerequisite materials. This supports learners with diverse backgrounds.
+TXT;
+$string['action_f11'] = <<<TXT
+Frustrated Scrolling results from long pages with little structure, forcing learners to scroll excessively to find relevant information.
+
+Break long pages into smaller units. Use headings, accordions, or separate pages to improve readability.
+
+Place the most important information at the top. Learners should not need to scroll extensively to understand what to do next.
+
+Use visual structure deliberately. White space, headings, and short paragraphs significantly improve orientation.
+TXT;
+$string['action_f12'] = <<<TXT
+Deadline Panic occurs when many deadlines cluster closely together or are poorly communicated. Learners experience stress and may miss submissions.
+
+Review your course calendar for deadline clustering. Spread deadlines more evenly across weeks where possible.
+
+Communicate deadlines clearly and early. Use consistent naming and ensure deadlines are visible both in the activity description and the course calendar.
+
+Consider flexibility. Where appropriate, allow grace periods or multiple attempts to reduce unnecessary stress without compromising academic standards.
+TXT;
 
 $string['notes_f01'] = 'Calculated over the last {$a} days. A increases when many mandatory activities occur in parallel. B increases when mandatory activities are supported by many mandatory resources. C increases with high average textual complexity of activity descriptions and content.';
 $string['notes_f02'] = 'Calculated over the last {$a} days. A increases when activity types change frequently. B increases when demanding activities lack nearby supporting resources. C is currently a placeholder (0.0) until attempt/delay metrics are implemented.';
