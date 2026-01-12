@@ -1,3 +1,4 @@
+<?php
 /**
  * Copyright (c) 2026 Jan Svoboda <jan.svoboda@bittra.de>
  * Project: Aeternum Modulae – https://aeternummodulae.com
@@ -8,7 +9,6 @@
  * https://www.gnu.org/licenses/gpl-3.0.html
  */
 
-<?php
 defined('MOODLE_INTERNAL') || die();
 
 $string['pluginname'] = 'Friction Radar';

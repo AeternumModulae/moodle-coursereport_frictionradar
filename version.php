@@ -1,3 +1,4 @@
+<?php
 /**
  * Copyright (c) 2026 Jan Svoboda <jan.svoboda@bittra.de>
  * Project: Aeternum Modulae – https://aeternummodulae.com
@@ -8,11 +9,10 @@
  * https://www.gnu.org/licenses/gpl-3.0.html
  */
 
-<?php
 defined('MOODLE_INTERNAL') || die();
 
 $plugin->component = 'tool_frictionradar';
-$plugin->version   = 2026011201; // YYYYMMDDXX.
+$plugin->version   = 2026011202; // YYYYMMDDXX.
 $plugin->requires  = 2024100700; // Moodle 4.5 (approx build version).
 $plugin->maturity  = MATURITY_ALPHA;
-$plugin->release   = '0.2.1';
+$plugin->release   = '0.2.2';
