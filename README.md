@@ -1,4 +1,4 @@
-# Friction Radar (admin_tool_frictionradar)
+# Friction Radar (coursereport_frictionradar)
 
 ## English
 
