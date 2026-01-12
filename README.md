@@ -1,6 +1,6 @@
 # Friction Radar (coursereport_frictionradar)
 
-## English
+## Learning friction display
 
 ### What is Friction Radar?
 
