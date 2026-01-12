@@ -11,8 +11,8 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-$plugin->component = 'tool_frictionradar';
-$plugin->version   = 2026011203; // YYYYMMDDXX.
+$plugin->component = 'coursereport_frictionradar';
+$plugin->version   = 2026011204; // YYYYMMDDXX.
 $plugin->requires  = 2024100700; // Moodle 4.5 (approx build version).
 $plugin->maturity  = MATURITY_ALPHA;
-$plugin->release   = '0.2.3';
+$plugin->release   = '0.2.4';
