@@ -79,8 +79,8 @@ By default, access is granted to:
 Students never see Friction Radar.
 
 Access is controlled via Moodle capabilities:
-- `course/report/frictionradar:view`
-- `course/report/frictionradar:export` (reserved for future use)
+- `coursereport/frictionradar:view`
+- `coursereport/frictionradar:export` (reserved for future use)
 
 ---
 

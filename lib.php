@@ -20,12 +20,12 @@ function coursereport_frictionradar_extend_settings_navigation(settings_navigati
     if (!$context instanceof context_course) {
         return;
     }
-    if (!has_capability('course/report/frictionradar:view', $context)) {
+    if (!has_capability('coursereport/frictionradar:view', $context)) {
         return;
     }
 
     $courseid = $context->instanceid;
-    $url = new moodle_url('/admin/course/report/frictionradar/index.php', ['id' => $courseid]);
+    $url = new moodle_url('/course/report/frictionradar/index.php', ['id' => $courseid]);
 
     // Try several possible parent nodes, because Moodle/themes can vary.
     $parents = [];
@@ -71,11 +71,11 @@ function coursereport_frictionradar_extend_settings_navigation(settings_navigati
  * Depending on theme, this may show up elsewhere, but it's a good backup.
  */
 function coursereport_frictionradar_extend_navigation_course(navigation_node $navigation, stdClass $course, context_course $context): void {
-    if (!has_capability('course/report/frictionradar:view', $context)) {
+    if (!has_capability('coursereport/frictionradar:view', $context)) {
         return;
     }
 
-    $url = new moodle_url('/admin/course/report/frictionradar/index.php', ['id' => $course->id]);
+    $url = new moodle_url('/course/report/frictionradar/index.php', ['id' => $course->id]);
 
     // Try to attach to the course administration node if present.
     $courseadminnode = $navigation->find('courseadmin', navigation_node::TYPE_COURSE);
