@@ -18,12 +18,12 @@ $course = get_course($courseid);
 $context = context_course::instance($course->id);
 
 require_login($course, false);
-require_capability('tool/frictionradar:view', $context);
+require_capability('course/report/frictionradar:view', $context);
 
-$PAGE->set_url(new moodle_url('/admin/tool/frictionradar/index.php', ['id' => $course->id]));
+$PAGE->set_url(new moodle_url('/admin/course/report/frictionradar/index.php', ['id' => $course->id]));
 $PAGE->set_context($context);
 $PAGE->set_course($course);
-$PAGE->requires->css('/admin/tool/frictionradar/styles.css?time=202601050000');
+$PAGE->requires->css('/admin/course/report/frictionradar/styles.css?time=202601050000');
 $PAGE->set_pagelayout('incourse');
 $PAGE->set_title(get_string('page_title', 'coursereport_frictionradar'));
 $PAGE->set_heading($course->fullname);
@@ -35,7 +35,7 @@ if ($warmcache) {
 
     // Who is allowed to force a cache refresh?
     // Option A: Course editors (recommended).
-    // If you prefer, replace with your own capability like 'tool/frictionradar:warmcache'.
+    // If you prefer, replace with your own capability like 'course/report/frictionradar:warmcache'.
     require_capability('moodle/course:update', $context);
 
     // Force-generate the cached values now.
@@ -43,7 +43,7 @@ if ($warmcache) {
     friction_cache::warm_course($courseid);
 
     redirect(
-        new moodle_url('/admin/tool/frictionradar/index.php', ['id' => $course->id]),
+        new moodle_url('/admin/course/report/frictionradar/index.php', ['id' => $course->id]),
         get_string('warmcache_done', 'coursereport_frictionradar'),
         1,
         \core\output\notification::NOTIFY_SUCCESS
@@ -62,7 +62,7 @@ if (!$data) {
 
     // Add "Generate now" link for course editors.
     if (has_capability('moodle/course:update', $context)) {
-        $url = new moodle_url('/admin/tool/frictionradar/index.php', [
+        $url = new moodle_url('/admin/course/report/frictionradar/index.php', [
             'id' => $course->id,
             'warmcache' => 1,
             'sesskey' => sesskey(),

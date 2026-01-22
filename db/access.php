@@ -12,7 +12,7 @@
 defined('MOODLE_INTERNAL') || die();
 
 $capabilities = [
-    'tool/frictionradar:view' => [
+    'course/report/frictionradar:view' => [
         'captype' => 'read',
         'contextlevel' => CONTEXT_COURSE,
         'archetypes' => [
@@ -20,7 +20,7 @@ $capabilities = [
             'manager' => CAP_ALLOW,
         ],
     ],
-    'tool/frictionradar:export' => [
+    'course/report/frictionradar:export' => [
         'captype' => 'read',
         'contextlevel' => CONTEXT_COURSE,
         'archetypes' => [
