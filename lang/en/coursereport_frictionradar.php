@@ -1,12 +1,25 @@
 <?php
+// This file is part of Moodle - https://moodle.org/
+//
+// Moodle is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Moodle is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Moodle.  If not, see <https://www.gnu.org/licenses/>.
+
 /**
- * Copyright (c) 2026 Jan Svoboda <jan.svoboda@bittra.de>
- * Project: Aeternum Modulae – https://aeternummodulae.com
+ * Friction Radar report.
  *
- * This file is part of the Aeternum Modulae Moodle plugin "Friction Radar".
- *
- * Licensed under the GNU General Public License v3.0 or later.
- * https://www.gnu.org/licenses/gpl-3.0.html
+ * @package    coursereport_frictionradar
+ * @copyright  2026 Jan Svoboda <jan.svoboda@bittra.de>
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
 defined('MOODLE_INTERNAL') || die();
@@ -17,6 +30,7 @@ $string['navitem'] = 'Friction Radar';
 $string['page_title'] = 'Learning Friction Overview';
 $string['page_subtitle'] = 'Aggregated course-level signals (rolling 6-week window).';
 $string['overall_score'] = 'Overall Friction Score';
+$string['friction_clock_aria'] = 'Friction clock';
 $string['generated_at'] = 'Generated';
 $string['window'] = 'Window';
 $string['days'] = 'days';
@@ -67,6 +81,87 @@ $string['notes_f10'] = 'Calculated over the last {$a} days. A increases when man
 $string['notes_f11'] = 'Calculated over the last {$a} days. A increases with overall course length and density. B increases when sections contain many items, forcing excessive scrolling. C increases when few navigational anchors (labels) structure the course.';
 $string['notes_f12'] = 'Calculated over the last {$a} days. A increases with a high density of deadlines. B increases when deadlines cluster on the same day. C increases when deadlines are set with very short notice, leaving little time for preparation.';
 
+$string['formula_f01'] = 'score = clamp( round( 100 * (0.5*A + 0.3*B + 0.2*C) ), 0, 100 )';
+$string['formula_f02'] = 'score = clamp( round( 100 * (0.4*A + 0.35*B + 0.25*C) ), 0, 100 ); A = activity transition density; B = support gap ratio; C = retry & delay signal';
+$string['formula_f03'] = 'score = clamp( round( 100 * (0.4*A + 0.35*B + 0.25*C) ), 0, 100 ); A = structural fragmentation; B = section load imbalance; C = module-type entropy';
+$string['formula_f04'] = 'score = clamp( round( 100 * (0.45*A + 0.35*B + 0.20*C) ), 0, 100 ); A = mandatory activities in entry phase; B = early workload proxy; C = content complexity in entry phase';
+$string['formula_f05'] = 'score = clamp( round( 100 * (0.5*A + 0.3*B + 0.2*C) ), 0, 100 ); A = passive viewer ratio; B = low interaction depth (inverse of avg substantive actions); C = engagement gap (viewers vs engaged)';
+$string['formula_f06'] = 'score = clamp( round( 100 * (0.45*A + 0.35*B + 0.20*C) ), 0, 100 ); A = zombie ratio (quizzes with 0 attempts in window); B = abandonment ratio (1 - finished/total attempts in window); C = low participation ratio (quizzes with < {$a} learners in window)';
+$string['formula_f07'] = 'score = clamp( round( 100 * (0.45*A + 0.35*B + 0.20*C) ), 0, 100 ); A = mandatory activities without due dates; B = graded activities without description; C = missing central expectation anchor';
+$string['formula_f08'] = 'score = clamp( round( 100 * (0.4*A + 0.35*B + 0.25*C) ), 0, 100 ); A = structural overlay; B = redundant structure signals; C = structural inconsistency';
+$string['formula_f09'] = 'score = clamp( round( 100 * (0.45*A + 0.35*B + 0.20*C) ), 0, 100 ); A = resource density; B = resource share; C = resource redundancy proxy';
+$string['formula_f10'] = 'score = clamp( round( 100 * (0.4*A + 0.35*B + 0.25*C) ), 0, 100 ); A = activities with access restrictions; B = restricted activities without visible explanation; C = chained dependency conditions';
+$string['formula_f10_empty'] = 'No access restrictions detected.';
+$string['formula_f11'] = 'score = clamp( round( 100 * (0.4*A + 0.35*B + 0.25*C) ), 0, 100 ); A = overall course length; B = section overload; C = missing navigational anchors';
+$string['formula_f12'] = 'score = clamp( round( 100 * (0.4*A + 0.35*B + 0.25*C) ), 0, 100 ); A = deadline density; B = deadline clustering; C = short-notice deadlines';
+$string['formula_f12_empty'] = 'No deadlines detected.';
+
+$string['input_f01_a'] = 'Parallel mandatory activities (avg per section)';
+$string['input_f01_b'] = 'Mandatory resource density';
+$string['input_f01_c'] = 'Average textual complexity (normalized)';
+$string['input_f02_a'] = 'Activity transition density (0..1)';
+$string['input_f02_b'] = 'Support gap ratio (0..1)';
+$string['input_f02_c'] = 'Retry & delay signal (0..1)';
+$string['input_f03_sections_nonempty'] = 'Non-empty sections (visible)';
+$string['input_f03_modules_total'] = 'Visible modules (total)';
+$string['input_f03_types_unique'] = 'Unique module types';
+$string['input_f03_a'] = 'Structural fragmentation (0..1)';
+$string['input_f03_b'] = 'Section load imbalance (0..1)';
+$string['input_f03_c'] = 'Module-type entropy (0..1)';
+$string['input_f04_a'] = 'Mandatory activities (normalized)';
+$string['input_f04_b'] = 'Early workload proxy (normalized)';
+$string['input_f04_c'] = 'Entry content complexity (normalized)';
+$string['input_f04_sections'] = 'Entry sections considered';
+$string['input_f05_min_views'] = 'Viewer threshold (min views)';
+$string['input_f05_viewers'] = 'Viewers (>= min views)';
+$string['input_f05_passive'] = 'Passive viewers (0 substantive)';
+$string['input_f05_engaged'] = 'Engaged users (>=1 substantive)';
+$string['input_f05_substantive_total'] = 'Total substantive actions';
+$string['input_f05_avg_sub'] = 'Avg substantive per viewer';
+$string['input_f05_a'] = 'Passive viewer ratio (0..1)';
+$string['input_f05_b'] = 'Low interaction depth (0..1)';
+$string['input_f05_c'] = 'Engagement gap (0..1)';
+$string['input_f06_quizzes_total'] = 'Visible quizzes (total)';
+$string['input_f06_zombies'] = 'Quizzes with 0 attempts (window)';
+$string['input_f06_attempts_total'] = 'Attempts (window, students)';
+$string['input_f06_attempts_finished'] = 'Finished attempts (window)';
+$string['input_f06_low_participation'] = 'Quizzes with low participation';
+$string['input_f06_a'] = 'Zombie ratio (0..1)';
+$string['input_f06_b'] = 'Abandonment ratio (0..1)';
+$string['input_f06_c'] = 'Low participation ratio (0..1)';
+$string['input_f07_a'] = 'Mandatory activities without due date (ratio)';
+$string['input_f07_b'] = 'Graded activities without description (ratio)';
+$string['input_f07_c'] = 'Missing expectation anchor (0 or 1)';
+$string['input_f08_sections'] = 'Non-empty sections';
+$string['input_f08_modules'] = 'Visible modules';
+$string['input_f08_structure_modules'] = 'Structure modules';
+$string['input_f08_a'] = 'Structural overlay (0..1)';
+$string['input_f08_b'] = 'Redundant structure signals (0..1)';
+$string['input_f08_c'] = 'Structural inconsistency (0..1)';
+$string['input_f09_sections'] = 'Non-empty sections';
+$string['input_f09_modules_total'] = 'Visible modules (total)';
+$string['input_f09_resources_total'] = 'Resources (total)';
+$string['input_f09_resources_file'] = 'File resources (resource)';
+$string['input_f09_a'] = 'Resource density (0..1)';
+$string['input_f09_b'] = 'Resource share (0..1)';
+$string['input_f09_c'] = 'Redundancy proxy (0..1)';
+$string['input_f10_total'] = 'Visible activities';
+$string['input_f10_restricted'] = 'Activities with restrictions';
+$string['input_f10_a'] = 'Restriction ratio (0..1)';
+$string['input_f10_b'] = 'Restrictions without explanation (0..1)';
+$string['input_f10_c'] = 'Chained dependencies (0..1)';
+$string['input_f11_sections'] = 'Non-empty sections';
+$string['input_f11_modules'] = 'Visible modules';
+$string['input_f11_avg_section_size'] = 'Average modules per section';
+$string['input_f11_labels'] = 'Label modules';
+$string['input_f11_a'] = 'Course length (0..1)';
+$string['input_f11_b'] = 'Section overload (0..1)';
+$string['input_f11_c'] = 'Missing anchors (0..1)';
+$string['input_f12_deadlines'] = 'Deadlines considered';
+$string['input_f12_a'] = 'Deadline density (0..1)';
+$string['input_f12_b'] = 'Deadline clustering (0..1)';
+$string['input_f12_c'] = 'Short-notice ratio (0..1)';
+
 $string['privacy:metadata'] = 'The Friction Radar tool stores only aggregated, course-level scores in cache and does not store personal data.';
 
 $string['ui_score'] = 'Score';
@@ -76,118 +171,26 @@ $string['ui_param'] = 'Parameter';
 $string['ui_value'] = 'Value';
 $string['ui_notes'] = 'Notes';
 
-$string['action_f01']  = 'A high value for Cognitive Overload indicates that learners are confronted with too many mandatory activities, dense resources, or complex materials at the same time. ';
-$string['action_f01'] .= 'To reduce this friction, focus on deliberate reduction and careful sequencing of learning demands. ';
-$string['action_f01'] .= 'Start by reviewing the first course sections and identify which activities are truly essential. ';
-$string['action_f01'] .= 'If multiple tasks serve a similar purpose, merge them or make some of them optional. ';
-$string['action_f01'] .= 'Learners benefit far more from a small number of clearly explained activities than from a long checklist of obligations. ';
-$string['action_f01'] .= 'Reduce textual complexity where possible. Long descriptions, nested instructions, and highly abstract explanations increase cognitive load. ';
-$string['action_f01'] .= 'Break texts into shorter paragraphs, use headings, and explain expectations in simple and direct language. ';
-$string['action_f01'] .= 'Supplement complex content with visuals, examples, or short videos. ';
-$string['action_f01'] .= 'Finally, stagger demands over time. Avoid placing many mandatory tasks within the same week or section. ';
-$string['action_f01'] .= 'A clear progression from simple to complex allows learners to build confidence before facing higher demands.';
+$string['action_f01'] = 'A high value for Cognitive Overload indicates that learners are confronted with too many mandatory activities, dense resources, or complex materials at the same time. To reduce this friction, focus on deliberate reduction and careful sequencing of learning demands. Start by reviewing the first course sections and identify which activities are truly essential. If multiple tasks serve a similar purpose, merge them or make some of them optional. Learners benefit far more from a small number of clearly explained activities than from a long checklist of obligations. Reduce textual complexity where possible. Long descriptions, nested instructions, and highly abstract explanations increase cognitive load. Break texts into shorter paragraphs, use headings, and explain expectations in simple and direct language. Supplement complex content with visuals, examples, or short videos. Finally, stagger demands over time. Avoid placing many mandatory tasks within the same week or section. A clear progression from simple to complex allows learners to build confidence before facing higher demands.';
 
-$string['action_f02']  = 'Didactic Pitfalls occur when learning activities are poorly aligned with learning objectives or when instructions are unclear or misleading. ';
-$string['action_f02'] .= 'Learners may complete tasks without understanding their purpose, leading to frustration and disengagement. ';
-$string['action_f02'] .= 'Begin by checking whether each activity clearly supports a learning outcome. ';
-$string['action_f02'] .= 'Explicitly state why an activity exists and what learners should gain from completing it. ';
-$string['action_f02'] .= 'If an activity does not clearly contribute to a learning goal, consider revising or removing it. ';
-$string['action_f02'] .= 'Improve task descriptions by clarifying required inputs, expected outputs, and assessment criteria. ';
-$string['action_f02'] .= 'Avoid implicit assumptions about prior knowledge. ';
-$string['action_f02'] .= 'Where possible, include short examples of a successful submission or typical mistakes to avoid. ';
-$string['action_f02'] .= 'Consistency is crucial. Use similar formats, terminology, and structures across activities. ';
-$string['action_f02'] .= 'When learners recognize patterns, they can focus on learning instead of deciphering instructions.';
+$string['action_f02'] = 'Didactic Pitfalls occur when learning activities are poorly aligned with learning objectives or when instructions are unclear or misleading. Learners may complete tasks without understanding their purpose, leading to frustration and disengagement. Begin by checking whether each activity clearly supports a learning outcome. Explicitly state why an activity exists and what learners should gain from completing it. If an activity does not clearly contribute to a learning goal, consider revising or removing it. Improve task descriptions by clarifying required inputs, expected outputs, and assessment criteria. Avoid implicit assumptions about prior knowledge. Where possible, include short examples of a successful submission or typical mistakes to avoid. Consistency is crucial. Use similar formats, terminology, and structures across activities. When learners recognize patterns, they can focus on learning instead of deciphering instructions.';
 
-$string['action_f03']  = 'Navigation Chaos arises when learners struggle to find materials, activities, or orientation cues within a course. ';
-$string['action_f03'] .= 'This often results from inconsistent structure or excessive depth in the course layout. ';
-$string['action_f03'] .= 'To reduce this friction, establish a clear and repeatable structure. ';
-$string['action_f03'] .= 'Use a consistent naming scheme for sections and activities. ';
-$string['action_f03'] .= 'For example, start each week or topic with an overview, followed by materials, and then activities. ';
-$string['action_f03'] .= 'Limit unnecessary nesting. Deep hierarchies of folders, pages, and links increase the risk of learners getting lost. ';
-$string['action_f03'] .= 'If content must be grouped, explain why and what learners are expected to do next. ';
-$string['action_f03'] .= 'Use labels and section summaries to provide orientation. ';
-$string['action_f03'] .= 'A short sentence explaining what a section contains and how it fits into the overall course can significantly reduce navigational effort.';
+$string['action_f03'] = 'Navigation Chaos arises when learners struggle to find materials, activities, or orientation cues within a course. This often results from inconsistent structure or excessive depth in the course layout. To reduce this friction, establish a clear and repeatable structure. Use a consistent naming scheme for sections and activities. For example, start each week or topic with an overview, followed by materials, and then activities. Limit unnecessary nesting. Deep hierarchies of folders, pages, and links increase the risk of learners getting lost. If content must be grouped, explain why and what learners are expected to do next. Use labels and section summaries to provide orientation. A short sentence explaining what a section contains and how it fits into the overall course can significantly reduce navigational effort.';
 
-$string['action_f04']  = 'An overambitious entry means that learners are confronted with high demands immediately after the course starts. ';
-$string['action_f04'] .= 'This can overwhelm learners before they have established routines or confidence. ';
-$string['action_f04'] .= 'Review the first one or two sections of your course. ';
-$string['action_f04'] .= 'Count how many mandatory activities and resources are required early on. ';
-$string['action_f04'] .= 'Consider postponing complex tasks, assessments, or heavy reading to later sections. ';
-$string['action_f04'] .= 'Use the opening phase to orient learners. ';
-$string['action_f04'] .= 'Introduce course goals, structure, and expectations gradually. ';
-$string['action_f04'] .= 'Low-stakes activities such as short introductions, simple quizzes, or guided walkthroughs help learners acclimate. ';
-$string['action_f04'] .= 'Early success matters. ';
-$string['action_f04'] .= 'Design initial activities so that most learners can complete them successfully, building confidence and reducing early dropout risk.';
+$string['action_f04'] = 'An overambitious entry means that learners are confronted with high demands immediately after the course starts. This can overwhelm learners before they have established routines or confidence. Review the first one or two sections of your course. Count how many mandatory activities and resources are required early on. Consider postponing complex tasks, assessments, or heavy reading to later sections. Use the opening phase to orient learners. Introduce course goals, structure, and expectations gradually. Low-stakes activities such as short introductions, simple quizzes, or guided walkthroughs help learners acclimate. Early success matters. Design initial activities so that most learners can complete them successfully, building confidence and reducing early dropout risk.';
 
-$string['action_f05']  = 'Participation Theatre describes situations where learners are required to participate without meaningful impact or feedback. ';
-$string['action_f05'] .= 'Activities exist primarily to demonstrate activity rather than to support learning. ';
-$string['action_f05'] .= 'Evaluate whether participation activities lead to reflection, discussion, or knowledge construction. ';
-$string['action_f05'] .= 'If forum posts or submissions are required, ensure that they receive feedback or are meaningfully integrated into subsequent activities. ';
-$string['action_f05'] .= 'Reduce artificial participation requirements. ';
-$string['action_f05'] .= 'Mandatory posts without interaction often lead to superficial contributions. ';
-$string['action_f05'] .= 'Instead, encourage fewer but more focused contributions with clear prompts. ';
-$string['action_f05'] .= 'Where possible, replace formal participation with authentic tasks. ';
-$string['action_f05'] .= 'Collaborative documents, peer feedback, or optional discussion prompts often result in more genuine engagement.';
+$string['action_f05'] = 'Participation Theatre describes situations where learners are required to participate without meaningful impact or feedback. Activities exist primarily to demonstrate activity rather than to support learning. Evaluate whether participation activities lead to reflection, discussion, or knowledge construction. If forum posts or submissions are required, ensure that they receive feedback or are meaningfully integrated into subsequent activities. Reduce artificial participation requirements. Mandatory posts without interaction often lead to superficial contributions. Instead, encourage fewer but more focused contributions with clear prompts. Where possible, replace formal participation with authentic tasks. Collaborative documents, peer feedback, or optional discussion prompts often result in more genuine engagement.';
 
-$string['action_f06']  = 'Zombie Quizzes are assessments that are reused repeatedly without revision and provide little diagnostic or learning value. ';
-$string['action_f06'] .= 'Learners may complete them mechanically without reflection. ';
-$string['action_f06'] .= 'Review quiz questions for relevance and clarity. ';
-$string['action_f06'] .= 'Remove outdated or ambiguous items and ensure that questions align with current course content. ';
-$string['action_f06'] .= 'Use feedback strategically. ';
-$string['action_f06'] .= 'Immediate, explanatory feedback transforms quizzes into learning tools. ';
-$string['action_f06'] .= 'Even short explanations for correct and incorrect answers can significantly improve learning outcomes. ';
-$string['action_f06'] .= 'Consider varying quiz formats. ';
-$string['action_f06'] .= 'Mixing formative quizzes, practice attempts, and self-assessment questions reduces monotony and increases engagement.';
+$string['action_f06'] = 'Zombie Quizzes are assessments that are reused repeatedly without revision and provide little diagnostic or learning value. Learners may complete them mechanically without reflection. Review quiz questions for relevance and clarity. Remove outdated or ambiguous items and ensure that questions align with current course content. Use feedback strategically. Immediate, explanatory feedback transforms quizzes into learning tools. Even short explanations for correct and incorrect answers can significantly improve learning outcomes. Consider varying quiz formats. Mixing formative quizzes, practice attempts, and self-assessment questions reduces monotony and increases engagement.';
 
-$string['action_f07']  = 'Unclear Expectations arise when learners are unsure what is required to succeed. ';
-$string['action_f07'] .= 'This includes vague grading criteria, missing descriptions, or implicit assumptions. ';
-$string['action_f07'] .= 'Ensure that all graded activities include clear descriptions and, where applicable, grading criteria or rubrics. ';
-$string['action_f07'] .= 'Learners should understand how their work will be evaluated before submitting it. ';
-$string['action_f07'] .= 'Clarify workload expectations. ';
-$string['action_f07'] .= 'Indicate approximate time requirements and submission formats to help learners plan their work and reduce anxiety. ';
-$string['action_f07'] .= 'Revisit activities from a learner perspective. ';
-$string['action_f07'] .= 'If expectations are obvious only to experienced instructors, they are likely unclear to students.';
+$string['action_f07'] = 'Unclear Expectations arise when learners are unsure what is required to succeed. This includes vague grading criteria, missing descriptions, or implicit assumptions. Ensure that all graded activities include clear descriptions and, where applicable, grading criteria or rubrics. Learners should understand how their work will be evaluated before submitting it. Clarify workload expectations. Indicate approximate time requirements and submission formats to help learners plan their work and reduce anxiety. Revisit activities from a learner perspective. If expectations are obvious only to experienced instructors, they are likely unclear to students.';
 
-$string['action_f08']  = 'Structural Disorientation occurs when learners cannot form a clear mental model of the course structure. ';
-$string['action_f08'] .= 'This often results from inconsistent organization or frequent structural changes. ';
-$string['action_f08'] .= 'Maintain a stable course structure throughout the term. ';
-$string['action_f08'] .= 'Avoid moving activities or renaming sections once learners have started working with them. ';
-$string['action_f08'] .= 'Use recurring patterns. ';
-$string['action_f08'] .= 'For example, each section could follow the same internal order: overview, materials, activities, assessment. ';
-$string['action_f08'] .= 'Provide structural signals. ';
-$string['action_f08'] .= 'Section summaries, visual separators, and consistent icon usage help learners recognize structure and reduce confusion.';
+$string['action_f08'] = 'Structural Disorientation occurs when learners cannot form a clear mental model of the course structure. This often results from inconsistent organization or frequent structural changes. Maintain a stable course structure throughout the term. Avoid moving activities or renaming sections once learners have started working with them. Use recurring patterns. For example, each section could follow the same internal order: overview, materials, activities, assessment. Provide structural signals. Section summaries, visual separators, and consistent icon usage help learners recognize structure and reduce confusion.';
 
-$string['action_f09']  = 'Resource Overload is caused by an excessive number of files, links, and external resources. ';
-$string['action_f09'] .= 'Learners may struggle to identify what is essential. ';
-$string['action_f09'] .= 'Audit your resources regularly. ';
-$string['action_f09'] .= 'Remove outdated or redundant materials and clearly mark optional resources as such. ';
-$string['action_f09'] .= 'Prioritize quality over quantity. ';
-$string['action_f09'] .= 'A small number of well-chosen resources is often more effective than a comprehensive collection. ';
-$string['action_f09'] .= 'Provide guidance. ';
-$string['action_f09'] .= 'Short annotations explaining why a resource is relevant and when it should be used help learners make informed choices.';
+$string['action_f09'] = 'Resource Overload is caused by an excessive number of files, links, and external resources. Learners may struggle to identify what is essential. Audit your resources regularly. Remove outdated or redundant materials and clearly mark optional resources as such. Prioritize quality over quantity. A small number of well-chosen resources is often more effective than a comprehensive collection. Provide guidance. Short annotations explaining why a resource is relevant and when it should be used help learners make informed choices.';
 
-$string['action_f10']  = 'Hidden Dependencies occur when activities rely on prior knowledge, tools, or content that are not explicitly stated. ';
-$string['action_f10'] .= 'Learners may fail tasks without understanding why. ';
-$string['action_f10'] .= 'Identify prerequisites for each activity. ';
-$string['action_f10'] .= 'If prior knowledge or completion of earlier tasks is required, state this explicitly. ';
-$string['action_f10'] .= 'Use conditional availability carefully. ';
-$string['action_f10'] .= 'Make dependencies visible and explain their purpose rather than letting learners discover them through trial and error. ';
-$string['action_f10'] .= 'Where possible, provide refreshers or links to prerequisite materials. ';
-$string['action_f10'] .= 'This supports learners with diverse backgrounds.';
+$string['action_f10'] = 'Hidden Dependencies occur when activities rely on prior knowledge, tools, or content that are not explicitly stated. Learners may fail tasks without understanding why. Identify prerequisites for each activity. If prior knowledge or completion of earlier tasks is required, state this explicitly. Use conditional availability carefully. Make dependencies visible and explain their purpose rather than letting learners discover them through trial and error. Where possible, provide refreshers or links to prerequisite materials. This supports learners with diverse backgrounds.';
 
-$string['action_f11']  = 'Frustrated Scrolling results from long pages with little structure, forcing learners to scroll excessively to find relevant information. ';
-$string['action_f11'] .= 'Break long pages into smaller units. ';
-$string['action_f11'] .= 'Use headings, accordions, or separate pages to improve readability. ';
-$string['action_f11'] .= 'Place the most important information at the top. ';
-$string['action_f11'] .= 'Learners should not need to scroll extensively to understand what to do next. ';
-$string['action_f11'] .= 'Use visual structure deliberately. ';
-$string['action_f11'] .= 'White space, headings, and short paragraphs significantly improve orientation.';
+$string['action_f11'] = 'Frustrated Scrolling results from long pages with little structure, forcing learners to scroll excessively to find relevant information. Break long pages into smaller units. Use headings, accordions, or separate pages to improve readability. Place the most important information at the top. Learners should not need to scroll extensively to understand what to do next. Use visual structure deliberately. White space, headings, and short paragraphs significantly improve orientation.';
 
-$string['action_f12']  = 'Deadline Panic occurs when many deadlines cluster closely together or are poorly communicated. ';
-$string['action_f12'] .= 'Learners experience stress and may miss submissions. ';
-$string['action_f12'] .= 'Review your course calendar for deadline clustering. ';
-$string['action_f12'] .= 'Spread deadlines more evenly across weeks where possible. ';
-$string['action_f12'] .= 'Communicate deadlines clearly and early. ';
-$string['action_f12'] .= 'Use consistent naming and ensure deadlines are visible both in activity descriptions and in the course calendar. ';
-$string['action_f12'] .= 'Consider flexibility. ';
-$string['action_f12'] .= 'Where appropriate, allow grace periods or multiple attempts to reduce unnecessary stress without compromising academic standards.';
+$string['action_f12'] = 'Deadline Panic occurs when many deadlines cluster closely together or are poorly communicated. Learners experience stress and may miss submissions. Review your course calendar for deadline clustering. Spread deadlines more evenly across weeks where possible. Communicate deadlines clearly and early. Use consistent naming and ensure deadlines are visible both in activity descriptions and in the course calendar. Consider flexibility. Where appropriate, allow grace periods or multiple attempts to reduce unnecessary stress without compromising academic standards.';

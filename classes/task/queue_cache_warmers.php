@@ -1,31 +1,54 @@
 <?php
+// This file is part of Moodle - https://moodle.org/
+//
+// Moodle is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Moodle is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Moodle.  If not, see <https://www.gnu.org/licenses/>.
+
 /**
- * Copyright (c) 2026 Jan Svoboda <jan.svoboda@bittra.de>
- * Project: Aeternum Modulae – https://aeternummodulae.com
+ * Friction Radar report.
  *
- * This file is part of the Aeternum Modulae Moodle plugin "Friction Radar".
- *
- * Licensed under the GNU General Public License v3.0 or later.
- * https://www.gnu.org/licenses/gpl-3.0.html
+ * @package    coursereport_frictionradar
+ * @copyright  2026 Jan Svoboda <jan.svoboda@bittra.de>
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
 namespace coursereport_frictionradar\task;
 
-use core\task\adhoc_task;
-use coursereport_frictionradar\task\warm_course_cache;
 
-defined('MOODLE_INTERNAL') || die();
-
-class queue_cache_warmers extends \core\task\scheduled_task {
+/**
+ * Scheduled task that queues cache warming jobs.
+ *
+ * @package    coursereport_frictionradar
+ */
+class queue_cache_warmers extends \core\task\scheduled_task
+{
+    /**
+     * Get the task name for display.
+     *
+     * @return string
+     */
     public function get_name(): string {
         return get_string('task_warm_cache', 'coursereport_frictionradar');
     }
 
+    /**
+     * Execute the scheduled task.
+     */
     public function execute(): void {
         global $DB;
 
         $now = time();
-        $since = $now - (14 * 86400);
+        $since = $now - (14 * DAYSECS);
         $courses = $DB->get_records_sql(
             "SELECT c.id, COALESCE(MAX(l.timecreated), 0) AS lastactivity
                FROM {course} c
@@ -55,6 +78,13 @@ class queue_cache_warmers extends \core\task\scheduled_task {
         }
     }
 
+    /**
+     * Get a randomized timestamp between the provided hours.
+     *
+     * @param int $starthour Start hour (0-23).
+     * @param int $endhour End hour (0-23).
+     * @return int Unix timestamp.
+     */
     private static function random_nightly_timestamp(int $starthour, int $endhour): int {
         // Use today's date; if already past endhour, schedule for next day.
         $now = time();
@@ -62,7 +92,7 @@ class queue_cache_warmers extends \core\task\scheduled_task {
         $start = $base + ($starthour * 3600);
         $end = $base + ($endhour * 3600);
         if ($now > $end) {
-            $base = strtotime(date('Y-m-d', $now + 86400) . ' 00:00:00');
+            $base = strtotime(date('Y-m-d', $now + DAYSECS) . ' 00:00:00');
             $start = $base + ($starthour * 3600);
             $end = $base + ($endhour * 3600);
         }

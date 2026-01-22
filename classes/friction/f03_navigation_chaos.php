@@ -1,17 +1,29 @@
 <?php
+// This file is part of Moodle - https://moodle.org/
+//
+// Moodle is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Moodle is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Moodle.  If not, see <https://www.gnu.org/licenses/>.
+
 /**
- * Copyright (c) 2026 Jan Svoboda <jan.svoboda@bittra.de>
- * Project: Aeternum Modulae – https://aeternummodulae.com
+ * Friction Radar report.
  *
- * This file is part of the Aeternum Modulae Moodle plugin "Friction Radar".
- *
- * Licensed under the GNU General Public License v3.0 or later.
- * https://www.gnu.org/licenses/gpl-3.0.html
+ * @package    coursereport_frictionradar
+ * @copyright  2026 Jan Svoboda <jan.svoboda@bittra.de>
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
 namespace coursereport_frictionradar\friction;
 
-defined('MOODLE_INTERNAL') || die();
 
 /**
  * F03 – Navigation Chaos / Navigationschaos
@@ -23,40 +35,60 @@ defined('MOODLE_INTERNAL') || die();
  *
  * score = clamp( round( 100 * (0.4*A + 0.35*B + 0.25*C) ), 0, 100 )
  */
-class f03_navigation_chaos extends abstract_friction {
-
+class f03_navigation_chaos extends abstract_friction
+{
+    /**
+     * Return the friction key.
+     *
+     * @return string
+     */
     public function get_key(): string {
         return 'f03';
     }
 
+    /**
+     * Calculate score and breakdown for a course.
+     *
+     * @param int $courseid Course id.
+     * @param int $windowdays Window size in days.
+     * @return array Calculation result.
+     */
     public function calculate(int $courseid, int $windowdays): array {
         $stats = $this->course_structure_stats($courseid);
 
-        $A = $this->structural_fragmentation($stats);     // 0..1
-        $B = $this->section_load_imbalance($stats);       // 0..1
-        $C = $this->module_type_entropy($stats);          // 0..1
+        $a = $this->structural_fragmentation($stats); // Normalized 0..1.
+        $b = $this->section_load_imbalance($stats); // Normalized 0..1.
+        $c = $this->module_type_entropy($stats); // Normalized 0..1.
 
         $score = $this->clamp(
             (int)round(
-                100 * (0.4 * $A + 0.35 * $B + 0.25 * $C)
+                100 * (0.4 * $a + 0.35 * $b + 0.25 * $c)
             )
         );
 
         return [
             'score' => $score,
             'breakdown' => [
-                'formula' =>
-                    "score = clamp( round( 100 * (0.4*A + 0.35*B + 0.25*C) ), 0, 100 )\n\n" .
-                    "A = structural fragmentation\n" .
-                    "B = section load imbalance\n" .
-                    "C = module-type entropy",
+                'formula' => $this->str('formula_f03'),
                 'inputs' => [
-                    ['key' => 'sections_nonempty', 'label' => 'Non-empty sections (visible)', 'value' => (int)$stats['nonemptysections']],
-                    ['key' => 'modules_total',     'label' => 'Visible modules (total)',      'value' => (int)$stats['totalmodules']],
-                    ['key' => 'types_unique',      'label' => 'Unique module types',          'value' => (int)$stats['uniquetypes']],
-                    ['key' => 'A', 'label' => 'Structural fragmentation (0..1)', 'value' => round($A, 3)],
-                    ['key' => 'B', 'label' => 'Section load imbalance (0..1)',   'value' => round($B, 3)],
-                    ['key' => 'C', 'label' => 'Module-type entropy (0..1)',      'value' => round($C, 3)],
+                    [
+                        'key' => 'sections_nonempty',
+                        'label' => $this->str('input_f03_sections_nonempty'),
+                        'value' => (int)$stats['nonemptysections'],
+                    ],
+                    [
+                        'key' => 'modules_total',
+                        'label' => $this->str('input_f03_modules_total'),
+                        'value' => (int)$stats['totalmodules'],
+                    ],
+                    [
+                        'key' => 'types_unique',
+                        'label' => $this->str('input_f03_types_unique'),
+                        'value' => (int)$stats['uniquetypes'],
+                    ],
+                    ['key' => 'A', 'label' => $this->str('input_f03_a'), 'value' => round($a, 3)],
+                    ['key' => 'B', 'label' => $this->str('input_f03_b'), 'value' => round($b, 3)],
+                    ['key' => 'C', 'label' => $this->str('input_f03_c'), 'value' => round($c, 3)],
                 ],
                 'notes' => $this->str('notes_f03', $windowdays),
             ],
@@ -94,8 +126,8 @@ class f03_navigation_chaos extends abstract_friction {
         $rows = $DB->get_records_sql($sql, ['courseid' => $courseid]);
 
         // Build per-section module counts and type distribution.
-        $persection = [];   // sectionid => module count
-        $types = [];        // modname => count
+        $persection = []; // Section ID to module count.
+        $types = []; // Module name to count.
         $totalmodules = 0;
 
         foreach ($rows as $r) {
@@ -133,10 +165,10 @@ class f03_navigation_chaos extends abstract_friction {
 
         return [
             'nonemptysections' => $nonemptysections,
-            'totalmodules'     => $totalmodules,
-            'uniquetypes'      => $uniquetypes,
-            'sectionloads'     => $sectionloads, // list of counts per non-empty section
-            'types'            => $types,        // map
+            'totalmodules' => $totalmodules,
+            'uniquetypes' => $uniquetypes,
+            'sectionloads' => $sectionloads, // List of counts per non-empty section.
+            'types' => $types, // Map of module name to count.
         ];
     }
 
@@ -184,7 +216,7 @@ class f03_navigation_chaos extends abstract_friction {
         $var /= $n;
         $std = sqrt($var);
 
-        $cv = $std / $mean; // 0.. potentially >1
+        $cv = $std / $mean; // Normalized 0.. potentially >1.
         $norm = $cv / 1.0;
 
         return min(1.0, max(0.0, $norm));

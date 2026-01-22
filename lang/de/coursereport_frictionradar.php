@@ -1,12 +1,25 @@
 <?php
+// This file is part of Moodle - https://moodle.org/
+//
+// Moodle is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Moodle is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Moodle.  If not, see <https://www.gnu.org/licenses/>.
+
 /**
- * Copyright (c) 2026 Jan Svoboda <jan.svoboda@bittra.de>
- * Project: Aeternum Modulae – https://aeternummodulae.com
+ * Friction Radar report.
  *
- * This file is part of the Aeternum Modulae Moodle plugin "Friction Radar".
- *
- * Licensed under the GNU General Public License v3.0 or later.
- * https://www.gnu.org/licenses/gpl-3.0.html
+ * @package    coursereport_frictionradar
+ * @copyright  2026 Jan Svoboda <jan.svoboda@bittra.de>
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
 defined('MOODLE_INTERNAL') || die();
@@ -17,6 +30,7 @@ $string['navitem'] = 'Friction Radar';
 $string['page_title'] = 'Lernreibung im Kurs';
 $string['page_subtitle'] = 'Aggregierte kursbezogene Signale (rollierendes 6-Wochen-Fenster).';
 $string['overall_score'] = 'Gesamtwert der Lernreibung';
+$string['friction_clock_aria'] = 'Friction-Uhr';
 $string['generated_at'] = 'Erzeugt';
 $string['window'] = 'Fenster';
 $string['days'] = 'Tage';
@@ -67,6 +81,87 @@ $string['notes_f10'] = 'Berechnet über die letzten {$a} Tage. A steigt, wenn vi
 $string['notes_f11'] = 'Berechnet über die letzten {$a} Tage. A steigt mit zunehmender Kurslänge und -dichte. B steigt bei sehr großen Abschnitten, die intensives Scrollen erzwingen. C steigt, wenn wenige Orientierungselemente (Labels) zur Strukturierung genutzt werden.';
 $string['notes_f12'] = 'Berechnet über die letzten {$a} Tage. A steigt bei hoher Dichte von Abgabeterminen. B steigt, wenn mehrere Deadlines auf denselben Tag fallen. C steigt, wenn Abgaben sehr kurzfristig gesetzt werden und wenig Vorbereitungszeit bleibt.';
 
+$string['formula_f01'] = 'score = clamp( round( 100 * (0.5*A + 0.3*B + 0.2*C) ), 0, 100 )';
+$string['formula_f02'] = 'score = clamp( round( 100 * (0.4*A + 0.35*B + 0.25*C) ), 0, 100 ); A = Aktivitätswechsel-Dichte; B = Unterstützungslücke; C = Wiederholungs-/Verzögerungssignal';
+$string['formula_f03'] = 'score = clamp( round( 100 * (0.4*A + 0.35*B + 0.25*C) ), 0, 100 ); A = strukturelle Fragmentierung; B = Abschnittslast-Ungleichgewicht; C = Modultyp-Entropie';
+$string['formula_f04'] = 'score = clamp( round( 100 * (0.45*A + 0.35*B + 0.20*C) ), 0, 100 ); A = verpflichtende Aktivitäten in der Einstiegsphase; B = frühe Arbeitslast (Proxy); C = Inhaltskomplexität der Einstiegsphase';
+$string['formula_f05'] = 'score = clamp( round( 100 * (0.5*A + 0.3*B + 0.2*C) ), 0, 100 ); A = Anteil passiver Betrachtender; B = geringe Interaktionstiefe (invertierter Ø substanzielle Aktionen); C = Engagement-Lücke (Betrachtende vs. Engagierte)';
+$string['formula_f06'] = 'score = clamp( round( 100 * (0.45*A + 0.35*B + 0.20*C) ), 0, 100 ); A = Zombie-Anteil (Quizze mit 0 Versuchen im Zeitraum); B = Abbruch-Anteil (1 - abgeschlossen/gesamt im Zeitraum); C = geringe Teilnahme (Quizze mit < {$a} Lernenden im Zeitraum)';
+$string['formula_f07'] = 'score = clamp( round( 100 * (0.45*A + 0.35*B + 0.20*C) ), 0, 100 ); A = verpflichtende Aktivitäten ohne Fälligkeitsdatum; B = bewertete Aktivitäten ohne Beschreibung; C = fehlender zentraler Erwartungsanker';
+$string['formula_f08'] = 'score = clamp( round( 100 * (0.4*A + 0.35*B + 0.25*C) ), 0, 100 ); A = strukturelle Überlagerung; B = redundante Struktursignale; C = strukturelle Inkonsistenz';
+$string['formula_f09'] = 'score = clamp( round( 100 * (0.45*A + 0.35*B + 0.20*C) ), 0, 100 ); A = Ressourcendichte; B = Ressourcenanteil; C = Ressourcen-Redundanz (Proxy)';
+$string['formula_f10'] = 'score = clamp( round( 100 * (0.4*A + 0.35*B + 0.25*C) ), 0, 100 ); A = Aktivitäten mit Zugriffsbeschränkungen; B = Einschränkungen ohne sichtbare Erklärung; C = verkettete Abhängigkeitsbedingungen';
+$string['formula_f10_empty'] = 'Keine Zugriffsbeschränkungen erkannt.';
+$string['formula_f11'] = 'score = clamp( round( 100 * (0.4*A + 0.35*B + 0.25*C) ), 0, 100 ); A = Gesamtlänge des Kurses; B = Abschnittsüberlastung; C = fehlende Navigationsanker';
+$string['formula_f12'] = 'score = clamp( round( 100 * (0.4*A + 0.35*B + 0.25*C) ), 0, 100 ); A = Deadline-Dichte; B = Deadline-Clusterung; C = kurzfristige Deadlines';
+$string['formula_f12_empty'] = 'Keine Deadlines erkannt.';
+
+$string['input_f01_a'] = 'Parallele verpflichtende Aktivitäten (Ø pro Abschnitt)';
+$string['input_f01_b'] = 'Dichte verpflichtender Ressourcen';
+$string['input_f01_c'] = 'Durchschnittliche textuelle Komplexität (normalisiert)';
+$string['input_f02_a'] = 'Aktivitätswechsel-Dichte (0..1)';
+$string['input_f02_b'] = 'Unterstützungslücke (0..1)';
+$string['input_f02_c'] = 'Wiederholungs-/Verzögerungssignal (0..1)';
+$string['input_f03_sections_nonempty'] = 'Nicht-leere Abschnitte (sichtbar)';
+$string['input_f03_modules_total'] = 'Sichtbare Module (gesamt)';
+$string['input_f03_types_unique'] = 'Einzigartige Modultypen';
+$string['input_f03_a'] = 'Strukturelle Fragmentierung (0..1)';
+$string['input_f03_b'] = 'Abschnittslast-Ungleichgewicht (0..1)';
+$string['input_f03_c'] = 'Modultyp-Entropie (0..1)';
+$string['input_f04_a'] = 'Verpflichtende Aktivitäten (normalisiert)';
+$string['input_f04_b'] = 'Früher Arbeitslast-Proxy (normalisiert)';
+$string['input_f04_c'] = 'Komplexität der Einstiegsinhalte (normalisiert)';
+$string['input_f04_sections'] = 'Berücksichtigte Einstiegsabschnitte';
+$string['input_f05_min_views'] = 'Betrachtenden-Schwelle (min. Aufrufe)';
+$string['input_f05_viewers'] = 'Betrachtende (>= min. Aufrufe)';
+$string['input_f05_passive'] = 'Passive Betrachtende (0 substanzielle Aktionen)';
+$string['input_f05_engaged'] = 'Engagierte Nutzer (>=1 substanzielle Aktion)';
+$string['input_f05_substantive_total'] = 'Summe substantieller Aktionen';
+$string['input_f05_avg_sub'] = 'Ø substanzielle Aktionen pro Betrachter';
+$string['input_f05_a'] = 'Anteil passiver Betrachtender (0..1)';
+$string['input_f05_b'] = 'Geringe Interaktionstiefe (0..1)';
+$string['input_f05_c'] = 'Engagement-Lücke (0..1)';
+$string['input_f06_quizzes_total'] = 'Sichtbare Quizze (gesamt)';
+$string['input_f06_zombies'] = 'Quizze mit 0 Versuchen (Zeitraum)';
+$string['input_f06_attempts_total'] = 'Versuche (Zeitraum, Studierende)';
+$string['input_f06_attempts_finished'] = 'Abgeschlossene Versuche (Zeitraum)';
+$string['input_f06_low_participation'] = 'Quizze mit geringer Teilnahme';
+$string['input_f06_a'] = 'Zombie-Anteil (0..1)';
+$string['input_f06_b'] = 'Abbruch-Anteil (0..1)';
+$string['input_f06_c'] = 'Geringe Teilnahme (0..1)';
+$string['input_f07_a'] = 'Verpflichtende Aktivitäten ohne Fälligkeitsdatum (Anteil)';
+$string['input_f07_b'] = 'Bewertete Aktivitäten ohne Beschreibung (Anteil)';
+$string['input_f07_c'] = 'Fehlender Erwartungsanker (0 oder 1)';
+$string['input_f08_sections'] = 'Nicht-leere Abschnitte';
+$string['input_f08_modules'] = 'Sichtbare Module';
+$string['input_f08_structure_modules'] = 'Struktur-Module';
+$string['input_f08_a'] = 'Strukturelle Überlagerung (0..1)';
+$string['input_f08_b'] = 'Redundante Struktursignale (0..1)';
+$string['input_f08_c'] = 'Strukturelle Inkonsistenz (0..1)';
+$string['input_f09_sections'] = 'Nicht-leere Abschnitte';
+$string['input_f09_modules_total'] = 'Sichtbare Module (gesamt)';
+$string['input_f09_resources_total'] = 'Ressourcen (gesamt)';
+$string['input_f09_resources_file'] = 'Datei-Ressourcen (resource)';
+$string['input_f09_a'] = 'Ressourcendichte (0..1)';
+$string['input_f09_b'] = 'Ressourcenanteil (0..1)';
+$string['input_f09_c'] = 'Redundanz-Proxy (0..1)';
+$string['input_f10_total'] = 'Sichtbare Aktivitäten';
+$string['input_f10_restricted'] = 'Aktivitäten mit Einschränkungen';
+$string['input_f10_a'] = 'Einschränkungsanteil (0..1)';
+$string['input_f10_b'] = 'Einschränkungen ohne Erklärung (0..1)';
+$string['input_f10_c'] = 'Verkettete Abhängigkeiten (0..1)';
+$string['input_f11_sections'] = 'Nicht-leere Abschnitte';
+$string['input_f11_modules'] = 'Sichtbare Module';
+$string['input_f11_avg_section_size'] = 'Ø Module pro Abschnitt';
+$string['input_f11_labels'] = 'Label-Module';
+$string['input_f11_a'] = 'Kurslänge (0..1)';
+$string['input_f11_b'] = 'Abschnittsüberlastung (0..1)';
+$string['input_f11_c'] = 'Fehlende Anker (0..1)';
+$string['input_f12_deadlines'] = 'Berücksichtigte Deadlines';
+$string['input_f12_a'] = 'Deadline-Dichte (0..1)';
+$string['input_f12_b'] = 'Deadline-Clusterung (0..1)';
+$string['input_f12_c'] = 'Kurzfristigkeitsanteil (0..1)';
+
 $string['privacy:metadata'] = 'Friction Radar speichert nur aggregierte kursbezogene Scores im Cache und keine personenbezogenen Daten.';
 
 $string['ui_score'] = 'Score';
@@ -76,118 +171,26 @@ $string['ui_param'] = 'Parameter';
 $string['ui_value'] = 'Wert';
 $string['ui_notes'] = 'Hinweise';
 
-$string['action_f01']  = 'Ein hoher Wert für Kognitive Überlastung zeigt an, dass Lernende gleichzeitig mit zu vielen verpflichtenden Aktivitäten, dichten Ressourcen oder komplexen Materialien konfrontiert werden. ';
-$string['action_f01'] .= 'Um diese Reibung zu reduzieren, sollten Inhalte bewusst reduziert und Anforderungen sinnvoll sequenziert werden. ';
-$string['action_f01'] .= 'Überprüfen Sie zunächst die ersten Kursabschnitte und identifizieren Sie, welche Aktivitäten wirklich essenziell sind. ';
-$string['action_f01'] .= 'Wenn mehrere Aufgaben denselben Zweck erfüllen, können sie zusammengeführt oder teilweise optional gestaltet werden. ';
-$string['action_f01'] .= 'Lernende profitieren deutlich mehr von wenigen klar erklärten Aktivitäten als von langen Pflichtlisten. ';
-$string['action_f01'] .= 'Reduzieren Sie, wo möglich, die textliche Komplexität. Lange Beschreibungen, verschachtelte Anweisungen und abstrakte Formulierungen erhöhen die kognitive Belastung. ';
-$string['action_f01'] .= 'Gliedern Sie Texte in kurze Absätze, verwenden Sie Überschriften und formulieren Sie Erwartungen klar und einfach. ';
-$string['action_f01'] .= 'Ergänzen Sie komplexe Inhalte durch Visualisierungen, Beispiele oder kurze Videos. ';
-$string['action_f01'] .= 'Verteilen Sie Anforderungen zeitlich. Vermeiden Sie es, viele verpflichtende Aufgaben in derselben Woche oder im selben Abschnitt zu platzieren. ';
-$string['action_f01'] .= 'Ein klarer Aufbau von einfachen zu komplexen Anforderungen hilft Lernenden, Sicherheit aufzubauen, bevor höhere Anforderungen gestellt werden.';
+$string['action_f01'] = 'Ein hoher Wert für Kognitive Überlastung zeigt an, dass Lernende gleichzeitig mit zu vielen verpflichtenden Aktivitäten, dichten Ressourcen oder komplexen Materialien konfrontiert werden. Um diese Reibung zu reduzieren, sollten Inhalte bewusst reduziert und Anforderungen sinnvoll sequenziert werden. Überprüfen Sie zunächst die ersten Kursabschnitte und identifizieren Sie, welche Aktivitäten wirklich essenziell sind. Wenn mehrere Aufgaben denselben Zweck erfüllen, können sie zusammengeführt oder teilweise optional gestaltet werden. Lernende profitieren deutlich mehr von wenigen klar erklärten Aktivitäten als von langen Pflichtlisten. Reduzieren Sie, wo möglich, die textliche Komplexität. Lange Beschreibungen, verschachtelte Anweisungen und abstrakte Formulierungen erhöhen die kognitive Belastung. Gliedern Sie Texte in kurze Absätze, verwenden Sie Überschriften und formulieren Sie Erwartungen klar und einfach. Ergänzen Sie komplexe Inhalte durch Visualisierungen, Beispiele oder kurze Videos. Verteilen Sie Anforderungen zeitlich. Vermeiden Sie es, viele verpflichtende Aufgaben in derselben Woche oder im selben Abschnitt zu platzieren. Ein klarer Aufbau von einfachen zu komplexen Anforderungen hilft Lernenden, Sicherheit aufzubauen, bevor höhere Anforderungen gestellt werden.';
 
-$string['action_f02']  = 'Didaktische Engstellen entstehen, wenn Lernaktivitäten schlecht auf Lernziele abgestimmt sind oder Anweisungen unklar bzw. missverständlich formuliert sind. ';
-$string['action_f02'] .= 'Lernende bearbeiten Aufgaben dann häufig, ohne deren Sinn zu verstehen, was Frustration und Demotivation begünstigt. ';
-$string['action_f02'] .= 'Prüfen Sie, ob jede Aktivität klar einem Lernziel zugeordnet ist. ';
-$string['action_f02'] .= 'Formulieren Sie explizit, warum eine Aufgabe existiert und welchen Lernertrag sie haben soll. ';
-$string['action_f02'] .= 'Trägt eine Aktivität nicht eindeutig zu einem Lernziel bei, sollte sie überarbeitet oder entfernt werden. ';
-$string['action_f02'] .= 'Verbessern Sie Aufgabenbeschreibungen, indem Sie Eingaben, erwartete Ergebnisse und Bewertungskriterien klar benennen. ';
-$string['action_f02'] .= 'Vermeiden Sie implizite Annahmen über Vorwissen. ';
-$string['action_f02'] .= 'Wo sinnvoll, helfen kurze Beispiele für gelungene Abgaben oder typische Fehler. ';
-$string['action_f02'] .= 'Achten Sie auf Konsistenz. Einheitliche Formate, Begriffe und Strukturen erleichtern die Orientierung. ';
-$string['action_f02'] .= 'Wenn Lernende Muster erkennen, können sie sich auf das Lernen konzentrieren statt auf das Entschlüsseln von Aufgaben.';
+$string['action_f02'] = 'Didaktische Engstellen entstehen, wenn Lernaktivitäten schlecht auf Lernziele abgestimmt sind oder Anweisungen unklar bzw. missverständlich formuliert sind. Lernende bearbeiten Aufgaben dann häufig, ohne deren Sinn zu verstehen, was Frustration und Demotivation begünstigt. Prüfen Sie, ob jede Aktivität klar einem Lernziel zugeordnet ist. Formulieren Sie explizit, warum eine Aufgabe existiert und welchen Lernertrag sie haben soll. Trägt eine Aktivität nicht eindeutig zu einem Lernziel bei, sollte sie überarbeitet oder entfernt werden. Verbessern Sie Aufgabenbeschreibungen, indem Sie Eingaben, erwartete Ergebnisse und Bewertungskriterien klar benennen. Vermeiden Sie implizite Annahmen über Vorwissen. Wo sinnvoll, helfen kurze Beispiele für gelungene Abgaben oder typische Fehler. Achten Sie auf Konsistenz. Einheitliche Formate, Begriffe und Strukturen erleichtern die Orientierung. Wenn Lernende Muster erkennen, können sie sich auf das Lernen konzentrieren statt auf das Entschlüsseln von Aufgaben.';
 
-$string['action_f03']  = 'Navigationschaos entsteht, wenn Lernende Materialien, Aktivitäten oder Orientierungspunkte nur schwer finden. ';
-$string['action_f03'] .= 'Ursache sind häufig inkonsistente Strukturen oder eine zu tiefe Verschachtelung des Kursaufbaus. ';
-$string['action_f03'] .= 'Schaffen Sie eine klare und wiederkehrende Struktur. ';
-$string['action_f03'] .= 'Verwenden Sie ein konsistentes Benennungsschema für Abschnitte und Aktivitäten. ';
-$string['action_f03'] .= 'Beispielsweise kann jeder Themenblock mit einer Übersicht beginnen, gefolgt von Materialien und anschließend Aktivitäten. ';
-$string['action_f03'] .= 'Vermeiden Sie unnötige Verschachtelungen. Tiefe Ordnerstrukturen und viele Verlinkungen erhöhen das Risiko, dass Lernende die Orientierung verlieren. ';
-$string['action_f03'] .= 'Wenn Inhalte gruppiert werden müssen, erklären Sie den Zweck und den nächsten Schritt. ';
-$string['action_f03'] .= 'Nutzen Sie Beschriftungen und Abschnittsbeschreibungen zur Orientierung. ';
-$string['action_f03'] .= 'Schon ein kurzer erklärender Satz kann den Navigationsaufwand erheblich reduzieren.';
+$string['action_f03'] = 'Navigationschaos entsteht, wenn Lernende Materialien, Aktivitäten oder Orientierungspunkte nur schwer finden. Ursache sind häufig inkonsistente Strukturen oder eine zu tiefe Verschachtelung des Kursaufbaus. Schaffen Sie eine klare und wiederkehrende Struktur. Verwenden Sie ein konsistentes Benennungsschema für Abschnitte und Aktivitäten. Beispielsweise kann jeder Themenblock mit einer Übersicht beginnen, gefolgt von Materialien und anschließend Aktivitäten. Vermeiden Sie unnötige Verschachtelungen. Tiefe Ordnerstrukturen und viele Verlinkungen erhöhen das Risiko, dass Lernende die Orientierung verlieren. Wenn Inhalte gruppiert werden müssen, erklären Sie den Zweck und den nächsten Schritt. Nutzen Sie Beschriftungen und Abschnittsbeschreibungen zur Orientierung. Schon ein kurzer erklärender Satz kann den Navigationsaufwand erheblich reduzieren.';
 
-$string['action_f04']  = 'Ein überambitionierter Einstieg liegt vor, wenn Lernende unmittelbar nach Kursbeginn mit hohen Anforderungen konfrontiert werden. ';
-$string['action_f04'] .= 'Dies kann überfordern, bevor Routinen oder Sicherheit aufgebaut wurden. ';
-$string['action_f04'] .= 'Überprüfen Sie die ersten ein bis zwei Kursabschnitte. ';
-$string['action_f04'] .= 'Zählen Sie, wie viele verpflichtende Aktivitäten und Ressourcen dort verlangt werden. ';
-$string['action_f04'] .= 'Komplexe Aufgaben, Prüfungen oder umfangreiche Lektüren lassen sich oft sinnvoll in spätere Abschnitte verschieben. ';
-$string['action_f04'] .= 'Nutzen Sie die Anfangsphase zur Orientierung. ';
-$string['action_f04'] .= 'Führen Sie Kursziele, Struktur und Erwartungen schrittweise ein. ';
-$string['action_f04'] .= 'Niedrigschwellige Aktivitäten wie kurze Vorstellungsaufgaben, einfache Quizze oder geführte Rundgänge erleichtern den Einstieg. ';
-$string['action_f04'] .= 'Frühe Erfolgserlebnisse sind entscheidend. ';
-$string['action_f04'] .= 'Gestalten Sie erste Aufgaben so, dass sie von den meisten Lernenden erfolgreich bewältigt werden können.';
+$string['action_f04'] = 'Ein überambitionierter Einstieg liegt vor, wenn Lernende unmittelbar nach Kursbeginn mit hohen Anforderungen konfrontiert werden. Dies kann überfordern, bevor Routinen oder Sicherheit aufgebaut wurden. Überprüfen Sie die ersten ein bis zwei Kursabschnitte. Zählen Sie, wie viele verpflichtende Aktivitäten und Ressourcen dort verlangt werden. Komplexe Aufgaben, Prüfungen oder umfangreiche Lektüren lassen sich oft sinnvoll in spätere Abschnitte verschieben. Nutzen Sie die Anfangsphase zur Orientierung. Führen Sie Kursziele, Struktur und Erwartungen schrittweise ein. Niedrigschwellige Aktivitäten wie kurze Vorstellungsaufgaben, einfache Quizze oder geführte Rundgänge erleichtern den Einstieg. Frühe Erfolgserlebnisse sind entscheidend. Gestalten Sie erste Aufgaben so, dass sie von den meisten Lernenden erfolgreich bewältigt werden können.';
 
-$string['action_f05']  = 'Passive Anwesenheit beschreibt Situationen, in denen Lernende zur Teilnahme verpflichtet sind, ohne dass diese Teilnahme eine inhaltliche Wirkung entfaltet. ';
-$string['action_f05'] .= 'Aktivitäten dienen dann eher dem Nachweis von Aktivität als dem Lernen. ';
-$string['action_f05'] .= 'Prüfen Sie, ob Teilnahmeaktivitäten Reflexion, Austausch oder Wissenskonstruktion fördern. ';
-$string['action_f05'] .= 'Wenn Forenbeiträge oder Abgaben verpflichtend sind, sollten sie Rückmeldung erhalten oder sichtbar in den Kursverlauf eingebunden sein. ';
-$string['action_f05'] .= 'Reduzieren Sie künstliche Teilnahmepflichten. ';
-$string['action_f05'] .= 'Verpflichtende Beiträge ohne Interaktion führen häufig zu oberflächlichen Antworten. ';
-$string['action_f05'] .= 'Besser sind wenige, klar fokussierte Beiträge mit präzisen Fragestellungen. ';
-$string['action_f05'] .= 'Ersetzen Sie formale Teilnahme nach Möglichkeit durch authentische Aufgaben. ';
-$string['action_f05'] .= 'Gemeinsame Dokumente, Peer-Feedback oder optionale Diskussionsimpulse fördern oft echtes Engagement.';
+$string['action_f05'] = 'Passive Anwesenheit beschreibt Situationen, in denen Lernende zur Teilnahme verpflichtet sind, ohne dass diese Teilnahme eine inhaltliche Wirkung entfaltet. Aktivitäten dienen dann eher dem Nachweis von Aktivität als dem Lernen. Prüfen Sie, ob Teilnahmeaktivitäten Reflexion, Austausch oder Wissenskonstruktion fördern. Wenn Forenbeiträge oder Abgaben verpflichtend sind, sollten sie Rückmeldung erhalten oder sichtbar in den Kursverlauf eingebunden sein. Reduzieren Sie künstliche Teilnahmepflichten. Verpflichtende Beiträge ohne Interaktion führen häufig zu oberflächlichen Antworten. Besser sind wenige, klar fokussierte Beiträge mit präzisen Fragestellungen. Ersetzen Sie formale Teilnahme nach Möglichkeit durch authentische Aufgaben. Gemeinsame Dokumente, Peer-Feedback oder optionale Diskussionsimpulse fördern oft echtes Engagement.';
 
-$string['action_f06']  = 'Zombie-Quizze sind Tests, die über lange Zeit unverändert wiederverwendet werden und kaum diagnostischen oder lernförderlichen Wert haben. ';
-$string['action_f06'] .= 'Lernende bearbeiten sie häufig mechanisch und ohne Reflexion. ';
-$string['action_f06'] .= 'Überprüfen Sie Quizfragen regelmäßig auf Aktualität und Verständlichkeit. ';
-$string['action_f06'] .= 'Entfernen Sie veraltete oder missverständliche Fragen und stellen Sie sicher, dass sie zum aktuellen Kursinhalt passen. ';
-$string['action_f06'] .= 'Nutzen Sie Feedback gezielt. ';
-$string['action_f06'] .= 'Unmittelbares, erklärendes Feedback macht Quizze zu Lerninstrumenten. ';
-$string['action_f06'] .= 'Schon kurze Erläuterungen zu richtigen und falschen Antworten können den Lernerfolg deutlich steigern. ';
-$string['action_f06'] .= 'Variieren Sie die Quizformate. ';
-$string['action_f06'] .= 'Eine Mischung aus Übungsquizzen, formativen Tests und Selbstüberprüfungen erhöht die Motivation.';
+$string['action_f06'] = 'Zombie-Quizze sind Tests, die über lange Zeit unverändert wiederverwendet werden und kaum diagnostischen oder lernförderlichen Wert haben. Lernende bearbeiten sie häufig mechanisch und ohne Reflexion. Überprüfen Sie Quizfragen regelmäßig auf Aktualität und Verständlichkeit. Entfernen Sie veraltete oder missverständliche Fragen und stellen Sie sicher, dass sie zum aktuellen Kursinhalt passen. Nutzen Sie Feedback gezielt. Unmittelbares, erklärendes Feedback macht Quizze zu Lerninstrumenten. Schon kurze Erläuterungen zu richtigen und falschen Antworten können den Lernerfolg deutlich steigern. Variieren Sie die Quizformate. Eine Mischung aus Übungsquizzen, formativen Tests und Selbstüberprüfungen erhöht die Motivation.';
 
-$string['action_f07']  = 'Unklare Erwartungen entstehen, wenn Lernende nicht wissen, was für einen erfolgreichen Abschluss erforderlich ist. ';
-$string['action_f07'] .= 'Dies betrifft unklare Bewertungskriterien, fehlende Beschreibungen oder implizite Annahmen. ';
-$string['action_f07'] .= 'Stellen Sie sicher, dass alle bewerteten Aktivitäten klar beschrieben sind. ';
-$string['action_f07'] .= 'Bewertungskriterien oder Rubriken sollten, wenn möglich, vor der Abgabe sichtbar sein. ';
-$string['action_f07'] .= 'Machen Sie den Arbeitsaufwand transparent. ';
-$string['action_f07'] .= 'Geben Sie ungefähre Zeitbedarfe und Abgabeformate an, damit Lernende besser planen können. ';
-$string['action_f07'] .= 'Betrachten Sie Aufgaben aus der Perspektive der Lernenden. ';
-$string['action_f07'] .= 'Was für erfahrene Lehrende selbstverständlich ist, ist für Studierende oft nicht klar.';
+$string['action_f07'] = 'Unklare Erwartungen entstehen, wenn Lernende nicht wissen, was für einen erfolgreichen Abschluss erforderlich ist. Dies betrifft unklare Bewertungskriterien, fehlende Beschreibungen oder implizite Annahmen. Stellen Sie sicher, dass alle bewerteten Aktivitäten klar beschrieben sind. Bewertungskriterien oder Rubriken sollten, wenn möglich, vor der Abgabe sichtbar sein. Machen Sie den Arbeitsaufwand transparent. Geben Sie ungefähre Zeitbedarfe und Abgabeformate an, damit Lernende besser planen können. Betrachten Sie Aufgaben aus der Perspektive der Lernenden. Was für erfahrene Lehrende selbstverständlich ist, ist für Studierende oft nicht klar.';
 
-$string['action_f08']  = 'Strukturelle Desorientierung tritt auf, wenn Lernende kein klares mentales Modell des Kursaufbaus entwickeln können. ';
-$string['action_f08'] .= 'Häufige Ursachen sind inkonsistente Organisation oder häufige strukturelle Änderungen. ';
-$string['action_f08'] .= 'Halten Sie die Kursstruktur während des Semesters stabil. ';
-$string['action_f08'] .= 'Vermeiden Sie es, Aktivitäten zu verschieben oder Abschnitte umzubenennen, nachdem der Kurs begonnen hat. ';
-$string['action_f08'] .= 'Nutzen Sie wiederkehrende Muster. ';
-$string['action_f08'] .= 'Beispielsweise kann jeder Abschnitt gleich aufgebaut sein: Übersicht, Materialien, Aktivitäten, Bewertung. ';
-$string['action_f08'] .= 'Setzen Sie strukturierende Signale ein. ';
-$string['action_f08'] .= 'Abschnittsbeschreibungen, visuelle Trennungen und konsistente Icons erleichtern die Orientierung.';
+$string['action_f08'] = 'Strukturelle Desorientierung tritt auf, wenn Lernende kein klares mentales Modell des Kursaufbaus entwickeln können. Häufige Ursachen sind inkonsistente Organisation oder häufige strukturelle Änderungen. Halten Sie die Kursstruktur während des Semesters stabil. Vermeiden Sie es, Aktivitäten zu verschieben oder Abschnitte umzubenennen, nachdem der Kurs begonnen hat. Nutzen Sie wiederkehrende Muster. Beispielsweise kann jeder Abschnitt gleich aufgebaut sein: Übersicht, Materialien, Aktivitäten, Bewertung. Setzen Sie strukturierende Signale ein. Abschnittsbeschreibungen, visuelle Trennungen und konsistente Icons erleichtern die Orientierung.';
 
-$string['action_f09']  = 'Ressourcenüberlastung entsteht durch eine große Menge an Dateien, Links und externen Materialien. ';
-$string['action_f09'] .= 'Lernende haben dann Schwierigkeiten zu erkennen, was wirklich relevant ist. ';
-$string['action_f09'] .= 'Überprüfen Sie Ihre Materialien regelmäßig. ';
-$string['action_f09'] .= 'Entfernen Sie veraltete oder redundante Ressourcen und kennzeichnen Sie optionale Inhalte eindeutig. ';
-$string['action_f09'] .= 'Setzen Sie auf Qualität statt Quantität. ';
-$string['action_f09'] .= 'Wenige, gut ausgewählte Materialien sind oft wirksamer als eine vollständige Sammlung. ';
-$string['action_f09'] .= 'Geben Sie Orientierung. ';
-$string['action_f09'] .= 'Kurze Hinweise, warum eine Ressource wichtig ist und wann sie genutzt werden soll, helfen bei der Auswahl.';
+$string['action_f09'] = 'Ressourcenüberlastung entsteht durch eine große Menge an Dateien, Links und externen Materialien. Lernende haben dann Schwierigkeiten zu erkennen, was wirklich relevant ist. Überprüfen Sie Ihre Materialien regelmäßig. Entfernen Sie veraltete oder redundante Ressourcen und kennzeichnen Sie optionale Inhalte eindeutig. Setzen Sie auf Qualität statt Quantität. Wenige, gut ausgewählte Materialien sind oft wirksamer als eine vollständige Sammlung. Geben Sie Orientierung. Kurze Hinweise, warum eine Ressource wichtig ist und wann sie genutzt werden soll, helfen bei der Auswahl.';
 
-$string['action_f10']  = 'Versteckte Voraussetzungen liegen vor, wenn Aktivitäten auf Vorwissen, Werkzeuge oder Inhalte aufbauen, die nicht explizit genannt werden. ';
-$string['action_f10'] .= 'Lernende scheitern dann, ohne die Ursache zu verstehen. ';
-$string['action_f10'] .= 'Identifizieren Sie die Voraussetzungen jeder Aktivität. ';
-$string['action_f10'] .= 'Wenn Vorwissen oder der Abschluss vorheriger Aufgaben notwendig ist, sollte dies klar kommuniziert werden. ';
-$string['action_f10'] .= 'Nutzen Sie bedingte Verfügbarkeit bewusst. ';
-$string['action_f10'] .= 'Machen Sie Abhängigkeiten sichtbar und erklären Sie ihren Zweck, statt Lernende durch Ausprobieren scheitern zu lassen. ';
-$string['action_f10'] .= 'Stellen Sie bei Bedarf Auffrischungsmaterial oder Verweise bereit. ';
-$string['action_f10'] .= 'So unterstützen Sie Lernende mit unterschiedlichen Vorkenntnissen.';
+$string['action_f10'] = 'Versteckte Voraussetzungen liegen vor, wenn Aktivitäten auf Vorwissen, Werkzeuge oder Inhalte aufbauen, die nicht explizit genannt werden. Lernende scheitern dann, ohne die Ursache zu verstehen. Identifizieren Sie die Voraussetzungen jeder Aktivität. Wenn Vorwissen oder der Abschluss vorheriger Aufgaben notwendig ist, sollte dies klar kommuniziert werden. Nutzen Sie bedingte Verfügbarkeit bewusst. Machen Sie Abhängigkeiten sichtbar und erklären Sie ihren Zweck, statt Lernende durch Ausprobieren scheitern zu lassen. Stellen Sie bei Bedarf Auffrischungsmaterial oder Verweise bereit. So unterstützen Sie Lernende mit unterschiedlichen Vorkenntnissen.';
 
-$string['action_f11']  = 'Frustriertes Scrollen entsteht durch lange, unstrukturierte Seiten, auf denen relevante Informationen nur durch intensives Scrollen gefunden werden. ';
-$string['action_f11'] .= 'Zerteilen Sie lange Inhalte in kleinere Einheiten. ';
-$string['action_f11'] .= 'Überschriften, Akkordeons oder separate Seiten verbessern die Lesbarkeit deutlich. ';
-$string['action_f11'] .= 'Platzieren Sie zentrale Informationen am Seitenanfang. ';
-$string['action_f11'] .= 'Lernende sollten ohne langes Scrollen erkennen können, was als Nächstes zu tun ist. ';
-$string['action_f11'] .= 'Nutzen Sie visuelle Struktur gezielt. ';
-$string['action_f11'] .= 'Weißraum, Absätze und klare Gliederung erleichtern die Orientierung.';
+$string['action_f11'] = 'Frustriertes Scrollen entsteht durch lange, unstrukturierte Seiten, auf denen relevante Informationen nur durch intensives Scrollen gefunden werden. Zerteilen Sie lange Inhalte in kleinere Einheiten. Überschriften, Akkordeons oder separate Seiten verbessern die Lesbarkeit deutlich. Platzieren Sie zentrale Informationen am Seitenanfang. Lernende sollten ohne langes Scrollen erkennen können, was als Nächstes zu tun ist. Nutzen Sie visuelle Struktur gezielt. Weißraum, Absätze und klare Gliederung erleichtern die Orientierung.';
 
-$string['action_f12']  = 'Deadline-Panik entsteht, wenn viele Abgabefristen zeitlich dicht beieinanderliegen oder unklar kommuniziert werden. ';
-$string['action_f12'] .= 'Dies führt zu Stress und erhöht das Risiko verpasster Abgaben. ';
-$string['action_f12'] .= 'Überprüfen Sie den Kurskalender auf Häufungen von Deadlines. ';
-$string['action_f12'] .= 'Verteilen Sie Abgaben möglichst gleichmäßig über das Semester. ';
-$string['action_f12'] .= 'Kommunizieren Sie Fristen klar und frühzeitig. ';
-$string['action_f12'] .= 'Achten Sie auf konsistente Bezeichnungen und darauf, dass Deadlines sowohl in der Aktivität als auch im Kalender sichtbar sind. ';
-$string['action_f12'] .= 'Erwägen Sie flexible Regelungen. ';
-$string['action_f12'] .= 'Kulanzfristen oder mehrere Versuche können unnötigen Stress reduzieren, ohne akademische Standards zu gefährden.';
+$string['action_f12'] = 'Deadline-Panik entsteht, wenn viele Abgabefristen zeitlich dicht beieinanderliegen oder unklar kommuniziert werden. Dies führt zu Stress und erhöht das Risiko verpasster Abgaben. Überprüfen Sie den Kurskalender auf Häufungen von Deadlines. Verteilen Sie Abgaben möglichst gleichmäßig über das Semester. Kommunizieren Sie Fristen klar und frühzeitig. Achten Sie auf konsistente Bezeichnungen und darauf, dass Deadlines sowohl in der Aktivität als auch im Kalender sichtbar sind. Erwägen Sie flexible Regelungen. Kulanzfristen oder mehrere Versuche können unnötigen Stress reduzieren, ohne akademische Standards zu gefährden.';

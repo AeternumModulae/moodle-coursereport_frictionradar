@@ -1,29 +1,53 @@
 <?php
+// This file is part of Moodle - https://moodle.org/
+//
+// Moodle is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Moodle is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Moodle.  If not, see <https://www.gnu.org/licenses/>.
+
 /**
- * Copyright (c) 2026 Jan Svoboda <jan.svoboda@bittra.de>
- * Project: Aeternum Modulae – https://aeternummodulae.com
+ * Friction Radar report.
  *
- * This file is part of the Aeternum Modulae Moodle plugin "Friction Radar".
- *
- * Licensed under the GNU General Public License v3.0 or later.
- * https://www.gnu.org/licenses/gpl-3.0.html
+ * @package    coursereport_frictionradar
+ * @copyright  2026 Jan Svoboda <jan.svoboda@bittra.de>
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
 namespace coursereport_frictionradar\friction;
 
-defined('MOODLE_INTERNAL') || die();
 
 /**
  * F10 – Hidden Dependencies / Versteckte Voraussetzungen
  *
  * Measures how often access restrictions create implicit prerequisites.
  */
-class f10_hidden_dependencies extends abstract_friction {
-
+class f10_hidden_dependencies extends abstract_friction
+{
+    /**
+     * Return the friction key.
+     *
+     * @return string
+     */
     public function get_key(): string {
         return 'f10';
     }
 
+    /**
+     * Calculate score and breakdown for a course.
+     *
+     * @param int $courseid Course id.
+     * @param int $windowdays Window size in days.
+     * @return array Calculation result.
+     */
     public function calculate(int $courseid, int $windowdays): array {
         global $DB;
 
@@ -61,52 +85,54 @@ class f10_hidden_dependencies extends abstract_friction {
 
             $conditions = $availability['c'] ?? [];
 
-            // B – No visible explanation text
+            // B – No visible explanation text.
             if (empty($availability['showc'])) {
                 $noinfo++;
             }
 
-            // C – Multiple dependency conditions
+            // C – Multiple dependency conditions.
             if (count($conditions) > 1) {
                 $chains++;
             }
         }
 
-        $A = $restricted / max(1, $total);
-        $B = $noinfo / max(1, $restricted);
-        $C = $chains / max(1, $restricted);
+        $a = $restricted / max(1, $total);
+        $b = $noinfo / max(1, $restricted);
+        $c = $chains / max(1, $restricted);
 
         $score = $this->clamp(
             (int)round(
-                100 * (0.4 * $A + 0.35 * $B + 0.25 * $C)
+                100 * (0.4 * $a + 0.35 * $b + 0.25 * $c)
             )
         );
 
         return [
             'score' => $score,
             'breakdown' => [
-                'formula' =>
-                    "score = clamp( round( 100 * (0.4*A + 0.35*B + 0.25*C) ), 0, 100 )\n\n" .
-                    "A = activities with access restrictions\n" .
-                    "B = restricted activities without visible explanation\n" .
-                    "C = chained dependency conditions",
+                'formula' => $this->str('formula_f10'),
                 'inputs' => [
-                    ['key'=>'total','label'=>'Visible activities','value'=>$total],
-                    ['key'=>'restricted','label'=>'Activities with restrictions','value'=>$restricted],
-                    ['key'=>'A','label'=>'Restriction ratio (0..1)','value'=>round($A,3)],
-                    ['key'=>'B','label'=>'Restrictions without explanation (0..1)','value'=>round($B,3)],
-                    ['key'=>'C','label'=>'Chained dependencies (0..1)','value'=>round($C,3)],
+                    ['key' => 'total', 'label' => $this->str('input_f10_total'), 'value' => $total],
+                    ['key' => 'restricted', 'label' => $this->str('input_f10_restricted'), 'value' => $restricted],
+                    ['key' => 'A', 'label' => $this->str('input_f10_a'), 'value' => round($a, 3)],
+                    ['key' => 'B', 'label' => $this->str('input_f10_b'), 'value' => round($b, 3)],
+                    ['key' => 'C', 'label' => $this->str('input_f10_c'), 'value' => round($c, 3)],
                 ],
                 'notes' => $this->str('notes_f10', $windowdays),
             ],
         ];
     }
 
+    /**
+     * Build the empty-result payload when no restrictions exist.
+     *
+     * @param int $windowdays Window size in days.
+     * @return array Calculation result.
+     */
     private function empty_result(int $windowdays): array {
         return [
             'score' => 0,
             'breakdown' => [
-                'formula' => 'No access restrictions detected.',
+                'formula' => $this->str('formula_f10_empty'),
                 'inputs' => [],
                 'notes' => $this->str('notes_f10', $windowdays),
             ],

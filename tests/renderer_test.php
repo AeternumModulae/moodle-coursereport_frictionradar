@@ -1,21 +1,36 @@
 <?php
+// This file is part of Moodle - https://moodle.org/
+//
+// Moodle is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Moodle is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Moodle.  If not, see <https://www.gnu.org/licenses/>.
+
 /**
- * Copyright (c) 2026 Jan Svoboda <jan.svoboda@bittra.de>
- * Project: Aeternum Modulae – https://aeternummodulae.com
+ * Friction Radar report.
  *
- * This file is part of the Aeternum Modulae Moodle plugin "Friction Radar".
- *
- * Licensed under the GNU General Public License v3.0 or later.
- * https://www.gnu.org/licenses/gpl-3.0.html
+ * @package    coursereport_frictionradar
+ * @copyright  2026 Jan Svoboda <jan.svoboda@bittra.de>
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-defined('MOODLE_INTERNAL') || die();
+use context_system;
+use moodle_page;
+
 
 /**
  * Basic smoke tests for the renderer output.
  */
-class coursereport_frictionradar_renderer_test extends advanced_testcase {
-
+class renderer_test extends advanced_testcase
+{
     public function test_renderer_outputs_svg_and_legend(): void {
         $this->resetAfterTest(true);
 
@@ -31,8 +46,8 @@ class coursereport_frictionradar_renderer_test extends advanced_testcase {
             'window_days' => 42,
             'overall' => 55,
             'segments' => [
-                'f01'=>10,'f02'=>20,'f03'=>30,'f04'=>40,'f05'=>50,'f06'=>60,
-                'f07'=>70,'f08'=>80,'f09'=>90,'f10'=>15,'f11'=>25,'f12'=>35,
+                'f01' => 10, 'f02' => 20, 'f03' => 30, 'f04' => 40, 'f05' => 50, 'f06' => 60,
+                'f07' => 70, 'f08' => 80, 'f09' => 90, 'f10' => 15, 'f11' => 25, 'f12' => 35,
             ],
         ];
 

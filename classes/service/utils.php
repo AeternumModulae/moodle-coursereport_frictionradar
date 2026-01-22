@@ -1,23 +1,55 @@
 <?php
+// This file is part of Moodle - https://moodle.org/
+//
+// Moodle is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Moodle is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Moodle.  If not, see <https://www.gnu.org/licenses/>.
+
 /**
- * Copyright (c) 2026 Jan Svoboda <jan.svoboda@bittra.de>
- * Project: Aeternum Modulae – https://aeternummodulae.com
+ * Friction Radar report.
  *
- * This file is part of the Aeternum Modulae Moodle plugin "Friction Radar".
- *
- * Licensed under the GNU General Public License v3.0 or later.
- * https://www.gnu.org/licenses/gpl-3.0.html
+ * @package    coursereport_frictionradar
+ * @copyright  2026 Jan Svoboda <jan.svoboda@bittra.de>
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
 namespace coursereport_frictionradar\service;
 
-defined('MOODLE_INTERNAL') || die();
 
-class utils {
+/**
+ * Utility helpers for friction calculations.
+ *
+ * @package    coursereport_frictionradar
+ */
+class utils
+{
+    /**
+     * Clamp a value between a minimum and maximum.
+     *
+     * @param float $v Value.
+     * @param float $min Minimum.
+     * @param float $max Maximum.
+     * @return float Clamped value.
+     */
     public static function clamp(float $v, float $min, float $max): float {
         return max($min, min($max, $v));
     }
 
+    /**
+     * Calculate the median value of a list.
+     *
+     * @param array $values Values.
+     * @return float Median.
+     */
     public static function median(array $values): float {
         $n = count($values);
         if ($n === 0) {
@@ -31,6 +63,13 @@ class utils {
         return ((float)$values[$mid - 1] + (float)$values[$mid]) / 2.0;
     }
 
+    /**
+     * Calculate a percentile value.
+     *
+     * @param array $values Values.
+     * @param float $p Percentile.
+     * @return float Percentile value.
+     */
     public static function percentile(array $values, float $p): float {
         $n = count($values);
         if ($n === 0) {
@@ -47,6 +86,12 @@ class utils {
         return (float)$values[$lo] * (1.0 - $w) + (float)$values[$hi] * $w;
     }
 
+    /**
+     * Calculate the interquartile range.
+     *
+     * @param array $values Values.
+     * @return float IQR.
+     */
     public static function iqr(array $values): float {
         $q1 = self::percentile($values, 25);
         $q3 = self::percentile($values, 75);
@@ -56,6 +101,11 @@ class utils {
     /**
      * Map a raw value to 0..100 using robust z-score against the provided population.
      * Direction: 'high' means higher raw -> higher score; 'low' means lower raw -> higher score.
+     *
+     * @param float $raw Raw value.
+     * @param array $population Population values.
+     * @param string $direction Direction.
+     * @return float Score between 0 and 100.
      */
     public static function robust_score(float $raw, array $population, string $direction = 'high'): float {
         if (count($population) < 5) {
@@ -70,14 +120,28 @@ class utils {
             $z = -$z;
         }
         // Piecewise mapping similar to the earlier z buckets.
-        if ($z <= -1.0) return 0.0;
-        if ($z <= -0.5) return 25.0;
-        if ($z <= 0.0) return 50.0;
-        if ($z <= 0.5) return 75.0;
+        if ($z <= -1.0) {
+            return 0.0;
+        }
+        if ($z <= -0.5) {
+            return 25.0;
+        }
+        if ($z <= 0.0) {
+            return 50.0;
+        }
+        if ($z <= 0.5) {
+            return 75.0;
+        }
         return 100.0;
     }
 
+    /**
+     * Return timestamp for now minus a number of days.
+     *
+     * @param int $days Days to subtract.
+     * @return int Unix timestamp.
+     */
     public static function ts_minus_days(int $days): int {
-        return time() - ($days * 86400);
+        return time() - ($days * DAYSECS);
     }
 }
