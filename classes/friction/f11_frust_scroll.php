@@ -14,7 +14,7 @@ namespace coursereport_frictionradar\friction;
 defined('MOODLE_INTERNAL') || die();
 
 /**
- * F11 – Frustrated Scrolling / Frust-Scroll
+ * F11 – Frustrated Scrolling / Frust-Scrollen
  *
  * Measures structural conditions that force learners into excessive scrolling.
  */
