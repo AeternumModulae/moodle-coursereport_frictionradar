@@ -24,11 +24,25 @@ class queue_cache_warmers extends \core\task\scheduled_task {
     public function execute(): void {
         global $DB;
 
+        $now = time();
+        $since = $now - (14 * 86400);
         $courses = $DB->get_records_sql(
-            "SELECT id
-               FROM {course}
+            "SELECT c.id, COALESCE(MAX(l.timecreated), 0) AS lastactivity
+               FROM {course} c
+          LEFT JOIN {logstore_standard_log} l
+                 ON l.courseid = c.id
+                AND l.timecreated >= :since
               WHERE visible = 1
-                AND id <> 1"
+                AND c.id <> 1
+                AND c.startdate > 0
+                AND c.startdate <= :now
+                AND (c.enddate = 0 OR c.enddate >= :now)
+           GROUP BY c.id
+          HAVING MAX(l.timecreated) IS NOT NULL
+           ORDER BY lastactivity DESC, c.id ASC",
+            ['now' => $now, 'since' => $since],
+            0,
+            500
         );
 
         foreach ($courses as $course) {
