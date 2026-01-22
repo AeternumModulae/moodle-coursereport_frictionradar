@@ -9,16 +9,16 @@
  * https://www.gnu.org/licenses/gpl-3.0.html
  */
 
-namespace tool_frictionradar\task;
+namespace coursereport_frictionradar\task;
 
 use core\task\adhoc_task;
-use tool_frictionradar\task\warm_course_cache;
+use coursereport_frictionradar\task\warm_course_cache;
 
 defined('MOODLE_INTERNAL') || die();
 
 class queue_cache_warmers extends \core\task\scheduled_task {
     public function get_name(): string {
-        return get_string('task_warm_cache', 'tool_frictionradar');
+        return get_string('task_warm_cache', 'coursereport_frictionradar');
     }
 
     public function execute(): void {

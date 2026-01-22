@@ -16,7 +16,7 @@ defined('MOODLE_INTERNAL') || die();
  *
  * This is the most reliable place for course-leader tools.
  */
-function tool_frictionradar_extend_settings_navigation(settings_navigation $settingsnav, context $context): void {
+function coursereport_frictionradar_extend_settings_navigation(settings_navigation $settingsnav, context $context): void {
     if (!$context instanceof context_course) {
         return;
     }
@@ -52,16 +52,16 @@ function tool_frictionradar_extend_settings_navigation(settings_navigation $sett
     }
 
     // Avoid duplicate nodes.
-    if ($parent->find('tool_frictionradar', navigation_node::TYPE_SETTING)) {
+    if ($parent->find('coursereport_frictionradar', navigation_node::TYPE_SETTING)) {
         return;
     }
 
     $parent->add(
-        get_string('navitem', 'tool_frictionradar'),
+        get_string('navitem', 'coursereport_frictionradar'),
         $url,
         navigation_node::TYPE_SETTING,
         null,
-        'tool_frictionradar',
+        'coursereport_frictionradar',
         new pix_icon('i/stats', '', 'core')
     );
 }
@@ -70,7 +70,7 @@ function tool_frictionradar_extend_settings_navigation(settings_navigation $sett
  * Fallback: Add to the course navigation tree.
  * Depending on theme, this may show up elsewhere, but it's a good backup.
  */
-function tool_frictionradar_extend_navigation_course(navigation_node $navigation, stdClass $course, context_course $context): void {
+function coursereport_frictionradar_extend_navigation_course(navigation_node $navigation, stdClass $course, context_course $context): void {
     if (!has_capability('tool/frictionradar:view', $context)) {
         return;
     }
@@ -81,16 +81,16 @@ function tool_frictionradar_extend_navigation_course(navigation_node $navigation
     $courseadminnode = $navigation->find('courseadmin', navigation_node::TYPE_COURSE);
     $parent = $courseadminnode ?: $navigation;
 
-    if ($parent->find('tool_frictionradar', navigation_node::TYPE_SETTING)) {
+    if ($parent->find('coursereport_frictionradar', navigation_node::TYPE_SETTING)) {
         return;
     }
 
     $parent->add(
-        get_string('navitem', 'tool_frictionradar'),
+        get_string('navitem', 'coursereport_frictionradar'),
         $url,
         navigation_node::TYPE_SETTING,
         null,
-        'tool_frictionradar',
+        'coursereport_frictionradar',
         new pix_icon('i/stats', '', 'core')
     );
 }

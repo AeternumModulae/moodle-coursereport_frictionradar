@@ -9,7 +9,7 @@
  * https://www.gnu.org/licenses/gpl-3.0.html
  */
 
-namespace tool_frictionradar\friction;
+namespace coursereport_frictionradar\friction;
 
 defined('MOODLE_INTERNAL') || die();
 

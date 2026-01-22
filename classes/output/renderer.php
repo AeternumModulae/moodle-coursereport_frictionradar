@@ -9,7 +9,7 @@
  * https://www.gnu.org/licenses/gpl-3.0.html
  */
 
-namespace tool_frictionradar\output;
+namespace coursereport_frictionradar\output;
 
 use html_writer;
 
@@ -77,7 +77,7 @@ class renderer extends \plugin_renderer_base {
             if (isset($iconmap[$k])) {
                 $iconurl = $this->image_url(
                     $iconmap[$k],
-                    'tool_frictionradar'
+                    'coursereport_frictionradar'
                 )->out(false);
 
                 $mid = deg2rad($startAngle + ($i + 0.5) * $delta);
@@ -103,7 +103,7 @@ class renderer extends \plugin_renderer_base {
         $center .= '<text x="'.$cx.'" y="'.($cy - 18).'" text-anchor="middle"
             font-family="system-ui, -apple-system, Segoe UI, Roboto, Arial"
             font-size="14" fill="#6B7280">'
-            . s(get_string('overall_score', 'tool_frictionradar')) .
+            . s(get_string('overall_score', 'coursereport_frictionradar')) .
         '</text>';
         $center .= '<text x="'.$cx.'" y="'.($cy + 28).'" text-anchor="middle"
             font-family="system-ui, -apple-system, Segoe UI, Roboto, Arial"
@@ -115,10 +115,10 @@ class renderer extends \plugin_renderer_base {
         $meta = '';
         if ($generated > 0) {
             $meta .= '<div class="small text-muted tool-friction-radar-created">'
-                . s(get_string('generated_at','tool_frictionradar')) . ': ' . userdate($generated)
+                . s(get_string('generated_at','coursereport_frictionradar')) . ': ' . userdate($generated)
                 . ' · '
-                . s(get_string('window','tool_frictionradar')) . ': '
-                . $window . ' ' . s(get_string('days','tool_frictionradar'))
+                . s(get_string('window','coursereport_frictionradar')) . ': '
+                . $window . ' ' . s(get_string('days','coursereport_frictionradar'))
                 . '</div>';
         }
 
@@ -127,12 +127,12 @@ class renderer extends \plugin_renderer_base {
 
         $labels = [];
 
-        $ui_score   = get_string('ui_score', 'tool_frictionradar');
-        $ui_formula = get_string('ui_formula', 'tool_frictionradar');
-        $ui_inputs  = get_string('ui_inputs', 'tool_frictionradar');
-        $ui_param   = get_string('ui_param', 'tool_frictionradar');
-        $ui_value   = get_string('ui_value', 'tool_frictionradar');
-        $ui_notes   = get_string('ui_notes', 'tool_frictionradar');
+        $ui_score   = get_string('ui_score', 'coursereport_frictionradar');
+        $ui_formula = get_string('ui_formula', 'coursereport_frictionradar');
+        $ui_inputs  = get_string('ui_inputs', 'coursereport_frictionradar');
+        $ui_param   = get_string('ui_param', 'coursereport_frictionradar');
+        $ui_value   = get_string('ui_value', 'coursereport_frictionradar');
+        $ui_notes   = get_string('ui_notes', 'coursereport_frictionradar');
 
         foreach ($order as $k) {
 
@@ -140,7 +140,7 @@ class renderer extends \plugin_renderer_base {
             if (isset($iconmap[$k])) {
                 $iconurl = $this->image_url(
                     $iconmap[$k],
-                    'tool_frictionradar'
+                    'coursereport_frictionradar'
                 );
                 $iconhtml = html_writer::empty_tag('img', [
                     'src'   => $iconurl,
@@ -158,36 +158,36 @@ class renderer extends \plugin_renderer_base {
             $notes = $bd['notes'] ?? '';
 
             $explanations = [
-                'f01' => get_string('explain_f01', 'tool_frictionradar'),
-                'f02' => get_string('explain_f02', 'tool_frictionradar'),
-                'f03' => get_string('explain_f03', 'tool_frictionradar'),
-                'f04' => get_string('explain_f04', 'tool_frictionradar'),
-                'f05' => get_string('explain_f05', 'tool_frictionradar'),
-                'f06' => get_string('explain_f06', 'tool_frictionradar'),
-                'f07' => get_string('explain_f07', 'tool_frictionradar'),
-                'f08' => get_string('explain_f08', 'tool_frictionradar'),
-                'f09' => get_string('explain_f09', 'tool_frictionradar'),
-                'f10' => get_string('explain_f10', 'tool_frictionradar'),
-                'f11' => get_string('explain_f11', 'tool_frictionradar'),
-                'f12' => get_string('explain_f12', 'tool_frictionradar'),
+                'f01' => get_string('explain_f01', 'coursereport_frictionradar'),
+                'f02' => get_string('explain_f02', 'coursereport_frictionradar'),
+                'f03' => get_string('explain_f03', 'coursereport_frictionradar'),
+                'f04' => get_string('explain_f04', 'coursereport_frictionradar'),
+                'f05' => get_string('explain_f05', 'coursereport_frictionradar'),
+                'f06' => get_string('explain_f06', 'coursereport_frictionradar'),
+                'f07' => get_string('explain_f07', 'coursereport_frictionradar'),
+                'f08' => get_string('explain_f08', 'coursereport_frictionradar'),
+                'f09' => get_string('explain_f09', 'coursereport_frictionradar'),
+                'f10' => get_string('explain_f10', 'coursereport_frictionradar'),
+                'f11' => get_string('explain_f11', 'coursereport_frictionradar'),
+                'f12' => get_string('explain_f12', 'coursereport_frictionradar'),
             ];
 
             $actions = [
-                'f01' => get_string('action_f01', 'tool_frictionradar'),
-                'f02' => get_string('action_f02', 'tool_frictionradar'),
-                'f03' => get_string('action_f03', 'tool_frictionradar'),
-                'f04' => get_string('action_f04', 'tool_frictionradar'),
-                'f05' => get_string('action_f05', 'tool_frictionradar'),
-                'f06' => get_string('action_f06', 'tool_frictionradar'),
-                'f07' => get_string('action_f07', 'tool_frictionradar'),
-                'f08' => get_string('action_f08', 'tool_frictionradar'),
-                'f09' => get_string('action_f09', 'tool_frictionradar'),
-                'f10' => get_string('action_f10', 'tool_frictionradar'),
-                'f11' => get_string('action_f11', 'tool_frictionradar'),
-                'f12' => get_string('action_f12', 'tool_frictionradar'),
+                'f01' => get_string('action_f01', 'coursereport_frictionradar'),
+                'f02' => get_string('action_f02', 'coursereport_frictionradar'),
+                'f03' => get_string('action_f03', 'coursereport_frictionradar'),
+                'f04' => get_string('action_f04', 'coursereport_frictionradar'),
+                'f05' => get_string('action_f05', 'coursereport_frictionradar'),
+                'f06' => get_string('action_f06', 'coursereport_frictionradar'),
+                'f07' => get_string('action_f07', 'coursereport_frictionradar'),
+                'f08' => get_string('action_f08', 'coursereport_frictionradar'),
+                'f09' => get_string('action_f09', 'coursereport_frictionradar'),
+                'f10' => get_string('action_f10', 'coursereport_frictionradar'),
+                'f11' => get_string('action_f11', 'coursereport_frictionradar'),
+                'f12' => get_string('action_f12', 'coursereport_frictionradar'),
             ];
 
-            $labels[$k] = get_string('friction_' . $k, 'tool_frictionradar');
+            $labels[$k] = get_string('friction_' . $k, 'coursereport_frictionradar');
 
             $legend .= '<div class="col-12 col-md-6 col-lg-4 mb-2">'
                 . '<div class="d-flex align-items-center">'
@@ -199,7 +199,7 @@ class renderer extends \plugin_renderer_base {
                     data-friction="'.$k.'"
                     data-score="'.$score.'"
                     data-explanation="'.s($explanations[$k]).'"
-                    data-what="'.s(get_string('what_to_do', 'tool_frictionradar')).'"
+                    data-what="'.s(get_string('what_to_do', 'coursereport_frictionradar')).'"
                     data-action="'.s($actions[$k]).'"
                     data-formula="'.s($formula).'"
                     data-inputs="'.s($inputsjson).'"
@@ -229,7 +229,7 @@ class renderer extends \plugin_renderer_base {
             . '</svg>';
 
         $this->page->requires->js_call_amd(
-            'tool_frictionradar/friction_info',
+            'coursereport_frictionradar/friction_info',
             'init'
         );
 

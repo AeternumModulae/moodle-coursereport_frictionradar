@@ -11,12 +11,12 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-use tool_frictionradar\service\friction_cache;
+use coursereport_frictionradar\service\friction_cache;
 
 /**
  * PHPUnit tests for cache wrapper.
  */
-class tool_frictionradar_friction_cache_test extends advanced_testcase {
+class coursereport_frictionradar_friction_cache_test extends advanced_testcase {
 
     public function test_warm_and_get_course_cache_roundtrip() {
         $this->resetAfterTest(true);
@@ -27,10 +27,10 @@ class tool_frictionradar_friction_cache_test extends advanced_testcase {
         $course = $generator->create_course();
 
         // Cache befüllen
-        \tool_frictionradar\service\friction_cache::warm_course($course->id);
+        \coursereport_frictionradar\service\friction_cache::warm_course($course->id);
 
         // Cache abrufen
-        $data = \tool_frictionradar\service\friction_cache::get_course($course->id);
+        $data = \coursereport_frictionradar\service\friction_cache::get_course($course->id);
 
         $this->assertIsArray($data);
         $this->assertArrayHasKey('segments', $data);

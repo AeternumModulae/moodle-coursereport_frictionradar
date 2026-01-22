@@ -9,21 +9,21 @@
  * https://www.gnu.org/licenses/gpl-3.0.html
  */
 
-namespace tool_frictionradar\service;
+namespace coursereport_frictionradar\service;
 
-use tool_frictionradar\friction\friction_interface;
-use tool_frictionradar\friction\f01_cognitive_overload;
-use tool_frictionradar\friction\f02_didactic_bottlenecks;
-use tool_frictionradar\friction\f03_navigation_chaos;
-use tool_frictionradar\friction\f04_overambitious_entry;
-use tool_frictionradar\friction\f05_participation_theatre;
-use tool_frictionradar\friction\f06_zombie_quizzes;
-use tool_frictionradar\friction\f07_unclear_expectations;
-use tool_frictionradar\friction\f08_structure_paradox;
-use tool_frictionradar\friction\f09_resource_overload;
-use tool_frictionradar\friction\f10_hidden_dependencies;
-use tool_frictionradar\friction\f11_frust_scroll;
-use tool_frictionradar\friction\f12_deadline_panic;
+use coursereport_frictionradar\friction\friction_interface;
+use coursereport_frictionradar\friction\f01_cognitive_overload;
+use coursereport_frictionradar\friction\f02_didactic_bottlenecks;
+use coursereport_frictionradar\friction\f03_navigation_chaos;
+use coursereport_frictionradar\friction\f04_overambitious_entry;
+use coursereport_frictionradar\friction\f05_participation_theatre;
+use coursereport_frictionradar\friction\f06_zombie_quizzes;
+use coursereport_frictionradar\friction\f07_unclear_expectations;
+use coursereport_frictionradar\friction\f08_structure_paradox;
+use coursereport_frictionradar\friction\f09_resource_overload;
+use coursereport_frictionradar\friction\f10_hidden_dependencies;
+use coursereport_frictionradar\friction\f11_frust_scroll;
+use coursereport_frictionradar\friction\f12_deadline_panic;
 
 defined('MOODLE_INTERNAL') || die();
 

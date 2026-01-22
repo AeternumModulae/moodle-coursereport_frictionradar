@@ -9,7 +9,7 @@
  * https://www.gnu.org/licenses/gpl-3.0.html
  */
 
-namespace tool_frictionradar\service;
+namespace coursereport_frictionradar\service;
 
 use moodle_database;
 

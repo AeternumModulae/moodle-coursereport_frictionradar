@@ -11,7 +11,7 @@
 
 require_once(__DIR__ . '/../../../config.php');
 
-use tool_frictionradar\service\friction_cache;
+use coursereport_frictionradar\service\friction_cache;
 
 $courseid = required_param('id', PARAM_INT);
 $course = get_course($courseid);
@@ -25,7 +25,7 @@ $PAGE->set_context($context);
 $PAGE->set_course($course);
 $PAGE->requires->css('/admin/tool/frictionradar/styles.css?time=202601050000');
 $PAGE->set_pagelayout('incourse');
-$PAGE->set_title(get_string('page_title', 'tool_frictionradar'));
+$PAGE->set_title(get_string('page_title', 'coursereport_frictionradar'));
 $PAGE->set_heading($course->fullname);
 
 // --- Manual cache warm trigger (synchronous) ---
@@ -44,7 +44,7 @@ if ($warmcache) {
 
     redirect(
         new moodle_url('/admin/tool/frictionradar/index.php', ['id' => $course->id]),
-        get_string('warmcache_done', 'tool_frictionradar'),
+        get_string('warmcache_done', 'coursereport_frictionradar'),
         1,
         \core\output\notification::NOTIFY_SUCCESS
     );
@@ -52,13 +52,13 @@ if ($warmcache) {
 
 echo $OUTPUT->header();
 
-echo html_writer::tag('h2', get_string('page_title', 'tool_frictionradar'));
-echo html_writer::div(get_string('page_subtitle', 'tool_frictionradar'), 'text-muted mb-1');
+echo html_writer::tag('h2', get_string('page_title', 'coursereport_frictionradar'));
+echo html_writer::div(get_string('page_subtitle', 'coursereport_frictionradar'), 'text-muted mb-1');
 
 $data = friction_cache::get_course($courseid);
 
 if (!$data) {
-    $message = get_string('no_data', 'tool_frictionradar');
+    $message = get_string('no_data', 'coursereport_frictionradar');
 
     // Add "Generate now" link for course editors.
     if (has_capability('moodle/course:update', $context)) {
@@ -68,14 +68,14 @@ if (!$data) {
             'sesskey' => sesskey(),
         ]);
 
-        $link = html_writer::link($url, get_string('warmcache_now', 'tool_frictionradar'));
+        $link = html_writer::link($url, get_string('warmcache_now', 'coursereport_frictionradar'));
         $message .= ' ' . $link;
     }
 
     echo html_writer::div($message, 'alert alert-info');
 } else {
-    /** @var \tool_frictionradar\output\renderer $renderer */
-    $renderer = $PAGE->get_renderer('tool_frictionradar');
+    /** @var \coursereport_frictionradar\output\renderer $renderer */
+    $renderer = $PAGE->get_renderer('coursereport_frictionradar');
     echo $renderer->friction_clock($data, $courseid);
 }
 

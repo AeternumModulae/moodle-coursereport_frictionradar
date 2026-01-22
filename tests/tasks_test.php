@@ -11,14 +11,14 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-use tool_frictionradar\service\friction_cache;
-use tool_frictionradar\task\queue_cache_warmers;
-use tool_frictionradar\task\warm_course_cache;
+use coursereport_frictionradar\service\friction_cache;
+use coursereport_frictionradar\task\queue_cache_warmers;
+use coursereport_frictionradar\task\warm_course_cache;
 
 /**
  * Tests for scheduled/adhoc tasks.
  */
-class tool_frictionradar_tasks_test extends advanced_testcase {
+class coursereport_frictionradar_tasks_test extends advanced_testcase {
 
     public function test_queue_cache_warmers_schedules_adhoc_tasks_for_visible_courses(): void {
         $this->resetAfterTest(true);
@@ -33,7 +33,7 @@ class tool_frictionradar_tasks_test extends advanced_testcase {
         $task->execute();
 
         // Adhoc tasks should be queued for visible courses only (excluding site course id=1).
-        $records = $DB->get_records('task_adhoc', ['classname' => '\\tool_frictionradar\\task\\warm_course_cache']);
+        $records = $DB->get_records('task_adhoc', ['classname' => '\\coursereport_frictionradar\\task\\warm_course_cache']);
         $this->assertNotEmpty($records);
 
         $courseids = [];

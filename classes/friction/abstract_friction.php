@@ -9,7 +9,7 @@
  * https://www.gnu.org/licenses/gpl-3.0.html
  */
 
-namespace tool_frictionradar\friction;
+namespace coursereport_frictionradar\friction;
 
 defined('MOODLE_INTERNAL') || die();
 
@@ -23,6 +23,6 @@ abstract class abstract_friction implements friction_interface {
      * Convenience: fetch a language string for this plugin.
      */
     protected function str(string $key, $a = null): string {
-        return get_string($key, 'tool_frictionradar', $a);
+        return get_string($key, 'coursereport_frictionradar', $a);
     }
 }

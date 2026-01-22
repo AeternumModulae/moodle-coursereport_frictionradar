@@ -14,7 +14,7 @@ defined('MOODLE_INTERNAL') || die();
 /**
  * Basic smoke tests for the renderer output.
  */
-class tool_frictionradar_renderer_test extends advanced_testcase {
+class coursereport_frictionradar_renderer_test extends advanced_testcase {
 
     public function test_renderer_outputs_svg_and_legend(): void {
         $this->resetAfterTest(true);
@@ -23,8 +23,8 @@ class tool_frictionradar_renderer_test extends advanced_testcase {
         $PAGE = new moodle_page();
         $PAGE->set_context(context_system::instance());
 
-        /** @var \tool_frictionradar\output\renderer $renderer */
-        $renderer = $PAGE->get_renderer('tool_frictionradar');
+        /** @var \coursereport_frictionradar\output\renderer $renderer */
+        $renderer = $PAGE->get_renderer('coursereport_frictionradar');
 
         $data = [
             'generated_at' => time(),

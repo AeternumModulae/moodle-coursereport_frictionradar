@@ -11,12 +11,12 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-use tool_frictionradar\service\friction_calculator;
+use coursereport_frictionradar\service\friction_calculator;
 
 /**
  * PHPUnit tests for friction score calculation.
  */
-class tool_frictionradar_friction_calculator_test extends advanced_testcase {
+class coursereport_frictionradar_friction_calculator_test extends advanced_testcase {
 
     /**
      * Insert a minimal logstore_standard_log record for tests.
@@ -35,7 +35,7 @@ class tool_frictionradar_friction_calculator_test extends advanced_testcase {
         $record = (object)[
             // The calculator only filters on these core columns.
             'eventname' => '\\core\\event\\base',
-            'component' => 'tool_frictionradar',
+            'component' => 'coursereport_frictionradar',
             'action' => $action,
             'target' => $target,
             'objecttable' => ($contextlevel === CONTEXT_MODULE ? 'course_modules' : 'course'),
