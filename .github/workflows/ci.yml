@@ -1,0 +1,102 @@
+name: CI
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  php-quality:
+    name: PHPCS and PHPMD
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.3'
+          tools: composer
+
+      - name: Install QA tools
+        run: |
+          composer init --no-interaction --name coursereport/frictionradar --description "CI QA deps"
+          composer require --no-interaction --prefer-dist --no-progress --dev moodlehq/moodle-coding-standard:^3.5 phpmd/phpmd:^2.15
+
+      - name: Run PHPCS
+        run: vendor/bin/phpcs -q --standard=.github/phpcs.xml --ignore=vendor/* .
+
+      - name: Run PHPMD
+        run: vendor/bin/phpmd . text .github/phpmd.xml --exclude vendor
+
+  phpunit:
+    name: PHPUnit (MySQL/PostgreSQL)
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - php: '8.1'
+            moodle-branch: 'MOODLE_405_STABLE'
+            database: 'mysqli'
+            db-service: 'mysql'
+            db-user: 'root'
+            db-pass: 'root'
+            db-name: 'moodle'
+          - php: '8.1'
+            moodle-branch: 'MOODLE_405_STABLE'
+            database: 'pgsql'
+            db-service: 'postgres'
+            db-user: 'postgres'
+            db-pass: 'postgres'
+            db-name: 'moodle'
+    services:
+      mysql:
+        image: mysql:8.0
+        env:
+          MYSQL_ROOT_PASSWORD: root
+          MYSQL_DATABASE: moodle
+        ports:
+          - 3306:3306
+        options: >-
+          --health-cmd="mysqladmin ping -h 127.0.0.1 -u root -proot"
+          --health-interval=10s --health-timeout=5s --health-retries=5
+      postgres:
+        image: postgres:14
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: moodle
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd="pg_isready -U postgres"
+          --health-interval=10s --health-timeout=5s --health-retries=5
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ matrix.php }}
+          tools: composer
+
+      - name: Install moodle-plugin-ci
+        run: |
+          composer create-project --no-interaction --prefer-dist moodlehq/moodle-plugin-ci ci
+          echo "$GITHUB_WORKSPACE/ci/bin" >> $GITHUB_PATH
+
+      - name: Install Moodle
+        run: >
+          moodle-plugin-ci install
+          --plugin ./
+          --db-type ${{ matrix.database }}
+          --db-host 127.0.0.1
+          --db-user ${{ matrix.db-user }}
+          --db-pass ${{ matrix.db-pass }}
+          --db-name ${{ matrix.db-name }}
+          --moodle-branch ${{ matrix.moodle-branch }}
+
+      - name: Run PHPUnit
+        run: moodle-plugin-ci phpunit

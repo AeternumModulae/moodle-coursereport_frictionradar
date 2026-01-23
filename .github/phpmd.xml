@@ -1,0 +1,17 @@
+<?xml version="1.0"?>
+<ruleset name="coursereport_frictionradar">
+    <description>PHPMD rules aligned with Moodle coding style.</description>
+
+    <rule ref="rulesets/cleancode.xml">
+        <exclude name="ElseExpression" />
+        <exclude name="StaticAccess" />
+    </rule>
+    <rule ref="rulesets/codesize.xml">
+        <exclude name="CyclomaticComplexity" />
+        <exclude name="ExcessiveMethodLength" />
+        <exclude name="NPathComplexity" />
+    </rule>
+    <rule ref="rulesets/design.xml">
+        <exclude name="CouplingBetweenObjects" />
+    </rule>
+</ruleset>

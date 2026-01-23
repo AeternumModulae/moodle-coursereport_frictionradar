@@ -1,0 +1,10 @@
+<?xml version="1.0"?>
+<ruleset name="coursereport_frictionradar">
+    <description>Project coding standard overrides for Moodle.</description>
+
+    <rule ref="moodle"/>
+
+    <rule ref="Generic.Files.LineLength">
+        <exclude-pattern>*/lang/*/*.php</exclude-pattern>
+    </rule>
+</ruleset>

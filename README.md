@@ -114,4 +114,3 @@ The plugin is suitable for GDPR-compliant environments.
 
 Friction Radar is intended as a **diagnostic instrument**, not as a performance ranking tool.
 
-
