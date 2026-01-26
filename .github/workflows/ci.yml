@@ -123,6 +123,7 @@ jobs:
           --db-pass ${{ matrix.db-pass }}
           --db-name ${{ matrix.db-name }}
           --branch ${{ matrix.moodle-branch }}
+          --not-paths moodle
 
       - name: Run PHPUnit
         run: moodle-plugin-ci phpunit
