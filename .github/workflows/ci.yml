@@ -43,7 +43,7 @@ jobs:
           composer require --no-interaction --prefer-dist --no-progress --dev moodlehq/moodle-coding-standard:dev-master squizlabs/php_codesniffer:^3.10 phpmd/phpmd:^2.15
           vendor/bin/phpcs --config-set installed_paths vendor/moodlehq/moodle-coding-standard
           php -r "\$file='vendor/moodlehq/moodle-coding-standard/moodle/Sniffs/Commenting/InlineCommentSniff.php'; \$code=file_get_contents(\$file); \$code=str_replace(\"['content']{0}\", \"['content'][0]\", \$code); \$code=str_replace(\"['content']{1}\", \"['content'][1]\", \$code); \$code=str_replace(\"['content']{2}\", \"['content'][2]\", \$code); file_put_contents(\$file, \$code);"
-          php -r "\$file='vendor/moodlehq/moodle-coding-standard/moodle/Sniffs/Files/MoodleInternalSniff.php'; \$code=file_get_contents(\$file); \$code=str_replace(\"addWarning('Expected MOODLE_INTERNAL check or config.php inclusion', \$pointer);\", \"addWarning('Expected MOODLE_INTERNAL check or config.php inclusion', \$pointer, 'MissingMoodleInternal');\", \$code); file_put_contents(\$file, \$code);"
+          php -r "\$file='vendor/moodlehq/moodle-coding-standard/moodle/Sniffs/Files/MoodleInternalSniff.php'; \$code=file_get_contents(\$file); \$code=str_replace(\"\\\$file->addWarning('Expected MOODLE_INTERNAL check or config.php inclusion', \\\$pointer);\", \"\\\$file->addWarning('Expected MOODLE_INTERNAL check or config.php inclusion', \\\$pointer, 'MissingMoodleInternal');\", \$code); file_put_contents(\$file, \$code);"
 
       - name: Run PHPCS
         env:
