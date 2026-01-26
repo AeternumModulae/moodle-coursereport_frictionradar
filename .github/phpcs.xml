@@ -6,5 +6,9 @@
 
     <rule ref="Generic.Files.LineLength">
         <exclude-pattern>*/lang/*/*.php</exclude-pattern>
+        <properties>
+            <property name="lineLimit" value="120"/>
+            <property name="absoluteLineLimit" value="140"/>
+        </properties>
     </rule>
 </ruleset>
