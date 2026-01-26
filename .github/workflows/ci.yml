@@ -117,6 +117,8 @@ jobs:
         run: >
           moodle-plugin-ci install
           --plugin ./
+          --moodle /tmp/moodle
+          --data /tmp/moodledata
           --db-type ${{ matrix.database }}
           --db-host 127.0.0.1
           --db-user ${{ matrix.db-user }}
