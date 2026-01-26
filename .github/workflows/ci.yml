@@ -15,6 +15,8 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+        with:
+          persist-credentials: false
 
       - name: Setup PHP
         uses: shivammathur/setup-php@v2
@@ -24,6 +26,8 @@ jobs:
 
       - name: Install QA tools
         run: |
+          git config --global --unset-all http.https://github.com/.extraheader || true
+          composer config --global github-protocols https
           composer init --no-interaction --name coursereport/frictionradar --description "CI QA deps"
           composer config repositories.moodle-coding-standard vcs https://github.com/moodlehq/moodle-coding-standard
           composer config minimum-stability dev
