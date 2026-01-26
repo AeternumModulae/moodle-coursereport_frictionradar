@@ -36,3 +36,15 @@ if (!class_exists('PHP_CodeSniffer_Standards_AbstractScopeSniff')) {
         }
     }
 }
+
+if (!interface_exists('PHP_CodeSniffer_Sniff')) {
+    if (interface_exists('PHP_CodeSniffer\\Sniffs\\Sniff')) {
+        interface PHP_CodeSniffer_Sniff extends PHP_CodeSniffer\Sniffs\Sniff
+        {
+        }
+    } else {
+        interface PHP_CodeSniffer_Sniff
+        {
+        }
+    }
+}
