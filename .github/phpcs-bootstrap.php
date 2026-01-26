@@ -18,8 +18,14 @@ if (!class_exists('PHP_CodeSniffer_Exception')) {
     }
 }
 
-if (!class_exists('PHP_CodeSniffer_File') && class_exists('PHP_CodeSniffer\\Files\\File')) {
-    class_alias('PHP_CodeSniffer\\Files\\File', 'PHP_CodeSniffer_File');
+if (!class_exists('PHP_CodeSniffer_File')) {
+    spl_autoload_register(function ($class) {
+        if ($class !== 'PHP_CodeSniffer_File') {
+            return;
+        }
+
+        class_alias('PHP_CodeSniffer\\Files\\File', 'PHP_CodeSniffer_File');
+    });
 }
 
 // Legacy Moodle sniffs expect these class names from PHPCS 2.x.
