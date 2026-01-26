@@ -1,27 +1,44 @@
 <?php
+// This file is part of Moodle - https://moodle.org/
+//
+// Moodle is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Moodle is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Moodle.  If not, see <https://www.gnu.org/licenses/>.
+
 /**
- * Copyright (c) 2026 Jan Svoboda <jan.svoboda@bittra.de>
- * Project: Aeternum Modulae – https://aeternummodulae.com
+ * Friction Radar report.
  *
- * This file is part of the Aeternum Modulae Moodle plugin "Friction Radar".
- *
- * Licensed under the GNU General Public License v3.0 or later.
- * https://www.gnu.org/licenses/gpl-3.0.html
+ * @package    coursereport_frictionradar
+ * @copyright  2026 Jan Svoboda <jan.svoboda@bittra.de>
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-defined('MOODLE_INTERNAL') || die();
-
-use tool_frictionradar\service\friction_calculator;
 
 /**
  * PHPUnit tests for friction score calculation.
  */
-class tool_frictionradar_friction_calculator_test extends advanced_testcase {
-
+class friction_calculator_test extends advanced_testcase
+{
     /**
      * Insert a minimal logstore_standard_log record for tests.
      */
-    private function insert_log(int $courseid, int $userid, int $contextlevel, int $contextinstanceid, string $action, string $target): void {
+    private function insert_log(
+        int $courseid,
+        int $userid,
+        int $contextlevel,
+        int $contextinstanceid,
+        string $action,
+        string $target
+    ): void {
         global $DB;
 
         if ($contextlevel === CONTEXT_COURSE) {
@@ -35,7 +52,7 @@ class tool_frictionradar_friction_calculator_test extends advanced_testcase {
         $record = (object)[
             // The calculator only filters on these core columns.
             'eventname' => '\\core\\event\\base',
-            'component' => 'tool_frictionradar',
+            'component' => 'coursereport_frictionradar',
             'action' => $action,
             'target' => $target,
             'objecttable' => ($contextlevel === CONTEXT_MODULE ? 'course_modules' : 'course'),
@@ -67,7 +84,7 @@ class tool_frictionradar_friction_calculator_test extends advanced_testcase {
         $user = $generator->create_user();
         $generator->enrol_user($user->id, $course->id, 'student');
 
-        $data = friction_calculator::calculate_for_course($course->id, 7);
+        $data = \coursereport_frictionradar\service\friction_calculator::calculate_for_course($course->id, 7);
 
         $this->assertIsArray($data);
         $this->assertArrayHasKey('generated_at', $data);
@@ -76,7 +93,7 @@ class tool_frictionradar_friction_calculator_test extends advanced_testcase {
         $this->assertArrayHasKey('segments', $data);
         $this->assertIsArray($data['segments']);
 
-        $expected = ['f01','f02','f03','f04','f05','f06','f07','f08','f09','f10','f11','f12'];
+        $expected = ['f01', 'f02', 'f03', 'f04', 'f05', 'f06', 'f07', 'f08', 'f09', 'f10', 'f11', 'f12'];
         foreach ($expected as $k) {
             $this->assertArrayHasKey($k, $data['segments']);
             $this->assertIsInt($data['segments'][$k]);
@@ -106,7 +123,7 @@ class tool_frictionradar_friction_calculator_test extends advanced_testcase {
         $this->insert_log($course->id, $user->id, CONTEXT_MODULE, (int)$cm->id, 'viewed', 'course_module');
         $this->insert_log($course->id, $user->id, CONTEXT_MODULE, (int)$cm->id, 'viewed', 'course_module');
 
-        $data = friction_calculator::calculate_for_course($course->id, 7);
+        $data = \coursereport_frictionradar\service\friction_calculator::calculate_for_course($course->id, 7);
         $this->assertIsArray($data);
         $this->assertArrayHasKey('segments', $data);
 

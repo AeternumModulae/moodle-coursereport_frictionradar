@@ -1,17 +1,29 @@
 <?php
+// This file is part of Moodle - https://moodle.org/
+//
+// Moodle is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Moodle is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Moodle.  If not, see <https://www.gnu.org/licenses/>.
+
 /**
- * Copyright (c) 2026 Jan Svoboda <jan.svoboda@bittra.de>
- * Project: Aeternum Modulae – https://aeternummodulae.com
+ * Friction Radar report.
  *
- * This file is part of the Aeternum Modulae Moodle plugin "Friction Radar".
- *
- * Licensed under the GNU General Public License v3.0 or later.
- * https://www.gnu.org/licenses/gpl-3.0.html
+ * @package    coursereport_frictionradar
+ * @copyright  2026 Jan Svoboda <jan.svoboda@bittra.de>
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-namespace tool_frictionradar\friction;
+namespace coursereport_frictionradar\friction;
 
-defined('MOODLE_INTERNAL') || die();
 
 /**
  * F01 – Cognitive Overload / Kognitive Überlastung
@@ -19,24 +31,35 @@ defined('MOODLE_INTERNAL') || die();
  * Measures simultaneous cognitive load caused by parallel mandatory activities,
  * dense mandatory resources and textual complexity.
  */
-class f01_cognitive_overload extends abstract_friction {
-
+class f01_cognitive_overload extends abstract_friction
+{
+    /**
+     * Return the friction key.
+     *
+     * @return string
+     */
     public function get_key(): string {
         return 'f01';
     }
 
+    /**
+     * Calculate score and breakdown for a course.
+     *
+     * @param int $courseid Course id.
+     * @param int $windowdays Window size in days.
+     * @return array Calculation result.
+     */
     public function calculate(int $courseid, int $windowdays): array {
-
-        $A = $this->parallel_mandatory_activities($courseid); // ['avg','norm']
-        $B = $this->mandatory_resource_density($courseid);   // 0..1
-        $C = $this->textual_complexity($courseid);           // ['avg','norm']
+        $a = $this->parallel_mandatory_activities($courseid); // Returns avg and norm.
+        $b = $this->mandatory_resource_density($courseid); // Normalized 0..1.
+        $c = $this->textual_complexity($courseid); // Returns avg and norm.
 
         $score = $this->clamp(
             (int)round(
                 100 * (
-                    0.5 * $A['norm'] +
-                    0.3 * $B +
-                    0.2 * $C['norm']
+                    0.5 * $a['norm'] +
+                    0.3 * $b +
+                    0.2 * $c['norm']
                 )
             )
         );
@@ -44,23 +67,22 @@ class f01_cognitive_overload extends abstract_friction {
         return [
             'score' => $score,
             'breakdown' => [
-                'formula' =>
-                    'score = clamp( round( 100 * (0.5*A + 0.3*B + 0.2*C) ), 0, 100 )',
+                'formula' => $this->str('formula_f01'),
                 'inputs' => [
                     [
-                        'key'   => 'A',
-                        'label' => 'Parallel mandatory activities (avg per section)',
-                        'value' => round($A['avg'], 2),
+                        'key' => 'A',
+                        'label' => $this->str('input_f01_a'),
+                        'value' => round($a['avg'], 2),
                     ],
                     [
-                        'key'   => 'B',
-                        'label' => 'Mandatory resource density',
-                        'value' => round($B, 3),
+                        'key' => 'B',
+                        'label' => $this->str('input_f01_b'),
+                        'value' => round($b, 3),
                     ],
                     [
-                        'key'   => 'C',
-                        'label' => 'Average textual complexity (normalized)',
-                        'value' => round($C['norm'], 3),
+                        'key' => 'C',
+                        'label' => $this->str('input_f01_c'),
+                        'value' => round($c['norm'], 3),
                     ],
                 ],
                 'notes' => $this->str('notes_f01', $windowdays),
@@ -98,11 +120,11 @@ class f01_cognitive_overload extends abstract_friction {
 
         $avg = $total / count($rows);
 
-        // Normalize: ≥5 mandatory activities per section is heavy
+        // Normalize: >=5 mandatory activities per section is heavy.
         $norm = min(1.0, max(0.0, $avg / 5.0));
 
         return [
-            'avg'  => $avg,
+            'avg' => $avg,
             'norm' => $norm,
         ];
     }
@@ -115,7 +137,7 @@ class f01_cognitive_overload extends abstract_friction {
     private function mandatory_resource_density(int $courseid): float {
         global $DB;
 
-        // Mandatory activities
+        // Mandatory activities.
         $mandatory = (int)$DB->get_field_sql(
             "SELECT COUNT(id)
                FROM {course_modules}
@@ -130,7 +152,7 @@ class f01_cognitive_overload extends abstract_friction {
             return 0.0;
         }
 
-        // Mandatory resources
+        // Mandatory resources.
         $resources = (int)$DB->get_field_sql(
             "SELECT COUNT(cm.id)
                FROM {course_modules} cm
@@ -145,7 +167,7 @@ class f01_cognitive_overload extends abstract_friction {
 
         $density = $resources / $mandatory;
 
-        // Normalize: ≥2 resources per mandatory activity is heavy
+        // Normalize: >=2 resources per mandatory activity is heavy.
         return min(1.0, max(0.0, $density / 2.0));
     }
 
@@ -164,7 +186,7 @@ class f01_cognitive_overload extends abstract_friction {
                    AND cm.visible = 1
                    AND cm.deletioninprogress = 0";
 
-        $rows = $DB->get_records_sql($sql, ['courseid'=>$courseid]);
+        $rows = $DB->get_records_sql($sql, ['courseid' => $courseid]);
 
         $totalchars = 0;
         $count = 0;
@@ -174,26 +196,26 @@ class f01_cognitive_overload extends abstract_friction {
 
             switch ($r->name) {
                 case 'assign':
-                    $intro = $DB->get_field('assign', 'intro', ['id'=>$r->instance]);
+                    $intro = $DB->get_field('assign', 'intro', ['id' => $r->instance]);
                     break;
                 case 'quiz':
-                    $intro = $DB->get_field('quiz', 'intro', ['id'=>$r->instance]);
+                    $intro = $DB->get_field('quiz', 'intro', ['id' => $r->instance]);
                     break;
                 case 'forum':
-                    $intro = $DB->get_field('forum', 'intro', ['id'=>$r->instance]);
+                    $intro = $DB->get_field('forum', 'intro', ['id' => $r->instance]);
                     break;
                 case 'lesson':
-                    $intro = $DB->get_field('lesson', 'intro', ['id'=>$r->instance]);
+                    $intro = $DB->get_field('lesson', 'intro', ['id' => $r->instance]);
                     break;
                 case 'page':
-                    $intro = $DB->get_field('page', 'content', ['id'=>$r->instance]);
+                    $intro = $DB->get_field('page', 'content', ['id' => $r->instance]);
                     break;
             }
 
             if ($intro !== null) {
                 $text = trim(strip_tags($intro));
                 if ($text !== '') {
-                    $totalchars += mb_strlen($text);
+                    $totalchars += \core_text::strlen($text);
                     $count++;
                 }
             }
@@ -205,11 +227,11 @@ class f01_cognitive_overload extends abstract_friction {
 
         $avg = $totalchars / $count;
 
-        // Normalize: ≥1500 characters average is cognitively heavy
+        // Normalize: >=1500 characters average is cognitively heavy.
         $norm = min(1.0, max(0.0, $avg / 1500.0));
 
         return [
-            'avg'  => $avg,
+            'avg' => $avg,
             'norm' => $norm,
         ];
     }

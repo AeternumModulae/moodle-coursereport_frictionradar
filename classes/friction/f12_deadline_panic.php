@@ -1,60 +1,83 @@
 <?php
+// This file is part of Moodle - https://moodle.org/
+//
+// Moodle is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Moodle is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Moodle.  If not, see <https://www.gnu.org/licenses/>.
+
 /**
- * Copyright (c) 2026 Jan Svoboda <jan.svoboda@bittra.de>
- * Project: Aeternum Modulae – https://aeternummodulae.com
+ * Friction Radar report.
  *
- * This file is part of the Aeternum Modulae Moodle plugin "Friction Radar".
- *
- * Licensed under the GNU General Public License v3.0 or later.
- * https://www.gnu.org/licenses/gpl-3.0.html
+ * @package    coursereport_frictionradar
+ * @copyright  2026 Jan Svoboda <jan.svoboda@bittra.de>
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-namespace tool_frictionradar\friction;
+namespace coursereport_frictionradar\friction;
 
-defined('MOODLE_INTERNAL') || die();
 
 /**
  * F12 – Deadline Panic / Deadline-Panik
  *
  * Measures temporal overload caused by clustered or short-term deadlines.
  */
-class f12_deadline_panic extends abstract_friction {
-
+class f12_deadline_panic extends abstract_friction
+{
+    /**
+     * Return the friction key.
+     *
+     * @return string
+     */
     public function get_key(): string {
         return 'f12';
     }
 
+    /**
+     * Calculate score and breakdown for a course.
+     *
+     * @param int $courseid Course id.
+     * @param int $windowdays Window size in days.
+     * @return array Calculation result.
+     */
     public function calculate(int $courseid, int $windowdays): array {
-
         $deadlines = $this->collect_deadlines($courseid, $windowdays);
 
         if (empty($deadlines)) {
             return $this->empty_result($windowdays);
         }
 
-        $A = $this->deadline_density($deadlines, $windowdays); // 0..1
-        $B = $this->deadline_clustering($deadlines);           // 0..1
-        $C = $this->short_notice_deadlines($deadlines);        // 0..1
+        $a = $this->deadline_density($deadlines, $windowdays); // Normalized 0..1.
+        $b = $this->deadline_clustering($deadlines); // Normalized 0..1.
+        $c = $this->short_notice_deadlines($deadlines); // Normalized 0..1.
 
         $score = $this->clamp(
             (int)round(
-                100 * (0.4 * $A + 0.35 * $B + 0.25 * $C)
+                100 * (0.4 * $a + 0.35 * $b + 0.25 * $c)
             )
         );
 
         return [
             'score' => $score,
             'breakdown' => [
-                'formula' =>
-                    "score = clamp( round( 100 * (0.4*A + 0.35*B + 0.25*C) ), 0, 100 )\n\n" .
-                    "A = deadline density\n" .
-                    "B = deadline clustering\n" .
-                    "C = short-notice deadlines",
+                'formula' => $this->str('formula_f12'),
                 'inputs' => [
-                    ['key'=>'deadlines','label'=>'Deadlines considered','value'=>count($deadlines)],
-                    ['key'=>'A','label'=>'Deadline density (0..1)','value'=>round($A,3)],
-                    ['key'=>'B','label'=>'Deadline clustering (0..1)','value'=>round($B,3)],
-                    ['key'=>'C','label'=>'Short-notice ratio (0..1)','value'=>round($C,3)],
+                    [
+                        'key' => 'deadlines',
+                        'label' => $this->str('input_f12_deadlines'),
+                        'value' => count($deadlines),
+                    ],
+                    ['key' => 'A', 'label' => $this->str('input_f12_a'), 'value' => round($a, 3)],
+                    ['key' => 'B', 'label' => $this->str('input_f12_b'), 'value' => round($b, 3)],
+                    ['key' => 'C', 'label' => $this->str('input_f12_c'), 'value' => round($c, 3)],
                 ],
                 'notes' => $this->str('notes_f12', $windowdays),
             ],
@@ -71,31 +94,31 @@ class f12_deadline_panic extends abstract_friction {
 
         $deadlines = [];
 
-        // Assign
+        // Assign.
         $sql = "SELECT duedate
                   FROM {assign} a
                   JOIN {course_modules} cm ON cm.instance = a.id
                  WHERE cm.course = :courseid
                    AND a.duedate > 0
                    AND a.duedate >= :since";
-        $rows = $DB->get_records_sql($sql, ['courseid'=>$courseid, 'since'=>$since]);
+        $rows = $DB->get_records_sql($sql, ['courseid' => $courseid, 'since' => $since]);
         foreach ($rows as $r) {
             $deadlines[] = (int)$r->duedate;
         }
 
-        // Quiz
+        // Quiz.
         $sql = "SELECT timeclose
                   FROM {quiz} q
                   JOIN {course_modules} cm ON cm.instance = q.id
                  WHERE cm.course = :courseid
                    AND q.timeclose > 0
                    AND q.timeclose >= :since";
-        $rows = $DB->get_records_sql($sql, ['courseid'=>$courseid, 'since'=>$since]);
+        $rows = $DB->get_records_sql($sql, ['courseid' => $courseid, 'since' => $since]);
         foreach ($rows as $r) {
             $deadlines[] = (int)$r->timeclose;
         }
 
-        // Lesson
+        // Lesson.
         if ($DB->get_manager()->table_exists('lesson')) {
             $sql = "SELECT deadline
                       FROM {lesson} l
@@ -103,7 +126,7 @@ class f12_deadline_panic extends abstract_friction {
                      WHERE cm.course = :courseid
                        AND l.deadline > 0
                        AND l.deadline >= :since";
-            $rows = $DB->get_records_sql($sql, ['courseid'=>$courseid, 'since'=>$since]);
+            $rows = $DB->get_records_sql($sql, ['courseid' => $courseid, 'since' => $since]);
             foreach ($rows as $r) {
                 $deadlines[] = (int)$r->deadline;
             }
@@ -119,7 +142,7 @@ class f12_deadline_panic extends abstract_friction {
     private function deadline_density(array $deadlines, int $windowdays): float {
         $density = count($deadlines) / max(1, $windowdays);
 
-        // >0.25 deadlines per day (~2 per week) is stressful.
+        // More than 0.25 deadlines per day (~2 per week) is stressful.
         return min(1.0, max(0.0, $density / 0.25));
     }
 
@@ -141,7 +164,7 @@ class f12_deadline_panic extends abstract_friction {
 
         $max = max($days);
 
-        // ≥3 deadlines on one day = panic cluster.
+        // Three or more deadlines on one day indicate a panic cluster.
         return min(1.0, max(0.0, ($max - 1) / 2));
     }
 
@@ -151,15 +174,13 @@ class f12_deadline_panic extends abstract_friction {
      * Deadlines created close to their due date.
      */
     private function short_notice_deadlines(array $deadlines): float {
-        global $DB;
-
         $short = 0;
         $total = 0;
 
         foreach ($deadlines as $due) {
             $total++;
 
-            // Use 3 days as "short notice"
+            // Use 3 days as "short notice".
             if (($due - time()) < (3 * DAYSECS)) {
                 $short++;
             }
@@ -172,11 +193,17 @@ class f12_deadline_panic extends abstract_friction {
         return min(1.0, max(0.0, $short / $total));
     }
 
+    /**
+     * Build the empty-result payload when no deadlines exist.
+     *
+     * @param int $windowdays Window size in days.
+     * @return array Calculation result.
+     */
     private function empty_result(int $windowdays): array {
         return [
             'score' => 0,
             'breakdown' => [
-                'formula' => 'No deadlines detected.',
+                'formula' => $this->str('formula_f12_empty'),
                 'inputs' => [],
                 'notes' => $this->str('notes_f12', $windowdays),
             ],

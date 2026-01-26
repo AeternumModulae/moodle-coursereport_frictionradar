@@ -1,17 +1,29 @@
 <?php
+// This file is part of Moodle - https://moodle.org/
+//
+// Moodle is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Moodle is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Moodle.  If not, see <https://www.gnu.org/licenses/>.
+
 /**
- * Copyright (c) 2026 Jan Svoboda <jan.svoboda@bittra.de>
- * Project: Aeternum Modulae – https://aeternummodulae.com
+ * Friction Radar report.
  *
- * This file is part of the Aeternum Modulae Moodle plugin "Friction Radar".
- *
- * Licensed under the GNU General Public License v3.0 or later.
- * https://www.gnu.org/licenses/gpl-3.0.html
+ * @package    coursereport_frictionradar
+ * @copyright  2026 Jan Svoboda <jan.svoboda@bittra.de>
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-namespace tool_frictionradar\friction;
+namespace coursereport_frictionradar\friction;
 
-defined('MOODLE_INTERNAL') || die();
 
 /**
  * F06 – Zombie Quizzes / Zombie-Quizze
@@ -25,14 +37,29 @@ defined('MOODLE_INTERNAL') || die();
  *
  * score = clamp( round( 100 * (0.45*A + 0.35*B + 0.20*C) ), 0, 100 )
  */
-class f06_zombie_quizzes extends abstract_friction {
-
+class f06_zombie_quizzes extends abstract_friction
+{
+    /**
+     * Minimum number of participants to consider a quiz active.
+     */
     private const MIN_PARTICIPANTS = 3;
 
+    /**
+     * Return the friction key.
+     *
+     * @return string
+     */
     public function get_key(): string {
         return 'f06';
     }
 
+    /**
+     * Calculate score and breakdown for a course.
+     *
+     * @param int $courseid Course id.
+     * @param int $windowdays Window size in days.
+     * @return array Calculation result.
+     */
     public function calculate(int $courseid, int $windowdays): array {
         $since = time() - ($windowdays * DAYSECS);
 
@@ -43,13 +70,13 @@ class f06_zombie_quizzes extends abstract_friction {
             return [
                 'score' => 0,
                 'breakdown' => [
-                    'formula' =>
-                        "score = clamp( round( 100 * (0.45*A + 0.35*B + 0.20*C) ), 0, 100 )\n\n" .
-                        "A = zombie ratio (0 attempts)\n" .
-                        "B = abandonment ratio (1 - finished/total)\n" .
-                        "C = low participation ratio (< " . self::MIN_PARTICIPANTS . " learners)",
+                    'formula' => $this->str('formula_f06', self::MIN_PARTICIPANTS),
                     'inputs' => [
-                        ['key' => 'quizzes_total', 'label' => 'Visible quizzes (total)', 'value' => 0],
+                        [
+                            'key' => 'quizzes_total',
+                            'label' => $this->str('input_f06_quizzes_total'),
+                            'value' => 0,
+                        ],
                     ],
                     'notes' => $this->str('notes_f06', $windowdays),
                 ],
@@ -93,44 +120,60 @@ class f06_zombie_quizzes extends abstract_friction {
         }
 
         // A: quizzes with 0 attempts.
-        $A = min(1.0, max(0.0, $zombies / $totalquizzes));
+        $a = min(1.0, max(0.0, $zombies / $totalquizzes));
 
         // B: abandonment ratio.
         // If there are zero attempts overall, keep B at 0 (A already captures the issue).
         if ($attempttotal > 0) {
             $finishrate = min(1.0, max(0.0, $attemptfinished / $attempttotal));
-            $B = 1.0 - $finishrate;
+            $b = 1.0 - $finishrate;
         } else {
-            $B = 0.0;
+            $b = 0.0;
         }
 
         // C: low participation among quizzes that have at least one participant.
         // Normalize by total quizzes to keep it stable and simple.
-        $C = min(1.0, max(0.0, $lowpart / $totalquizzes));
+        $c = min(1.0, max(0.0, $lowpart / $totalquizzes));
 
         $score = $this->clamp(
             (int)round(
-                100 * (0.45 * $A + 0.35 * $B + 0.20 * $C)
+                100 * (0.45 * $a + 0.35 * $b + 0.20 * $c)
             )
         );
 
         return [
             'score' => $score,
             'breakdown' => [
-                'formula' =>
-                    "score = clamp( round( 100 * (0.45*A + 0.35*B + 0.20*C) ), 0, 100 )\n\n" .
-                    "A = zombie ratio (quizzes with 0 attempts in window)\n" .
-                    "B = abandonment ratio (1 - finished/total attempts in window)\n" .
-                    "C = low participation ratio (quizzes with < " . self::MIN_PARTICIPANTS . " learners in window)",
+                'formula' => $this->str('formula_f06', self::MIN_PARTICIPANTS),
                 'inputs' => [
-                    ['key' => 'quizzes_total', 'label' => 'Visible quizzes (total)', 'value' => $totalquizzes],
-                    ['key' => 'zombies', 'label' => 'Quizzes with 0 attempts (window)', 'value' => $zombies],
-                    ['key' => 'attempts_total', 'label' => 'Attempts (window, students)', 'value' => $attempttotal],
-                    ['key' => 'attempts_finished', 'label' => 'Finished attempts (window)', 'value' => $attemptfinished],
-                    ['key' => 'low_participation_quizzes', 'label' => 'Quizzes with low participation', 'value' => $lowpart],
-                    ['key' => 'A', 'label' => 'Zombie ratio (0..1)', 'value' => round($A, 3)],
-                    ['key' => 'B', 'label' => 'Abandonment ratio (0..1)', 'value' => round($B, 3)],
-                    ['key' => 'C', 'label' => 'Low participation ratio (0..1)', 'value' => round($C, 3)],
+                    [
+                        'key' => 'quizzes_total',
+                        'label' => $this->str('input_f06_quizzes_total'),
+                        'value' => $totalquizzes,
+                    ],
+                    [
+                        'key' => 'zombies',
+                        'label' => $this->str('input_f06_zombies'),
+                        'value' => $zombies,
+                    ],
+                    [
+                        'key' => 'attempts_total',
+                        'label' => $this->str('input_f06_attempts_total'),
+                        'value' => $attempttotal,
+                    ],
+                    [
+                        'key' => 'attempts_finished',
+                        'label' => $this->str('input_f06_attempts_finished'),
+                        'value' => $attemptfinished,
+                    ],
+                    [
+                        'key' => 'low_participation_quizzes',
+                        'label' => $this->str('input_f06_low_participation'),
+                        'value' => $lowpart,
+                    ],
+                    ['key' => 'A', 'label' => $this->str('input_f06_a'), 'value' => round($a, 3)],
+                    ['key' => 'B', 'label' => $this->str('input_f06_b'), 'value' => round($b, 3)],
+                    ['key' => 'C', 'label' => $this->str('input_f06_c'), 'value' => round($c, 3)],
                 ],
                 'notes' => $this->str('notes_f06', $windowdays),
             ],
@@ -166,7 +209,7 @@ class f06_zombie_quizzes extends abstract_friction {
      * Attempt stats per quiz within window for student-like users.
      *
      * Returns map:
-     *  quizid => ['attempts'=>int, 'finished'=>int, 'participants'=>int]
+     *  quizid => ['attempts' => int, 'finished' => int, 'participants' => int]
      *
      * Student filtering:
      * - course context role assignments with archetype=student or shortname=student
@@ -178,7 +221,7 @@ class f06_zombie_quizzes extends abstract_friction {
             return [];
         }
 
-        list($insql, $params) = $DB->get_in_or_equal($quizids, SQL_PARAMS_NAMED, 'qid');
+        [$insql, $params] = $DB->get_in_or_equal($quizids, SQL_PARAMS_NAMED, 'qid');
 
         $sql = "SELECT
                     qa.quiz,

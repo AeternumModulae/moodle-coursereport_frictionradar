@@ -1,17 +1,29 @@
 <?php
+// This file is part of Moodle - https://moodle.org/
+//
+// Moodle is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Moodle is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Moodle.  If not, see <https://www.gnu.org/licenses/>.
+
 /**
- * Copyright (c) 2026 Jan Svoboda <jan.svoboda@bittra.de>
- * Project: Aeternum Modulae – https://aeternummodulae.com
+ * Friction Radar report.
  *
- * This file is part of the Aeternum Modulae Moodle plugin "Friction Radar".
- *
- * Licensed under the GNU General Public License v3.0 or later.
- * https://www.gnu.org/licenses/gpl-3.0.html
+ * @package    coursereport_frictionradar
+ * @copyright  2026 Jan Svoboda <jan.svoboda@bittra.de>
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-namespace tool_frictionradar\friction;
+namespace coursereport_frictionradar\friction;
 
-defined('MOODLE_INTERNAL') || die();
 
 /**
  * F02 – Didactic Bottlenecks / Didaktische Engstellen
@@ -21,40 +33,48 @@ defined('MOODLE_INTERNAL') || die();
  * B = support gap ratio (demanding items without nearby explanatory resources)
  * C = retry & delay signal (placeholder for now; can be replaced with log/attempt metrics later)
  */
-class f02_didactic_bottlenecks extends abstract_friction {
-
+class f02_didactic_bottlenecks extends abstract_friction
+{
+    /**
+     * Return the friction key.
+     *
+     * @return string
+     */
     public function get_key(): string {
         return 'f02';
     }
 
+    /**
+     * Calculate score and breakdown for a course.
+     *
+     * @param int $courseid Course id.
+     * @param int $windowdays Window size in days.
+     * @return array Calculation result.
+     */
     public function calculate(int $courseid, int $windowdays): array {
         // A: transitions between module types across the course sequence.
-        $A = $this->activity_transition_density($courseid); // 0..1
+        $a = $this->activity_transition_density($courseid); // 0..1
 
         // B: demanding items without nearby resource/label/page "support".
-        $B = $this->support_gap_ratio($courseid); // 0..1
+        $b = $this->support_gap_ratio($courseid); // 0..1
 
         // C: retry & delay signal (v1 placeholder, later use logstore/attempt tables).
-        $C = $this->retry_delay_signal($courseid, $windowdays); // 0..1
+        $c = $this->retry_delay_signal($courseid, $windowdays); // 0..1
 
         $score = $this->clamp(
             (int)round(
-                100 * (0.4 * $A + 0.35 * $B + 0.25 * $C)
+                100 * (0.4 * $a + 0.35 * $b + 0.25 * $c)
             )
         );
 
         return [
             'score' => $score,
             'breakdown' => [
-                'formula' =>
-                    "score = clamp( round( 100 * (0.4*A + 0.35*B + 0.25*C) ), 0, 100 )\n\n" .
-                    "A = activity transition density\n" .
-                    "B = support gap ratio\n" .
-                    "C = retry & delay signal",
+                'formula' => $this->str('formula_f02'),
                 'inputs' => [
-                    ['key' => 'A', 'label' => 'Activity transition density (0..1)', 'value' => round($A, 3)],
-                    ['key' => 'B', 'label' => 'Support gap ratio (0..1)', 'value' => round($B, 3)],
-                    ['key' => 'C', 'label' => 'Retry & delay signal (0..1)', 'value' => round($C, 3)],
+                    ['key' => 'A', 'label' => $this->str('input_f02_a'), 'value' => round($a, 3)],
+                    ['key' => 'B', 'label' => $this->str('input_f02_b'), 'value' => round($b, 3)],
+                    ['key' => 'C', 'label' => $this->str('input_f02_c'), 'value' => round($c, 3)],
                 ],
                 'notes' => $this->str('notes_f02', $windowdays),
             ],
@@ -175,7 +195,7 @@ class f02_didactic_bottlenecks extends abstract_friction {
             $demandingcount++;
 
             // Look around within +/-2 items for support.
-            $hasSupport = false;
+            $hassupport = false;
             $from = max(0, $i - 2);
             $to   = min($n - 1, $i + 2);
 
@@ -184,12 +204,12 @@ class f02_didactic_bottlenecks extends abstract_friction {
                     continue;
                 }
                 if (isset($support[$seq[$j]])) {
-                    $hasSupport = true;
+                    $hassupport = true;
                     break;
                 }
             }
 
-            if (!$hasSupport) {
+            if (!$hassupport) {
                 $unsupported++;
             }
         }

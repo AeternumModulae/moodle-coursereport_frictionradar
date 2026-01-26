@@ -79,8 +79,8 @@ By default, access is granted to:
 Students never see Friction Radar.
 
 Access is controlled via Moodle capabilities:
-- `tool/frictionradar:view`
-- `tool/frictionradar:export` (reserved for future use)
+- `coursereport/frictionradar:view`
+- `coursereport/frictionradar:export` (reserved for future use)
 
 ---
 
@@ -113,5 +113,4 @@ The plugin is suitable for GDPR-compliant environments.
 - Preparing course reviews or internal evaluations
 
 Friction Radar is intended as a **diagnostic instrument**, not as a performance ranking tool.
-
 

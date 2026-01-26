@@ -1,17 +1,29 @@
 <?php
+// This file is part of Moodle - https://moodle.org/
+//
+// Moodle is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Moodle is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Moodle.  If not, see <https://www.gnu.org/licenses/>.
+
 /**
- * Copyright (c) 2026 Jan Svoboda <jan.svoboda@bittra.de>
- * Project: Aeternum Modulae – https://aeternummodulae.com
+ * Friction Radar report.
  *
- * This file is part of the Aeternum Modulae Moodle plugin "Friction Radar".
- *
- * Licensed under the GNU General Public License v3.0 or later.
- * https://www.gnu.org/licenses/gpl-3.0.html
+ * @package    coursereport_frictionradar
+ * @copyright  2026 Jan Svoboda <jan.svoboda@bittra.de>
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-namespace tool_frictionradar\friction;
+namespace coursereport_frictionradar\friction;
 
-defined('MOODLE_INTERNAL') || die();
 
 /**
  * F05 – Participation Theatre / Passive Anwesenheit
@@ -25,8 +37,8 @@ defined('MOODLE_INTERNAL') || die();
  *
  * score = clamp( round( 100 * (0.5*A + 0.3*B + 0.2*C) ), 0, 100 )
  */
-class f05_participation_theatre extends abstract_friction {
-
+class f05_participation_theatre extends abstract_friction
+{
     /** Minimum views in window to count a user as "present". */
     private const MIN_VIEWS = 5;
 
@@ -44,10 +56,22 @@ class f05_participation_theatre extends abstract_friction {
         'attempted',
     ];
 
+    /**
+     * Return the friction key.
+     *
+     * @return string
+     */
     public function get_key(): string {
         return 'f05';
     }
 
+    /**
+     * Calculate score and breakdown for a course.
+     *
+     * @param int $courseid Course id.
+     * @param int $windowdays Window size in days.
+     * @return array Calculation result.
+     */
     public function calculate(int $courseid, int $windowdays): array {
         $since = time() - ($windowdays * DAYSECS);
 
@@ -56,45 +80,45 @@ class f05_participation_theatre extends abstract_friction {
         $viewers = (int)$stats['viewers'];
         $passive = (int)$stats['passive'];
         $engaged = (int)$stats['engaged'];
-        $substantiveTotal = (int)$stats['substantive_total'];
+        $substantivetotal = (int)$stats['substantive_total'];
 
         // A: passive viewer ratio.
-        $A = ($viewers > 0) ? ($passive / $viewers) : 0.0;
-        $A = min(1.0, max(0.0, $A));
+        $a = ($viewers > 0) ? ($passive / $viewers) : 0.0;
+        $a = min(1.0, max(0.0, $a));
 
         // B: interaction depth (inverse).
-        // avg substantive per viewer, normalized by /5 (>=5 is "good enough"), then inverted.
-        $avgSub = ($viewers > 0) ? ($substantiveTotal / $viewers) : 0.0;
-        $depthNorm = min(1.0, max(0.0, $avgSub / 5.0));
-        $B = 1.0 - $depthNorm;
+        // Avg substantive per viewer, normalized by /5 (>=5 is "good enough"), then inverted.
+        $avgsub = ($viewers > 0) ? ($substantivetotal / $viewers) : 0.0;
+        $depthnorm = min(1.0, max(0.0, $avgsub / 5.0));
+        $b = 1.0 - $depthnorm;
 
         // C: engagement gap (viewers minus engaged).
-        $C = ($viewers > 0) ? (1.0 - min(1.0, max(0.0, $engaged / $viewers))) : 0.0;
+        $c = ($viewers > 0) ? (1.0 - min(1.0, max(0.0, $engaged / $viewers))) : 0.0;
 
         $score = $this->clamp(
             (int)round(
-                100 * (0.5 * $A + 0.3 * $B + 0.2 * $C)
+                100 * (0.5 * $a + 0.3 * $b + 0.2 * $c)
             )
         );
 
         return [
             'score' => $score,
             'breakdown' => [
-                'formula' =>
-                    "score = clamp( round( 100 * (0.5*A + 0.3*B + 0.2*C) ), 0, 100 )\n\n" .
-                    "A = passive viewer ratio\n" .
-                    "B = low interaction depth (inverse of avg substantive actions)\n" .
-                    "C = engagement gap (viewers vs engaged)",
+                'formula' => $this->str('formula_f05'),
                 'inputs' => [
-                    ['key' => 'min_views', 'label' => 'Viewer threshold (min views)', 'value' => self::MIN_VIEWS],
-                    ['key' => 'viewers', 'label' => 'Viewers (>= min views)', 'value' => $viewers],
-                    ['key' => 'passive', 'label' => 'Passive viewers (0 substantive)', 'value' => $passive],
-                    ['key' => 'engaged', 'label' => 'Engaged users (>=1 substantive)', 'value' => $engaged],
-                    ['key' => 'substantive_total', 'label' => 'Total substantive actions', 'value' => $substantiveTotal],
-                    ['key' => 'avg_sub', 'label' => 'Avg substantive per viewer', 'value' => round($avgSub, 2)],
-                    ['key' => 'A', 'label' => 'Passive viewer ratio (0..1)', 'value' => round($A, 3)],
-                    ['key' => 'B', 'label' => 'Low interaction depth (0..1)', 'value' => round($B, 3)],
-                    ['key' => 'C', 'label' => 'Engagement gap (0..1)', 'value' => round($C, 3)],
+                    ['key' => 'min_views', 'label' => $this->str('input_f05_min_views'), 'value' => self::MIN_VIEWS],
+                    ['key' => 'viewers', 'label' => $this->str('input_f05_viewers'), 'value' => $viewers],
+                    ['key' => 'passive', 'label' => $this->str('input_f05_passive'), 'value' => $passive],
+                    ['key' => 'engaged', 'label' => $this->str('input_f05_engaged'), 'value' => $engaged],
+                    [
+                        'key' => 'substantive_total',
+                        'label' => $this->str('input_f05_substantive_total'),
+                        'value' => $substantivetotal,
+                    ],
+                    ['key' => 'avg_sub', 'label' => $this->str('input_f05_avg_sub'), 'value' => round($avgsub, 2)],
+                    ['key' => 'A', 'label' => $this->str('input_f05_a'), 'value' => round($a, 3)],
+                    ['key' => 'B', 'label' => $this->str('input_f05_b'), 'value' => round($b, 3)],
+                    ['key' => 'C', 'label' => $this->str('input_f05_c'), 'value' => round($c, 3)],
                 ],
                 'notes' => $this->str('notes_f05', $windowdays),
             ],
@@ -118,7 +142,7 @@ class f05_participation_theatre extends abstract_friction {
         global $DB;
 
         // Prepare IN (...) for substantive actions.
-        list($actionsql, $actionparams) = $DB->get_in_or_equal(
+        [$actionsql, $actionparams] = $DB->get_in_or_equal(
             self::SUBSTANTIVE_ACTIONS,
             SQL_PARAMS_NAMED,
             'act'
@@ -157,7 +181,7 @@ class f05_participation_theatre extends abstract_friction {
         $viewers = 0;
         $passive = 0;
         $engaged = 0;
-        $substantiveTotal = 0;
+        $substantivetotal = 0;
 
         foreach ($rows as $r) {
             $views = (int)($r->views ?? 0);
@@ -168,7 +192,7 @@ class f05_participation_theatre extends abstract_friction {
             }
 
             $viewers++;
-            $substantiveTotal += $sub;
+            $substantivetotal += $sub;
 
             if ($sub <= 0) {
                 $passive++;
@@ -181,7 +205,7 @@ class f05_participation_theatre extends abstract_friction {
             'viewers' => $viewers,
             'passive' => $passive,
             'engaged' => $engaged,
-            'substantive_total' => $substantiveTotal,
+            'substantive_total' => $substantivetotal,
         ];
     }
 }

@@ -1,53 +1,72 @@
 <?php
+// This file is part of Moodle - https://moodle.org/
+//
+// Moodle is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Moodle is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Moodle.  If not, see <https://www.gnu.org/licenses/>.
+
 /**
- * Copyright (c) 2026 Jan Svoboda <jan.svoboda@bittra.de>
- * Project: Aeternum Modulae – https://aeternummodulae.com
+ * Friction Radar report.
  *
- * This file is part of the Aeternum Modulae Moodle plugin "Friction Radar".
- *
- * Licensed under the GNU General Public License v3.0 or later.
- * https://www.gnu.org/licenses/gpl-3.0.html
+ * @package    coursereport_frictionradar
+ * @copyright  2026 Jan Svoboda <jan.svoboda@bittra.de>
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-namespace tool_frictionradar\friction;
+namespace coursereport_frictionradar\friction;
 
-defined('MOODLE_INTERNAL') || die();
 
 /**
  * F07 – Unclear Expectations / Unklare Erwartungen
  *
  * Measures how clearly expectations are communicated structurally.
  */
-class f07_unclear_expectations extends abstract_friction {
-
+class f07_unclear_expectations extends abstract_friction
+{
+    /**
+     * Return the friction key.
+     *
+     * @return string
+     */
     public function get_key(): string {
         return 'f07';
     }
 
+    /**
+     * Calculate score and breakdown for a course.
+     *
+     * @param int $courseid Course id.
+     * @param int $windowdays Window size in days.
+     * @return array Calculation result.
+     */
     public function calculate(int $courseid, int $windowdays): array {
-
-        $A = $this->mandatory_without_due_dates($courseid); // 0..1
-        $B = $this->graded_without_description($courseid);  // 0..1
-        $C = $this->missing_expectation_anchor($courseid);  // 0..1
+        $a = $this->mandatory_without_due_dates($courseid); // Normalized 0..1.
+        $b = $this->graded_without_description($courseid); // Normalized 0..1.
+        $c = $this->missing_expectation_anchor($courseid); // Normalized 0..1.
 
         $score = $this->clamp(
             (int)round(
-                100 * (0.45 * $A + 0.35 * $B + 0.20 * $C)
+                100 * (0.45 * $a + 0.35 * $b + 0.20 * $c)
             )
         );
 
         return [
             'score' => $score,
             'breakdown' => [
-                'formula' =>
-                    "score = clamp( round( 100 * (0.45*A + 0.35*B + 0.20*C) ), 0, 100 )\n\n" .
-                    "A = mandatory activities without due dates\n" .
-                    "B = graded activities without description\n" .
-                    "C = missing central expectation anchor",
+                'formula' => $this->str('formula_f07'),
                 'inputs' => [
-                    ['key'=>'A','label'=>'Mandatory activities without due date (ratio)','value'=>round($A,3)],
-                    ['key'=>'B','label'=>'Graded activities without description (ratio)','value'=>round($B,3)],
-                    ['key'=>'C','label'=>'Missing expectation anchor (0 or 1)','value'=>$C],
+                    ['key' => 'A', 'label' => $this->str('input_f07_a'), 'value' => round($a, 3)],
+                    ['key' => 'B', 'label' => $this->str('input_f07_b'), 'value' => round($b, 3)],
+                    ['key' => 'C', 'label' => $this->str('input_f07_c'), 'value' => $c],
                 ],
                 'notes' => $this->str('notes_f07', $windowdays),
             ],
@@ -73,7 +92,7 @@ class f07_unclear_expectations extends abstract_friction {
                    AND cm.deletioninprogress = 0
                    AND cm.completion <> 0";
 
-        $cms = $DB->get_records_sql($sql, ['courseid'=>$courseid]);
+        $cms = $DB->get_records_sql($sql, ['courseid' => $courseid]);
 
         if (!$cms) {
             return 0.0;
@@ -90,16 +109,16 @@ class f07_unclear_expectations extends abstract_friction {
 
             switch ($cm->modname) {
                 case 'assign':
-                    $duedate = $DB->get_field('assign', 'duedate', ['id'=>$cm->instance]);
+                    $duedate = $DB->get_field('assign', 'duedate', ['id' => $cm->instance]);
                     break;
                 case 'quiz':
-                    $duedate = $DB->get_field('quiz', 'timeclose', ['id'=>$cm->instance]);
+                    $duedate = $DB->get_field('quiz', 'timeclose', ['id' => $cm->instance]);
                     break;
                 case 'lesson':
-                    $duedate = $DB->get_field('lesson', 'deadline', ['id'=>$cm->instance]);
+                    $duedate = $DB->get_field('lesson', 'deadline', ['id' => $cm->instance]);
                     break;
                 case 'workshop':
-                    $duedate = $DB->get_field('workshop', 'submissionend', ['id'=>$cm->instance]);
+                    $duedate = $DB->get_field('workshop', 'submissionend', ['id' => $cm->instance]);
                     break;
                 default:
                     // Other mandatory modules typically have no due date concept.
@@ -189,12 +208,16 @@ class f07_unclear_expectations extends abstract_friction {
     private function missing_expectation_anchor(int $courseid): int {
         global $DB;
 
-        $section0 = $DB->get_record('course_sections', [
-            'course'=>$courseid,
-            'section'=>0
-        ], 'id, summary');
+        $section0 = $DB->get_record(
+            'course_sections',
+            [
+                'course' => $courseid,
+                'section' => 0,
+            ],
+            'id, summary'
+        );
 
-        $hasSummary = !empty(trim(strip_tags((string)($section0->summary ?? ''))));
+        $hassummary = !empty(trim(strip_tags((string)($section0->summary ?? ''))));
 
         $sql = "SELECT COUNT(cm.id)
                   FROM {course_modules} cm
@@ -206,8 +229,8 @@ class f07_unclear_expectations extends abstract_friction {
                    AND cm.deletioninprogress = 0
                    AND m.name IN ('page','book','resource','url','label')";
 
-        $hasResource = ((int)$DB->get_field_sql($sql, ['courseid'=>$courseid])) > 0;
+        $hasresource = ((int)$DB->get_field_sql($sql, ['courseid' => $courseid])) > 0;
 
-        return ($hasSummary || $hasResource) ? 0 : 1;
+        return ($hassummary || $hasresource) ? 0 : 1;
     }
 }

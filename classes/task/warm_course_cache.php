@@ -1,25 +1,51 @@
 <?php
+// This file is part of Moodle - https://moodle.org/
+//
+// Moodle is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Moodle is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Moodle.  If not, see <https://www.gnu.org/licenses/>.
+
 /**
- * Copyright (c) 2026 Jan Svoboda <jan.svoboda@bittra.de>
- * Project: Aeternum Modulae – https://aeternummodulae.com
+ * Friction Radar report.
  *
- * This file is part of the Aeternum Modulae Moodle plugin "Friction Radar".
- *
- * Licensed under the GNU General Public License v3.0 or later.
- * https://www.gnu.org/licenses/gpl-3.0.html
+ * @package    coursereport_frictionradar
+ * @copyright  2026 Jan Svoboda <jan.svoboda@bittra.de>
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-namespace tool_frictionradar\task;
+namespace coursereport_frictionradar\task;
 
-use tool_frictionradar\service\friction_cache;
+use coursereport_frictionradar\service\friction_cache;
 
-defined('MOODLE_INTERNAL') || die();
 
-class warm_course_cache extends \core\task\adhoc_task {
+/**
+ * Ad-hoc task for warming a single course cache.
+ *
+ * @package    coursereport_frictionradar
+ */
+class warm_course_cache extends \core\task\adhoc_task
+{
+    /**
+     * Get the task name for display.
+     *
+     * @return string
+     */
     public function get_name(): string {
-        return get_string('task_warm_course', 'tool_frictionradar');
+        return get_string('task_warm_course', 'coursereport_frictionradar');
     }
 
+    /**
+     * Execute the task.
+     */
     public function execute(): void {
         $data = $this->get_custom_data();
         $courseid = isset($data->courseid) ? (int)$data->courseid : 0;

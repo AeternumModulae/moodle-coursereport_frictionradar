@@ -1,59 +1,90 @@
 <?php
+// This file is part of Moodle - https://moodle.org/
+//
+// Moodle is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Moodle is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Moodle.  If not, see <https://www.gnu.org/licenses/>.
+
 /**
- * Copyright (c) 2026 Jan Svoboda <jan.svoboda@bittra.de>
- * Project: Aeternum Modulae – https://aeternummodulae.com
+ * Friction Radar report.
  *
- * This file is part of the Aeternum Modulae Moodle plugin "Friction Radar".
- *
- * Licensed under the GNU General Public License v3.0 or later.
- * https://www.gnu.org/licenses/gpl-3.0.html
+ * @package    coursereport_frictionradar
+ * @copyright  2026 Jan Svoboda <jan.svoboda@bittra.de>
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-namespace tool_frictionradar\friction;
+namespace coursereport_frictionradar\friction;
 
-defined('MOODLE_INTERNAL') || die();
 
 /**
  * F09 – Resource Overload / Ressourcenüberversorgung
  *
  * Measures whether learners are flooded with resources relative to structure and activities.
  */
-class f09_resource_overload extends abstract_friction {
-
+class f09_resource_overload extends abstract_friction
+{
+    /**
+     * Return the friction key.
+     *
+     * @return string
+     */
     public function get_key(): string {
         return 'f09';
     }
 
+    /**
+     * Calculate score and breakdown for a course.
+     *
+     * @param int $courseid Course id.
+     * @param int $windowdays Window size in days.
+     * @return array Calculation result.
+     */
     public function calculate(int $courseid, int $windowdays): array {
-
         $stats = $this->resource_stats($courseid);
 
-        $A = $this->resource_density($stats);    // 0..1
-        $B = $this->resource_share($stats);      // 0..1
-        $C = $this->resource_redundancy($stats); // 0..1
+        $a = $this->resource_density($stats); // Normalized 0..1.
+        $b = $this->resource_share($stats); // Normalized 0..1.
+        $c = $this->resource_redundancy($stats); // Normalized 0..1.
 
         $score = $this->clamp(
             (int)round(
-                100 * (0.45 * $A + 0.35 * $B + 0.20 * $C)
+                100 * (0.45 * $a + 0.35 * $b + 0.20 * $c)
             )
         );
 
         return [
             'score' => $score,
             'breakdown' => [
-                'formula' =>
-                    "score = clamp( round( 100 * (0.45*A + 0.35*B + 0.20*C) ), 0, 100 )\n\n" .
-                    "A = resource density\n" .
-                    "B = resource share\n" .
-                    "C = resource redundancy proxy",
+                'formula' => $this->str('formula_f09'),
                 'inputs' => [
-                    ['key'=>'sections','label'=>'Non-empty sections','value'=>$stats['sections']],
-                    ['key'=>'modules_total','label'=>'Visible modules (total)','value'=>$stats['modules']],
-                    ['key'=>'resources_total','label'=>'Resources (total)','value'=>$stats['resources']],
-                    ['key'=>'resources_file','label'=>'File resources (resource)','value'=>$stats['resourcefiles']],
-                    ['key'=>'A','label'=>'Resource density (0..1)','value'=>round($A,3)],
-                    ['key'=>'B','label'=>'Resource share (0..1)','value'=>round($B,3)],
-                    ['key'=>'C','label'=>'Redundancy proxy (0..1)','value'=>round($C,3)],
+                    ['key' => 'sections', 'label' => $this->str('input_f09_sections'), 'value' => $stats['sections']],
+                    [
+                        'key' => 'modules_total',
+                        'label' => $this->str('input_f09_modules_total'),
+                        'value' => $stats['modules'],
+                    ],
+                    [
+                        'key' => 'resources_total',
+                        'label' => $this->str('input_f09_resources_total'),
+                        'value' => $stats['resources'],
+                    ],
+                    [
+                        'key' => 'resources_file',
+                        'label' => $this->str('input_f09_resources_file'),
+                        'value' => $stats['resourcefiles'],
+                    ],
+                    ['key' => 'A', 'label' => $this->str('input_f09_a'), 'value' => round($a, 3)],
+                    ['key' => 'B', 'label' => $this->str('input_f09_b'), 'value' => round($b, 3)],
+                    ['key' => 'C', 'label' => $this->str('input_f09_c'), 'value' => round($c, 3)],
                 ],
                 'notes' => $this->str('notes_f09', $windowdays),
             ],
@@ -79,7 +110,7 @@ class f09_resource_overload extends abstract_friction {
                   AND cs.section >= 0
                 GROUP BY cs.id";
 
-        $rows = $DB->get_records_sql($sql, ['courseid'=>$courseid]);
+        $rows = $DB->get_records_sql($sql, ['courseid' => $courseid]);
 
         $sections = 0;
         $modules = 0;
@@ -95,7 +126,10 @@ class f09_resource_overload extends abstract_friction {
         // Count resource-type modules.
         // Define "resources" broadly: resource (file), page, url, book, folder, label.
         $sql = "SELECT
-                    SUM(CASE WHEN m.name IN ('resource','page','url','book','folder','label') THEN 1 ELSE 0 END) AS resources,
+                    SUM(
+                        CASE WHEN m.name IN ('resource','page','url','book','folder','label')
+                             THEN 1 ELSE 0 END
+                    ) AS resources,
                     SUM(CASE WHEN m.name = 'resource' THEN 1 ELSE 0 END) AS resourcefiles
                 FROM {course_modules} cm
                 JOIN {modules} m ON m.id = cm.module
@@ -103,7 +137,7 @@ class f09_resource_overload extends abstract_friction {
                  AND cm.visible = 1
                  AND cm.deletioninprogress = 0";
 
-        $r = $DB->get_record_sql($sql, ['courseid'=>$courseid]);
+        $r = $DB->get_record_sql($sql, ['courseid' => $courseid]);
 
         $resources = (int)($r->resources ?? 0);
         $resourcefiles = (int)($r->resourcefiles ?? 0);
