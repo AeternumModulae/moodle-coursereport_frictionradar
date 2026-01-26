@@ -36,8 +36,20 @@ class tasks_test extends advanced_testcase
         global $DB;
 
         $generator = $this->getDataGenerator();
-        $course1 = $generator->create_course(['visible' => 1]);
-        $course2 = $generator->create_course(['visible' => 0]);
+        $now = time();
+        $course1 = $generator->create_course(['visible' => 1, 'startdate' => $now - DAYSECS]);
+        $course2 = $generator->create_course(['visible' => 0, 'startdate' => $now - DAYSECS]);
+
+        \core\event\course_viewed::create([
+            'courseid' => $course1->id,
+            'context' => \context_course::instance($course1->id),
+            'objectid' => $course1->id,
+        ])->trigger();
+        \core\event\course_viewed::create([
+            'courseid' => $course2->id,
+            'context' => \context_course::instance($course2->id),
+            'objectid' => $course2->id,
+        ])->trigger();
 
         // Run the scheduled task.
         $task = new queue_cache_warmers();
