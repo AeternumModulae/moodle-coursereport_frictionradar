@@ -43,7 +43,9 @@ jobs:
           vendor/bin/phpcs --config-set installed_paths vendor/moodlehq/moodle-coding-standard
 
       - name: Run PHPCS
-        run: vendor/bin/phpcs -q --standard=.github/phpcs.xml --ignore=vendor/* .
+        env:
+          PHPCS_BOOTSTRAP: .github/phpcs-bootstrap.php
+        run: vendor/bin/phpcs -q --standard=.github/phpcs.xml --bootstrap=.github/phpcs-bootstrap.php --ignore=vendor/* .
 
       - name: Run PHPMD
         run: vendor/bin/phpmd . text .github/phpmd.xml --exclude vendor
