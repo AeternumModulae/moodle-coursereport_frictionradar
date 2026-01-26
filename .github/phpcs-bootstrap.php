@@ -108,8 +108,15 @@ spl_autoload_register(function ($class) {
 
     $category = array_shift($segments);
     $sniff = implode('_', $segments);
-    $target = $standard . '\\Sniffs\\' . $category . '\\' . $sniff;
-    if (class_exists($target)) {
-        class_alias($target, $class);
+    $targets = [
+        'PHP_CodeSniffer\\Standards\\' . $standard . '\\Sniffs\\' . $category . '\\' . $sniff,
+        $standard . '\\Sniffs\\' . $category . '\\' . $sniff,
+    ];
+
+    foreach ($targets as $target) {
+        if (class_exists($target)) {
+            class_alias($target, $class);
+            return;
+        }
     }
 });
