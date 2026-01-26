@@ -1,4 +1,10 @@
 <?php
+// Load Composer autoload so external standards can be resolved.
+$composerAutoload = dirname(__DIR__) . '/vendor/autoload.php';
+if (file_exists($composerAutoload)) {
+    require_once $composerAutoload;
+}
+
 // Backward-compat shim for older Moodle sniffs that reference this class name.
 if (!class_exists('PHP_CodeSniffer_Exception')) {
     if (class_exists('PHP_CodeSniffer\\Exceptions\\RuntimeException')) {
