@@ -21,10 +21,6 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-use context_system;
-use moodle_page;
-
-
 /**
  * Basic smoke tests for the renderer output.
  */
