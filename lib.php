@@ -21,6 +21,13 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use context;
+use context_course;
+use moodle_url;
+use navigation_node;
+use pix_icon;
+use settings_navigation;
+
 /**
  * Add entry into the course settings navigation (Course administration).
  *
