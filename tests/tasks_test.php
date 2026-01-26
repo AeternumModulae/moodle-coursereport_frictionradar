@@ -43,12 +43,10 @@ class tasks_test extends advanced_testcase
         \core\event\course_viewed::create([
             'courseid' => $course1->id,
             'context' => \context_course::instance($course1->id),
-            'objectid' => $course1->id,
         ])->trigger();
         \core\event\course_viewed::create([
             'courseid' => $course2->id,
             'context' => \context_course::instance($course2->id),
-            'objectid' => $course2->id,
         ])->trigger();
 
         // Run the scheduled task.
