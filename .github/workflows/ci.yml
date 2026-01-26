@@ -21,7 +21,10 @@ jobs:
       - name: Install QA tools
         run: |
           composer init --no-interaction --name coursereport/frictionradar --description "CI QA deps"
-          composer require --no-interaction --prefer-dist --no-progress --dev moodlehq/moodle-coding-standard:^3.5 phpmd/phpmd:^2.15
+          composer config repositories.moodle-coding-standard vcs https://github.com/moodlehq/moodle-coding-standard
+          composer config minimum-stability dev
+          composer config prefer-stable true
+          composer require --no-interaction --prefer-dist --no-progress --dev moodlehq/moodle-coding-standard:dev-main phpmd/phpmd:^2.15
 
       - name: Run PHPCS
         run: vendor/bin/phpcs -q --standard=.github/phpcs.xml --ignore=vendor/* .
