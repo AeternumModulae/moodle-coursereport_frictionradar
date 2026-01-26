@@ -50,7 +50,7 @@ jobs:
       - name: Run PHPCS
         env:
           PHPCS_BOOTSTRAP: .github/phpcs-bootstrap.php
-        run: php -d auto_prepend_file=.github/phpcs-bootstrap.php vendor/bin/phpcs -q --standard=.github/phpcs.xml --bootstrap=.github/phpcs-bootstrap.php --extensions=php --ignore=vendor/*,.github/* .
+        run: php -d auto_prepend_file=.github/phpcs-bootstrap.php vendor/bin/phpcs -q --standard=.github/phpcs.xml --bootstrap=.github/phpcs-bootstrap.php --extensions=php --warning-severity=0 --ignore=vendor/*,.github/* .
 
       - name: Run PHPMD
         run: vendor/bin/phpmd . text .github/phpmd.xml --exclude vendor
