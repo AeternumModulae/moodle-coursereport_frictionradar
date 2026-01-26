@@ -42,6 +42,7 @@ jobs:
           composer config prefer-stable true
           composer require --no-interaction --prefer-dist --no-progress --dev moodlehq/moodle-coding-standard:dev-master squizlabs/php_codesniffer:^3.10 phpmd/phpmd:^2.15 phpcompatibility/php-compatibility:^8.2
           vendor/bin/phpcs --config-set installed_paths vendor/moodlehq/moodle-coding-standard,vendor/phpcompatibility/php-compatibility
+          perl -pi -e "s/\\['content'\\]\\{([0-9]+)\\}/['content'][$1]/g" vendor/moodlehq/moodle-coding-standard/moodle/Sniffs/Commenting/InlineCommentSniff.php
 
       - name: Run PHPCS
         env:
