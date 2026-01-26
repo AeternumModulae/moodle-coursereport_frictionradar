@@ -56,9 +56,7 @@ class f01_cognitive_overload extends abstract_friction
         $score = $this->clamp(
             (int)round(
                 100 * (
-                    0.5 * $a['norm']
-                    + 0.3 * $b
-                    + 0.2 * $c['norm']
+                    0.5 * $a['norm'] + 0.3 * $b + 0.2 * $c['norm']
                 )
             )
         );
