@@ -25,7 +25,6 @@ jobs:
           php-version: ${{ matrix.php }}
           tools: composer
           ini-values: max_input_vars=5000
-          ini-values: max_input_vars=5000
 
       - name: Install QA tools
         env:
@@ -107,6 +106,7 @@ jobs:
         with:
           php-version: ${{ matrix.php }}
           tools: composer
+          ini-values: max_input_vars=5000
 
       - name: Install moodle-plugin-ci
         run: |
