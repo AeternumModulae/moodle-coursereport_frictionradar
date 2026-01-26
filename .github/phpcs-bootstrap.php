@@ -48,3 +48,15 @@ if (!interface_exists('PHP_CodeSniffer_Sniff')) {
         }
     }
 }
+
+if (!class_exists('PHP_CodeSniffer_Standards_AbstractVariableSniff')) {
+    if (class_exists('PHP_CodeSniffer\\Sniffs\\AbstractVariableSniff')) {
+        class PHP_CodeSniffer_Standards_AbstractVariableSniff extends PHP_CodeSniffer\Sniffs\AbstractVariableSniff
+        {
+        }
+    } else {
+        abstract class PHP_CodeSniffer_Standards_AbstractVariableSniff
+        {
+        }
+    }
+}
