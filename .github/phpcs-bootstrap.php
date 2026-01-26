@@ -60,3 +60,24 @@ if (!class_exists('PHP_CodeSniffer_Standards_AbstractVariableSniff')) {
         }
     }
 }
+
+// Map legacy PHPCompatibility class names to the namespaced equivalents.
+spl_autoload_register(function ($class) {
+    $prefix = 'PHPCompatibility_Sniffs_';
+    if (strpos($class, $prefix) !== 0) {
+        return;
+    }
+
+    $suffix = substr($class, strlen($prefix));
+    $parts = explode('_', $suffix);
+    if (count($parts) < 2) {
+        return;
+    }
+
+    $standard = array_shift($parts);
+    $sniff = implode('_', $parts);
+    $target = "PHPCompatibility\\Sniffs\\{$standard}\\{$sniff}";
+    if (class_exists($target)) {
+        class_alias($target, $class);
+    }
+});
