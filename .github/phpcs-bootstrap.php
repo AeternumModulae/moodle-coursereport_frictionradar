@@ -28,6 +28,16 @@ if (!class_exists('PHP_CodeSniffer_File')) {
     });
 }
 
+if (!class_exists('PHP_CodeSniffer_Tokens')) {
+    spl_autoload_register(function ($class) {
+        if ($class !== 'PHP_CodeSniffer_Tokens') {
+            return;
+        }
+
+        class_alias('PHP_CodeSniffer\\Util\\Tokens', 'PHP_CodeSniffer_Tokens');
+    });
+}
+
 // Legacy Moodle sniffs expect these class names from PHPCS 2.x.
 if (!class_exists('PHP_CodeSniffer_Standards_AbstractPatternSniff')) {
     spl_autoload_register(function ($class) {
