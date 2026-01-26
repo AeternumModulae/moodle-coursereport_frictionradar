@@ -1,0 +1,10 @@
+{
+  "name": "coursereport-frictionradar",
+  "private": true,
+  "scripts": {
+    "lint:js": "eslint amd/src"
+  },
+  "devDependencies": {
+    "eslint": "^8.57.0"
+  }
+}

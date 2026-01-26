@@ -86,6 +86,8 @@ Access is controlled via Moodle capabilities:
 
 ### Installation
 
+Requires Moodle 4.5 or later.
+
 1. Copy the plugin folder to: course/report/frictionradar
 2. Visit **Site administration → Notifications** to complete installation.
 3. Ensure Moodle cron is running regularly.
@@ -113,4 +115,3 @@ The plugin is suitable for GDPR-compliant environments.
 - Preparing course reviews or internal evaluations
 
 Friction Radar is intended as a **diagnostic instrument**, not as a performance ranking tool.
-
