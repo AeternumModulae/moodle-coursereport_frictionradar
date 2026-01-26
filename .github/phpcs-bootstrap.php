@@ -77,6 +77,17 @@ if (!class_exists('PHP_CodeSniffer_Standards_AbstractVariableSniff')) {
     }
 }
 
+if (!class_exists('PHPCompatibility_Sniff')) {
+    $phpcompatSniff = dirname(__DIR__) . '/vendor/phpcompatibility/php-compatibility/PHPCompatibility/Sniff.php';
+    if (file_exists($phpcompatSniff)) {
+        require_once $phpcompatSniff;
+    }
+
+    if (!class_exists('PHPCompatibility_Sniff') && class_exists('PHPCompatibility\\Sniffs\\Sniff')) {
+        class_alias('PHPCompatibility\\Sniffs\\Sniff', 'PHPCompatibility_Sniff');
+    }
+}
+
 // Map legacy PHPCompatibility class names to the namespaced equivalents.
 spl_autoload_register(function ($class) {
     $prefix = 'PHPCompatibility_Sniffs_';
