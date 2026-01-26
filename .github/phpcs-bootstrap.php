@@ -87,3 +87,29 @@ spl_autoload_register(function ($class) {
         class_alias($target, $class);
     }
 });
+
+// Map legacy "<Standard>_Sniffs_*" class names to namespaced sniffs.
+spl_autoload_register(function ($class) {
+    if (strpos($class, '_Sniffs_') === false) {
+        return;
+    }
+
+    $parts = explode('_Sniffs_', $class, 2);
+    if (count($parts) !== 2) {
+        return;
+    }
+
+    $standard = $parts[0];
+    $rest = $parts[1];
+    $segments = explode('_', $rest);
+    if (count($segments) < 2) {
+        return;
+    }
+
+    $category = array_shift($segments);
+    $sniff = implode('_', $segments);
+    $target = $standard . '\\Sniffs\\' . $category . '\\' . $sniff;
+    if (class_exists($target)) {
+        class_alias($target, $class);
+    }
+});
