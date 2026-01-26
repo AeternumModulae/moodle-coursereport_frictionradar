@@ -39,8 +39,8 @@ jobs:
           composer config repositories.moodle-coding-standard '{"type":"package","package":{"name":"moodlehq/moodle-coding-standard","version":"dev-master","dist":{"url":"https://github.com/open-lms-open-source/moodle-coding-standard/archive/refs/heads/master.zip","type":"zip"}}}'
           composer config minimum-stability dev
           composer config prefer-stable true
-          composer require --no-interaction --prefer-dist --no-progress --dev moodlehq/moodle-coding-standard:dev-master squizlabs/php_codesniffer:^3.10 phpmd/phpmd:^2.15
-          vendor/bin/phpcs --config-set installed_paths vendor/moodlehq/moodle-coding-standard
+          composer require --no-interaction --prefer-dist --no-progress --dev moodlehq/moodle-coding-standard:dev-master squizlabs/php_codesniffer:^3.10 phpmd/phpmd:^2.15 phpcompatibility/php-compatibility:^9.3.5
+          vendor/bin/phpcs --config-set installed_paths vendor/moodlehq/moodle-coding-standard,vendor/phpcompatibility/php-compatibility
 
       - name: Run PHPCS
         env:
