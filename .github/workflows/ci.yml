@@ -37,11 +37,11 @@ jobs:
           composer config --global github-protocols https
           composer config --global preferred-install dist
           composer init --no-interaction --name coursereport/frictionradar --description "CI QA deps"
-          composer config repositories.moodle-coding-standard '{"type":"package","package":{"name":"moodlehq/moodle-coding-standard","version":"dev-master","dist":{"url":"https://github.com/moodlehq/moodle-coding-standard/archive/refs/heads/master.zip","type":"zip"}}}'
+          composer config repositories.moodle-coding-standard '{"type":"package","package":{"name":"moodlehq/moodle-coding-standard","version":"dev-main","dist":{"url":"https://github.com/moodlehq/moodle-coding-standard/archive/refs/heads/main.zip","type":"zip"}}}'
           composer config minimum-stability dev
           composer config prefer-stable true
           composer config allow-plugins.dealerdirect/phpcodesniffer-composer-installer true
-          composer require --no-interaction --prefer-dist --no-progress --dev moodlehq/moodle-coding-standard:dev-master squizlabs/php_codesniffer:^3.10 phpmd/phpmd:^2.15 dealerdirect/phpcodesniffer-composer-installer:^1.0
+          composer require --no-interaction --prefer-dist --no-progress --dev moodlehq/moodle-coding-standard:dev-main squizlabs/php_codesniffer:^3.10 phpmd/phpmd:^2.15 dealerdirect/phpcodesniffer-composer-installer:^1.0
 
       - name: Run PHPCS
         run: vendor/bin/phpcs -q --standard=.github/phpcs.xml --ignore=vendor/* .
