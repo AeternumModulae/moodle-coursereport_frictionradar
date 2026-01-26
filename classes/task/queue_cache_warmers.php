@@ -60,7 +60,6 @@ class queue_cache_warmers extends \core\task\scheduled_task
                 AND c.startdate <= :nowstart
                 AND (c.enddate = 0 OR c.enddate >= :nowend)
            GROUP BY c.id
-          HAVING MAX(l.timecreated) IS NOT NULL
            ORDER BY lastactivity DESC, c.id ASC",
             ['nowstart' => $now, 'nowend' => $now, 'since' => $since],
             0,
