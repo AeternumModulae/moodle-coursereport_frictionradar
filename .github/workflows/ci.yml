@@ -40,6 +40,7 @@ jobs:
           composer config minimum-stability dev
           composer config prefer-stable true
           composer require --no-interaction --prefer-dist --no-progress --dev moodlehq/moodle-coding-standard:dev-master squizlabs/php_codesniffer:^3.10 phpmd/phpmd:^2.15
+          vendor/bin/phpcs --config-set installed_paths vendor/moodlehq/moodle-coding-standard
 
       - name: Run PHPCS
         run: vendor/bin/phpcs -q --standard=.github/phpcs.xml --ignore=vendor/* .
