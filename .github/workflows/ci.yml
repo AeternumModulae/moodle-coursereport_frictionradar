@@ -36,7 +36,7 @@ jobs:
           composer config --global github-protocols https
           composer config --global preferred-install dist
           composer init --no-interaction --name coursereport/frictionradar --description "CI QA deps"
-          composer config repositories.moodle-coding-standard '{"type":"package","package":{"name":"moodlehq/moodle-coding-standard","version":"dev-master","dist":{"url":"https://github.com/moodlehq/moodle-coding-standard/archive/refs/heads/master.zip","type":"zip"}}}'
+          composer config repositories.moodle-coding-standard '{"type":"package","package":{"name":"moodlehq/moodle-coding-standard","version":"dev-master","dist":{"url":"https://github.com/open-lms-open-source/moodle-coding-standard/archive/refs/heads/master.zip","type":"zip"}}}'
           composer config minimum-stability dev
           composer config prefer-stable true
           composer require --no-interaction --prefer-dist --no-progress --dev moodlehq/moodle-coding-standard:dev-master phpmd/phpmd:^2.15
