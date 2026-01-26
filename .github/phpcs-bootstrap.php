@@ -11,3 +11,28 @@ if (!class_exists('PHP_CodeSniffer_Exception')) {
         }
     }
 }
+
+// Legacy Moodle sniffs expect these class names from PHPCS 2.x.
+if (!class_exists('PHP_CodeSniffer_Standards_AbstractPatternSniff')) {
+    if (class_exists('PHP_CodeSniffer\\Sniffs\\AbstractPatternSniff')) {
+        class PHP_CodeSniffer_Standards_AbstractPatternSniff extends PHP_CodeSniffer\Sniffs\AbstractPatternSniff
+        {
+        }
+    } else {
+        abstract class PHP_CodeSniffer_Standards_AbstractPatternSniff
+        {
+        }
+    }
+}
+
+if (!class_exists('PHP_CodeSniffer_Standards_AbstractScopeSniff')) {
+    if (class_exists('PHP_CodeSniffer\\Sniffs\\AbstractScopeSniff')) {
+        class PHP_CodeSniffer_Standards_AbstractScopeSniff extends PHP_CodeSniffer\Sniffs\AbstractScopeSniff
+        {
+        }
+    } else {
+        abstract class PHP_CodeSniffer_Standards_AbstractScopeSniff
+        {
+        }
+    }
+}
