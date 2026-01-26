@@ -30,27 +30,23 @@ if (!class_exists('PHP_CodeSniffer_File')) {
 
 // Legacy Moodle sniffs expect these class names from PHPCS 2.x.
 if (!class_exists('PHP_CodeSniffer_Standards_AbstractPatternSniff')) {
-    if (class_exists('PHP_CodeSniffer\\Sniffs\\AbstractPatternSniff')) {
-        class PHP_CodeSniffer_Standards_AbstractPatternSniff extends PHP_CodeSniffer\Sniffs\AbstractPatternSniff
-        {
+    spl_autoload_register(function ($class) {
+        if ($class !== 'PHP_CodeSniffer_Standards_AbstractPatternSniff') {
+            return;
         }
-    } else {
-        abstract class PHP_CodeSniffer_Standards_AbstractPatternSniff
-        {
-        }
-    }
+
+        class_alias('PHP_CodeSniffer\\Sniffs\\AbstractPatternSniff', $class);
+    });
 }
 
 if (!class_exists('PHP_CodeSniffer_Standards_AbstractScopeSniff')) {
-    if (class_exists('PHP_CodeSniffer\\Sniffs\\AbstractScopeSniff')) {
-        class PHP_CodeSniffer_Standards_AbstractScopeSniff extends PHP_CodeSniffer\Sniffs\AbstractScopeSniff
-        {
+    spl_autoload_register(function ($class) {
+        if ($class !== 'PHP_CodeSniffer_Standards_AbstractScopeSniff') {
+            return;
         }
-    } else {
-        abstract class PHP_CodeSniffer_Standards_AbstractScopeSniff
-        {
-        }
-    }
+
+        class_alias('PHP_CodeSniffer\\Sniffs\\AbstractScopeSniff', $class);
+    });
 }
 
 if (!interface_exists('PHP_CodeSniffer_Sniff')) {
@@ -66,15 +62,13 @@ if (!interface_exists('PHP_CodeSniffer_Sniff')) {
 }
 
 if (!class_exists('PHP_CodeSniffer_Standards_AbstractVariableSniff')) {
-    if (class_exists('PHP_CodeSniffer\\Sniffs\\AbstractVariableSniff')) {
-        class PHP_CodeSniffer_Standards_AbstractVariableSniff extends PHP_CodeSniffer\Sniffs\AbstractVariableSniff
-        {
+    spl_autoload_register(function ($class) {
+        if ($class !== 'PHP_CodeSniffer_Standards_AbstractVariableSniff') {
+            return;
         }
-    } else {
-        abstract class PHP_CodeSniffer_Standards_AbstractVariableSniff
-        {
-        }
-    }
+
+        class_alias('PHP_CodeSniffer\\Sniffs\\AbstractVariableSniff', $class);
+    });
 }
 
 if (!class_exists('PHPCompatibility_Sniff')) {
