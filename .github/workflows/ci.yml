@@ -122,7 +122,7 @@ jobs:
           --db-user ${{ matrix.db-user }}
           --db-pass ${{ matrix.db-pass }}
           --db-name ${{ matrix.db-name }}
-          --moodle-branch ${{ matrix.moodle-branch }}
+          --branch ${{ matrix.moodle-branch }}
 
       - name: Run PHPUnit
         run: moodle-plugin-ci phpunit
