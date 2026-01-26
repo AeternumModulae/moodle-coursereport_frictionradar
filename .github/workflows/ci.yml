@@ -59,6 +59,9 @@ jobs:
   phpunit:
     name: PHPUnit (MySQL/PostgreSQL)
     runs-on: ubuntu-latest
+    env:
+      LANG: en_AU.UTF-8
+      LC_ALL: en_AU.UTF-8
     strategy:
       fail-fast: false
       matrix:
@@ -107,6 +110,13 @@ jobs:
           php-version: ${{ matrix.php }}
           tools: composer
           ini-values: max_input_vars=5000
+
+      - name: Install locale
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y locales
+          sudo locale-gen en_AU.UTF-8
+          sudo update-locale LANG=en_AU.UTF-8
 
       - name: Install moodle-plugin-ci
         run: |
