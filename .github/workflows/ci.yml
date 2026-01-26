@@ -27,6 +27,8 @@ jobs:
       - name: Install QA tools
         run: |
           git config --global --unset-all http.https://github.com/.extraheader || true
+          git config --global url."https://github.com/".insteadOf "git@github.com:"
+          git config --global url."https://github.com/".insteadOf "ssh://git@github.com/"
           composer config --global github-protocols https
           composer init --no-interaction --name coursereport/frictionradar --description "CI QA deps"
           composer config repositories.moodle-coding-standard vcs https://github.com/moodlehq/moodle-coding-standard
