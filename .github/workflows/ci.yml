@@ -25,10 +25,14 @@ jobs:
           tools: composer
 
       - name: Install QA tools
+        env:
+          COMPOSER_AUTH: '{}'
+          GITHUB_TOKEN: ''
         run: |
           git config --global --unset-all http.https://github.com/.extraheader || true
           git config --global url."https://github.com/".insteadOf "git@github.com:"
           git config --global url."https://github.com/".insteadOf "ssh://git@github.com/"
+          git config --global credential.helper ""
           composer config --global github-protocols https
           composer init --no-interaction --name coursereport/frictionradar --description "CI QA deps"
           composer config repositories.moodle-coding-standard vcs https://github.com/moodlehq/moodle-coding-standard
