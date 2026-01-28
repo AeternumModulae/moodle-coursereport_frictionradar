@@ -30,6 +30,39 @@ define([
         }
     };
 
+    const equalizeInfoButtonWidths = () => {
+        const buttons = Array.from(document.querySelectorAll('.friction-info'));
+
+        if (!buttons.length) {
+            return;
+        }
+
+        buttons.forEach(button => {
+            button.style.width = 'auto';
+        });
+
+        let maxWidth = 0;
+        buttons.forEach(button => {
+            const width = button.getBoundingClientRect().width;
+            if (width > maxWidth) {
+                maxWidth = width;
+            }
+        });
+
+        if (maxWidth > 0) {
+            const widthPx = `${Math.ceil(maxWidth)}px`;
+            buttons.forEach(button => {
+                button.style.width = widthPx;
+            });
+        }
+    };
+
+    const scheduleEqualize = () => {
+        window.requestAnimationFrame(() => {
+            window.requestAnimationFrame(equalizeInfoButtonWidths);
+        });
+    };
+
     const renderCalculationBlock = (
         uiLabel,
         uiParam,
@@ -91,6 +124,9 @@ define([
 
     return {
         init: function() {
+
+            scheduleEqualize();
+            window.addEventListener('resize', scheduleEqualize);
 
             document.querySelectorAll('.friction-info').forEach(button => {
 
