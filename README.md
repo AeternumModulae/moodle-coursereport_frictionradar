@@ -135,7 +135,7 @@ This plugin is licensed under the **GNU GPL v3 or later**. See `LICENSE` for the
 
 ### Third-party components
 
-No third-party PHP/JS/CSS libraries are bundled with the plugin. If any external code or assets are added in the future, you must document them in `thirdpartylibs.xml` and include the relevant license texts to remain Moodle-compliant.
+No third-party PHP/JS/CSS libraries are bundled with the plugin. If any external code or assets are added in the future, we document them in `thirdpartylibs.xml` and include the relevant license texts to remain Moodle-compliant.
 
 ---
 
@@ -144,14 +144,6 @@ No third-party PHP/JS/CSS libraries are bundled with the plugin. If any external
 - PHPUnit tests in `tests/` (renderer, cache, calculator, scheduled tasks).
 - CI runs PHPUnit against Moodle 4.5 (MOODLE_405_STABLE) on **MySQL** and **PostgreSQL** via `.github/workflows/ci.yml`.
 - PHPCS/PHPMD and ESLint (amd/src) also run in CI.
-
----
-
-### Release checklist (manual)
-
-- Run manual UI checks with Developer Debugging enabled (Site administration → Development → Debugging).
-- Run automated tests against at least MySQL/MariaDB and PostgreSQL.
-- Attach/update screenshots for the plugin directory entry.
 
 ---
 
