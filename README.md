@@ -1,5 +1,11 @@
 # Friction Radar (coursereport_frictionradar)
 
+## Plugin directory description
+
+**Short description:** Course report that visualizes aggregated learning friction signals as a 12-segment friction clock.
+
+**Full description:** Friction Radar is a Moodle course report that surfaces early, aggregated signals of learning friction. It analyses activity logs and standard course data over a rolling six-week window and visualizes twelve friction indicators (plus an overall score) in a friction clock designed for reflection and improvement, not learner evaluation. The report is strictly course-level and anonymized; it does not store or display individual learner data and runs heavy calculations offline via scheduled cache warmers for performance.
+
 ## Learning friction display
 
 ### What is Friction Radar?
@@ -94,6 +100,28 @@ CI currently runs on PHP 8.2 only (other PHP versions are not covered by CI).
 3. Ensure Moodle cron is running regularly.
 
 No additional configuration is required.
+
+---
+
+### Source control, issues, documentation
+
+- Repository: https://github.com/AeternumModulae/moodle-coursereport_frictionradar
+- Issue tracker: https://github.com/AeternumModulae/moodle-coursereport_frictionradar/issues
+- Documentation: https://github.com/AeternumModulae/moodle-coursereport_frictionradar#readme
+
+---
+
+### Dependencies
+
+- No external services or third-party PHP libraries.
+- Uses Moodle core APIs (MUC, logstore_standard_log, course module APIs).
+
+---
+
+### Tests
+
+- PHPUnit tests in `tests/` (renderer, cache, calculator, scheduled tasks).
+- Tests have not been executed in this workspace.
 
 ---
 
