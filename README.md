@@ -107,7 +107,7 @@ No additional configuration is required.
 
 - Repository: https://github.com/AeternumModulae/moodle-coursereport_frictionradar
 - Issue tracker: https://github.com/AeternumModulae/moodle-coursereport_frictionradar/issues
-- Documentation: https://github.com/AeternumModulae/moodle-coursereport_frictionradar#readme
+- Documentation: https://github.com/AeternumModulae/moodle-coursereport_frictionradar?tab=readme-ov-file#friction-radar-coursereport_frictionradar
 
 ---
 
