@@ -14,15 +14,31 @@
     max-width: 100%;
 }
 
-.tool-frictionradar .friction-refresh:hover circle {
-    fill: #E5E7EB;
+.tool-frictionradar .friction-clock-wrap {
+    position: relative;
+    width: 100%;
+    max-width: 520px;
 }
 
-.tool-frictionradar .friction-refresh {
-    cursor: pointer;
+.tool-frictionradar .friction-refresh-btn {
+    position: absolute;
+    left: 50%;
+    top: 63.6%;
+    transform: translate(-50%, -50%);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    border-radius: 999px;
+    background: #F3F4F6;
+    border: 1px solid #CBD5E1;
+    color: #374151;
+    text-decoration: none;
 }
 
-.tool-frictionradar svg .friction-refresh,
-.tool-frictionradar svg .friction-refresh * {
-    cursor: pointer;
+.tool-frictionradar .friction-refresh-btn:hover {
+    background: #E5E7EB;
+    color: #111827;
+    text-decoration: none;
 }
