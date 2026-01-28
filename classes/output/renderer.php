@@ -272,10 +272,10 @@ class renderer extends \plugin_renderer_base
                 'warmcache' => 1,
                 'sesskey' => sesskey(),
             ]);
-            $refreshicon = $this->output->pix_icon('i/reload', $refreshlabel, 'core');
             $refreshhtml = '<a class="friction-refresh-btn" href="' . $refreshurl->out(false) . '"'
                 . ' aria-label="' . s($refreshlabel) . '">'
-                . $refreshicon
+                . '<i class="fa fa-rotate" aria-hidden="true"></i>'
+                . '<span class="accesshide">' . s($refreshlabel) . '</span>'
                 . '</a>';
         }
 
