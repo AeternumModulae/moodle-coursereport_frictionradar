@@ -144,6 +144,31 @@ class renderer extends \plugin_renderer_base
             font-size="56" font-weight="700" fill="#111827">'
             . $overall .
         '</text>';
+        if (has_capability('moodle/course:update', $this->page->context)) {
+            $refreshlabel = get_string('warmcache_now', 'coursereport_frictionradar');
+            $refreshurl = new \moodle_url('/course/report/frictionradar/index.php', [
+                'id' => $courseid,
+                'warmcache' => 1,
+                'sesskey' => sesskey(),
+            ]);
+            $ry = $cy + 68;
+            $href = $refreshurl->out(false);
+            $center .= '<a class="friction-refresh" href="' . $href . '" xlink:href="' . $href . '"'
+                . ' aria-label="' . s($refreshlabel) . '" role="button" tabindex="0">'
+                . '<title>' . s($refreshlabel) . '</title>'
+                . '<circle cx="' . $cx . '" cy="' . $ry . '" r="14"'
+                . ' fill="#F3F4F6" stroke="#CBD5E1" stroke-width="1" />'
+                . '<path d="M ' . ($cx + 6) . ' ' . ($ry - 2) . ' A 7 7 0 1 1 ' . ($cx - 2) . ' ' . ($ry + 6) . '"'
+                . ' fill="none" stroke="#374151" stroke-width="2"'
+                . ' stroke-linecap="round" stroke-linejoin="round" />'
+                . '<path d="M ' . ($cx + 6) . ' ' . ($ry - 2)
+                . ' L ' . ($cx + 10) . ' ' . ($ry - 6)
+                . ' M ' . ($cx + 6) . ' ' . ($ry - 2)
+                . ' L ' . ($cx + 10) . ' ' . ($ry + 1) . '"'
+                . ' fill="none" stroke="#374151" stroke-width="2"'
+                . ' stroke-linecap="round" stroke-linejoin="round" />'
+                . '</a>';
+        }
 
         // Meta.
         $meta = '';
@@ -257,6 +282,7 @@ class renderer extends \plugin_renderer_base
             width="100%"
             preserveAspectRatio="xMidYMid meet"
             xmlns="http://www.w3.org/2000/svg"
+            xmlns:xlink="http://www.w3.org/1999/xlink"
             role="img"
             aria-labelledby="' . s($svgtitleid) . '">'
             . '<title id="' . s($svgtitleid) . '">' . $svgtitle . '</title>'

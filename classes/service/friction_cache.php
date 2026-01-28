@@ -44,6 +44,18 @@ class friction_cache
     }
 
     /**
+     * Purge cached data for a course and recalculate it.
+     *
+     * @param int $courseid Course id.
+     * @param int $windowdays Window size in days.
+     */
+    public static function refresh_course(int $courseid, int $windowdays = 42): void {
+        $cache = \cache::make('coursereport_frictionradar', 'course_friction_scores');
+        $cache->delete((string)$courseid);
+        self::warm_course($courseid, $windowdays);
+    }
+
+    /**
      * Get cached course score data.
      *
      * @param int $courseid Course id.

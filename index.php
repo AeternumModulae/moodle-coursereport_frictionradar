@@ -50,7 +50,7 @@ if ($warmcache) {
 
     // Force-generate the cached values now.
     // NOTE: This must overwrite/refresh existing cache entries.
-    \coursereport_frictionradar\service\friction_cache::warm_course($courseid);
+    \coursereport_frictionradar\service\friction_cache::refresh_course($courseid);
 
     redirect(
         new moodle_url('/course/report/frictionradar/index.php', ['id' => $course->id]),
