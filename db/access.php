@@ -32,12 +32,4 @@ $capabilities = [
             'manager' => CAP_ALLOW,
         ],
     ],
-    'coursereport/frictionradar:export' => [
-        'captype' => 'read',
-        'contextlevel' => CONTEXT_COURSE,
-        'archetypes' => [
-            'editingteacher' => CAP_ALLOW,
-            'manager' => CAP_ALLOW,
-        ],
-    ],
 ];

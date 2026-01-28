@@ -88,7 +88,6 @@ Students never see Friction Radar.
 
 Access is controlled via Moodle capabilities:
 - `coursereport/frictionradar:view`
-- `coursereport/frictionradar:export` (reserved for future use)
 
 ---
 

@@ -39,7 +39,6 @@ $string['warmcache_done'] = 'Cache has been regenerated for this course.';
 $string['task_warm_cache'] = 'Friction Radar: queue nightly cache warmers';
 $string['task_warm_course'] = 'Friction Radar: warm course cache';
 $string['frictionradar:view'] = 'View Friction Radar report';
-$string['frictionradar:export'] = 'Export Friction Radar report';
 
 $string['friction_f01'] = 'Cognitive overload';
 $string['friction_f02'] = 'Didactic bottlenecks';
