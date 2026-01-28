@@ -1,5 +1,7 @@
 # Friction Radar (coursereport_frictionradar)
 
+[![CI](https://github.com/AeternumModulae/moodle-coursereport_frictionradar/actions/workflows/ci.yml/badge.svg)](https://github.com/AeternumModulae/moodle-coursereport_frictionradar/actions/workflows/ci.yml)
+
 ## Plugin directory description
 
 **Short description:** Course report that visualizes aggregated learning friction signals as a 12-segment friction clock.
@@ -118,10 +120,38 @@ No additional configuration is required.
 
 ---
 
+### Build and packaging
+
+- No build step is required for installation; the AMD build output is committed.
+- The `package.json` and `package-lock.json` are only for local linting of AMD source.
+
+---
+
+### License
+
+This plugin is licensed under the **GNU GPL v3 or later**. See `LICENSE` for the full text.
+
+---
+
+### Third-party components
+
+No third-party PHP/JS/CSS libraries are bundled with the plugin. If any external code or assets are added in the future, you must document them in `thirdpartylibs.xml` and include the relevant license texts to remain Moodle-compliant.
+
+---
+
 ### Tests
 
 - PHPUnit tests in `tests/` (renderer, cache, calculator, scheduled tasks).
-- Tests have not been executed in this workspace.
+- CI runs PHPUnit against Moodle 4.5 (MOODLE_405_STABLE) on **MySQL** and **PostgreSQL** via `.github/workflows/ci.yml`.
+- PHPCS/PHPMD and ESLint (amd/src) also run in CI.
+
+---
+
+### Release checklist (manual)
+
+- Run manual UI checks with Developer Debugging enabled (Site administration → Development → Debugging).
+- Run automated tests against at least MySQL/MariaDB and PostgreSQL.
+- Attach/update screenshots for the plugin directory entry.
 
 ---
 
