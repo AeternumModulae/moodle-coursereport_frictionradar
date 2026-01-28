@@ -13,6 +13,7 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+
 /**
  * Friction Radar report.
  *
@@ -41,6 +42,17 @@ abstract class abstract_friction implements friction_interface
      */
     protected function clamp(int $value, int $min = 0, int $max = 100): int {
         return max($min, min($max, $value));
+    }
+
+    /**
+     * Check whether a DB table exists (defensive for optional modules).
+     *
+     * @param string $tablename Table name without prefix.
+     * @return bool
+     */
+    protected function table_exists(string $tablename): bool {
+        global $DB;
+        return $DB->get_manager()->table_exists($tablename);
     }
 
     /**

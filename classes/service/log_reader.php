@@ -13,6 +13,7 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+
 /**
  * Friction Radar report.
  *
@@ -50,6 +51,15 @@ class log_reader
     }
 
     /**
+     * Check if standard logstore table exists.
+     *
+     * @return bool
+     */
+    private function has_logstore(): bool {
+        return $this->database->get_manager()->table_exists('logstore_standard_log');
+    }
+
+    /**
      * Fetch module view events for a course within a time window.
      * Rows: userid, cmid (course_modules.id), timecreated.
      *
@@ -58,6 +68,10 @@ class log_reader
      * @return array Records.
      */
     public function get_module_views(int $courseid, int $since): array {
+        if (!$this->has_logstore()) {
+            return [];
+        }
+
         $sql = "
             SELECT userid, contextinstanceid AS cmid, timecreated
               FROM {logstore_standard_log}
@@ -87,6 +101,10 @@ class log_reader
      * @return array Records.
      */
     public function get_course_views(int $courseid, int $since): array {
+        if (!$this->has_logstore()) {
+            return [];
+        }
+
         $sql = "
             SELECT userid, timecreated
               FROM {logstore_standard_log}
@@ -116,6 +134,10 @@ class log_reader
      * @return array Records.
      */
     public function get_course_events(int $courseid, int $since): array {
+        if (!$this->has_logstore()) {
+            return [];
+        }
+
         $sql = "
             SELECT userid, timecreated
               FROM {logstore_standard_log}

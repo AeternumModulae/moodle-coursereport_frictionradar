@@ -13,6 +13,7 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+
 /**
  * Friction Radar report.
  *
@@ -139,6 +140,15 @@ class f05_participation_theatre extends abstract_friction
      */
     private function student_log_stats(int $courseid, int $since): array {
         global $DB;
+
+        if (!$DB->get_manager()->table_exists('logstore_standard_log')) {
+            return [
+                'viewers' => 0,
+                'passive' => 0,
+                'engaged' => 0,
+                'substantive_total' => 0,
+            ];
+        }
 
         // Prepare IN (...) for substantive actions.
         [$actionsql, $actionparams] = $DB->get_in_or_equal(

@@ -13,6 +13,7 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+
 /**
  * Friction Radar report.
  *
@@ -48,23 +49,39 @@ class queue_cache_warmers extends \core\task\scheduled_task
 
         $now = time();
         $since = $now - (14 * DAYSECS);
-        $courses = $DB->get_records_sql(
-            "SELECT c.id, COALESCE(MAX(l.timecreated), 0) AS lastactivity
-               FROM {course} c
-          LEFT JOIN {logstore_standard_log} l
-                 ON l.courseid = c.id
-                AND l.timecreated >= :since
-              WHERE visible = 1
-                AND c.id <> 1
-                AND c.startdate > 0
-                AND c.startdate <= :nowstart
-                AND (c.enddate = 0 OR c.enddate >= :nowend)
-           GROUP BY c.id
-           ORDER BY lastactivity DESC, c.id ASC",
-            ['nowstart' => $now, 'nowend' => $now, 'since' => $since],
-            0,
-            500
-        );
+        if ($DB->get_manager()->table_exists('logstore_standard_log')) {
+            $courses = $DB->get_records_sql(
+                "SELECT c.id, COALESCE(MAX(l.timecreated), 0) AS lastactivity
+                   FROM {course} c
+              LEFT JOIN {logstore_standard_log} l
+                     ON l.courseid = c.id
+                    AND l.timecreated >= :since
+                  WHERE visible = 1
+                    AND c.id <> 1
+                    AND c.startdate > 0
+                    AND c.startdate <= :nowstart
+                    AND (c.enddate = 0 OR c.enddate >= :nowend)
+               GROUP BY c.id
+               ORDER BY lastactivity DESC, c.id ASC",
+                ['nowstart' => $now, 'nowend' => $now, 'since' => $since],
+                0,
+                500
+            );
+        } else {
+            $courses = $DB->get_records_sql(
+                "SELECT c.id, 0 AS lastactivity
+                   FROM {course} c
+                  WHERE visible = 1
+                    AND c.id <> 1
+                    AND c.startdate > 0
+                    AND c.startdate <= :nowstart
+                    AND (c.enddate = 0 OR c.enddate >= :nowend)
+               ORDER BY c.id ASC",
+                ['nowstart' => $now, 'nowend' => $now],
+                0,
+                500
+            );
+        }
 
         foreach ($courses as $course) {
             $task = new warm_course_cache();

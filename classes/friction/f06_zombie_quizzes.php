@@ -13,6 +13,7 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+
 /**
  * Friction Radar report.
  *
@@ -61,6 +62,23 @@ class f06_zombie_quizzes extends abstract_friction
      */
     public function calculate(int $courseid, int $windowdays): array {
         $since = time() - ($windowdays * DAYSECS);
+
+        if (!$this->table_exists('quiz') || !$this->table_exists('quiz_attempts')) {
+            return [
+                'score' => 0,
+                'breakdown' => [
+                    'formula' => $this->str('formula_f06', self::MIN_PARTICIPANTS),
+                    'inputs' => [
+                        [
+                            'key' => 'quizzes_total',
+                            'label' => $this->str('input_f06_quizzes_total'),
+                            'value' => 0,
+                        ],
+                    ],
+                    'notes' => $this->str('notes_f06', $windowdays),
+                ],
+            ];
+        }
 
         $quizlist = $this->get_visible_quiz_cms($courseid);
         $totalquizzes = count($quizlist);
@@ -185,6 +203,10 @@ class f06_zombie_quizzes extends abstract_friction
     private function get_visible_quiz_cms(int $courseid): array {
         global $DB;
 
+        if (!$this->table_exists('quiz')) {
+            return [];
+        }
+
         $sql = "SELECT q.id AS quizid, cm.id AS cmid
                   FROM {quiz} q
                   JOIN {course_modules} cm
@@ -215,6 +237,10 @@ class f06_zombie_quizzes extends abstract_friction
      */
     private function attempt_stats_for_quizzes(int $courseid, array $quizids, int $since): array {
         global $DB;
+
+        if (!$this->table_exists('quiz_attempts')) {
+            return [];
+        }
 
         if (empty($quizids)) {
             return [];

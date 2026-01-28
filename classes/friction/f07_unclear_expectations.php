@@ -13,6 +13,7 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+
 /**
  * Friction Radar report.
  *
@@ -108,16 +109,24 @@ class f07_unclear_expectations extends abstract_friction
 
             switch ($cm->modname) {
                 case 'assign':
-                    $duedate = $DB->get_field('assign', 'duedate', ['id' => $cm->instance]);
+                    if ($this->table_exists('assign')) {
+                        $duedate = $DB->get_field('assign', 'duedate', ['id' => $cm->instance]);
+                    }
                     break;
                 case 'quiz':
-                    $duedate = $DB->get_field('quiz', 'timeclose', ['id' => $cm->instance]);
+                    if ($this->table_exists('quiz')) {
+                        $duedate = $DB->get_field('quiz', 'timeclose', ['id' => $cm->instance]);
+                    }
                     break;
                 case 'lesson':
-                    $duedate = $DB->get_field('lesson', 'deadline', ['id' => $cm->instance]);
+                    if ($this->table_exists('lesson')) {
+                        $duedate = $DB->get_field('lesson', 'deadline', ['id' => $cm->instance]);
+                    }
                     break;
                 case 'workshop':
-                    $duedate = $DB->get_field('workshop', 'submissionend', ['id' => $cm->instance]);
+                    if ($this->table_exists('workshop')) {
+                        $duedate = $DB->get_field('workshop', 'submissionend', ['id' => $cm->instance]);
+                    }
                     break;
                 default:
                     // Other mandatory modules typically have no due date concept.
@@ -173,16 +182,24 @@ class f07_unclear_expectations extends abstract_friction
 
             switch ($r->modname) {
                 case 'assign':
-                    $intro = $DB->get_field('assign', 'intro', ['id' => $r->instance]);
+                    if ($this->table_exists('assign')) {
+                        $intro = $DB->get_field('assign', 'intro', ['id' => $r->instance]);
+                    }
                     break;
                 case 'quiz':
-                    $intro = $DB->get_field('quiz', 'intro', ['id' => $r->instance]);
+                    if ($this->table_exists('quiz')) {
+                        $intro = $DB->get_field('quiz', 'intro', ['id' => $r->instance]);
+                    }
                     break;
                 case 'forum':
-                    $intro = $DB->get_field('forum', 'intro', ['id' => $r->instance]);
+                    if ($this->table_exists('forum')) {
+                        $intro = $DB->get_field('forum', 'intro', ['id' => $r->instance]);
+                    }
                     break;
                 case 'lesson':
-                    $intro = $DB->get_field('lesson', 'intro', ['id' => $r->instance]);
+                    if ($this->table_exists('lesson')) {
+                        $intro = $DB->get_field('lesson', 'intro', ['id' => $r->instance]);
+                    }
                     break;
             }
 

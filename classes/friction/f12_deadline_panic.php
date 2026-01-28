@@ -13,6 +13,7 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+
 /**
  * Friction Radar report.
  *
@@ -94,31 +95,35 @@ class f12_deadline_panic extends abstract_friction
         $deadlines = [];
 
         // Assign.
-        $sql = "SELECT duedate
-                  FROM {assign} a
-                  JOIN {course_modules} cm ON cm.instance = a.id
-                 WHERE cm.course = :courseid
-                   AND a.duedate > 0
-                   AND a.duedate >= :since";
-        $rows = $DB->get_records_sql($sql, ['courseid' => $courseid, 'since' => $since]);
-        foreach ($rows as $r) {
-            $deadlines[] = (int)$r->duedate;
+        if ($this->table_exists('assign')) {
+            $sql = "SELECT duedate
+                      FROM {assign} a
+                      JOIN {course_modules} cm ON cm.instance = a.id
+                     WHERE cm.course = :courseid
+                       AND a.duedate > 0
+                       AND a.duedate >= :since";
+            $rows = $DB->get_records_sql($sql, ['courseid' => $courseid, 'since' => $since]);
+            foreach ($rows as $r) {
+                $deadlines[] = (int)$r->duedate;
+            }
         }
 
         // Quiz.
-        $sql = "SELECT timeclose
-                  FROM {quiz} q
-                  JOIN {course_modules} cm ON cm.instance = q.id
-                 WHERE cm.course = :courseid
-                   AND q.timeclose > 0
-                   AND q.timeclose >= :since";
-        $rows = $DB->get_records_sql($sql, ['courseid' => $courseid, 'since' => $since]);
-        foreach ($rows as $r) {
-            $deadlines[] = (int)$r->timeclose;
+        if ($this->table_exists('quiz')) {
+            $sql = "SELECT timeclose
+                      FROM {quiz} q
+                      JOIN {course_modules} cm ON cm.instance = q.id
+                     WHERE cm.course = :courseid
+                       AND q.timeclose > 0
+                       AND q.timeclose >= :since";
+            $rows = $DB->get_records_sql($sql, ['courseid' => $courseid, 'since' => $since]);
+            foreach ($rows as $r) {
+                $deadlines[] = (int)$r->timeclose;
+            }
         }
 
         // Lesson.
-        if ($DB->get_manager()->table_exists('lesson')) {
+        if ($this->table_exists('lesson')) {
             $sql = "SELECT deadline
                       FROM {lesson} l
                       JOIN {course_modules} cm ON cm.instance = l.id
