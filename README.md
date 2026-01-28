@@ -87,6 +87,7 @@ Access is controlled via Moodle capabilities:
 ### Installation
 
 Requires Moodle 4.5 or later.
+CI currently runs on PHP 8.2 only (other PHP versions are not covered by CI).
 
 1. Copy the plugin folder to: course/report/frictionradar
 2. Visit **Site administration → Notifications** to complete installation.
