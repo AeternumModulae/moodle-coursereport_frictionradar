@@ -16,7 +16,7 @@
  * Friction Radar info modal controller.
  *
  * @module     coursereport_frictionradar/friction_info
- * @copyright  2026 Jan Svoboda <jan.svoboda@bittra.de>
+ * @copyright  2026 Jan Svoboda <jan.svoboda@burml.com>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 

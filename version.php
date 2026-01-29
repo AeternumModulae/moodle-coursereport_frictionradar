@@ -17,14 +17,14 @@
  * Friction Radar report.
  *
  * @package    coursereport_frictionradar
- * @copyright  2026 Jan Svoboda <jan.svoboda@bittra.de>
+ * @copyright  2026 Jan Svoboda <jan.svoboda@burml.com>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
 defined('MOODLE_INTERNAL') || die();
 
 $plugin->component = 'coursereport_frictionradar';
-$plugin->version   = 2026012807;
+$plugin->version   = 2026012900;
 $plugin->requires  = 2024100700; // Moodle 4.5.x (approx build version).
 $plugin->maturity  = MATURITY_ALPHA;
-$plugin->release   = '0.5.1';
+$plugin->release   = '0.5.2';
