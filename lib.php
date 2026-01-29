@@ -75,7 +75,7 @@ function coursereport_frictionradar_extend_settings_navigation(settings_navigati
         navigation_node::TYPE_SETTING,
         null,
         'coursereport_frictionradar',
-        new pix_icon('i/stats', '', 'core')
+        new pix_icon('icon', '', 'coursereport_frictionradar')
     );
 }
 
@@ -112,6 +112,6 @@ function coursereport_frictionradar_extend_navigation_course(
         navigation_node::TYPE_SETTING,
         null,
         'coursereport_frictionradar',
-        new pix_icon('i/stats', '', 'core')
+        new pix_icon('icon', '', 'coursereport_frictionradar')
     );
 }
