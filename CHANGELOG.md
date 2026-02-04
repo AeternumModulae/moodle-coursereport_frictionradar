@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.5.8 - 2026-02-04
+
+- Fixed duplicate admin settings registration for reports.
+- Added CI guard to prevent manual settings registration regressions.
+- Updated renderer test to use renderables.
+
 ## 0.5.7 - 2026-02-04
 
 - Fixed settings category parent (moved to admin "reports" category).
