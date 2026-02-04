@@ -25,7 +25,7 @@ defined('MOODLE_INTERNAL') || die();
 
 if ($hassiteconfig) {
     $settings = new admin_settingpage('coursereport_frictionradar', get_string('pluginname', 'coursereport_frictionradar'));
-    $ADMIN->add('coursereports', $settings);
+    $ADMIN->add('reports', $settings);
 
     if ($ADMIN->fulltree) {
         $context = \context_system::instance();

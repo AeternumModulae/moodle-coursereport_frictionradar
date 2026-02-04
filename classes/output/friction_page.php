@@ -145,9 +145,10 @@ class friction_page implements renderable, templatable
                 'label' => get_string('friction_' . $key, 'coursereport_frictionradar'),
                 'score' => $score,
                 'color' => $this->color_for_score($score),
-                'iconurl' => isset($iconmap[$key])
-                    ? $output->image_url($iconmap[$key], 'coursereport_frictionradar')->out(false)
-                    : null,
+                'iconurl' => isset($iconmap[$key]) ? $output->image_url(
+                    $iconmap[$key],
+                    'coursereport_frictionradar'
+                )->out(false) : null,
                 'explanation' => $explanations[$key] ?? '',
                 'what_to_do' => get_string('what_to_do', 'coursereport_frictionradar'),
                 'action' => $actions[$key] ?? '',

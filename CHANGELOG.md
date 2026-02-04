@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.5.7 - 2026-02-04
+
+- Fixed settings category parent (moved to admin "reports" category).
+- PHPCS compliance fix in output renderable ternary formatting.
+- Version bump for workflow rerun.
+
 ## 0.5.6 - 2026-02-04
 
 - Migrated report output to Mustache template/Output API.
