@@ -185,48 +185,32 @@ class f01_cognitive_overload extends abstract_friction
 
         $rows = $DB->get_records_sql($sql, ['courseid' => $courseid]);
 
+        if (!$rows) {
+            return ['avg' => 0.0, 'norm' => 0.0];
+        }
+
+        $instances = [
+            'assign' => [],
+            'quiz' => [],
+            'forum' => [],
+            'lesson' => [],
+            'page' => [],
+        ];
+
+        foreach ($rows as $r) {
+            if (array_key_exists($r->name, $instances)) {
+                $instances[$r->name][] = (int)$r->instance;
+            }
+        }
+
         $totalchars = 0;
         $count = 0;
 
-        foreach ($rows as $r) {
-            $intro = null;
-
-            switch ($r->name) {
-                case 'assign':
-                    if ($this->table_exists('assign')) {
-                        $intro = $DB->get_field('assign', 'intro', ['id' => $r->instance]);
-                    }
-                    break;
-                case 'quiz':
-                    if ($this->table_exists('quiz')) {
-                        $intro = $DB->get_field('quiz', 'intro', ['id' => $r->instance]);
-                    }
-                    break;
-                case 'forum':
-                    if ($this->table_exists('forum')) {
-                        $intro = $DB->get_field('forum', 'intro', ['id' => $r->instance]);
-                    }
-                    break;
-                case 'lesson':
-                    if ($this->table_exists('lesson')) {
-                        $intro = $DB->get_field('lesson', 'intro', ['id' => $r->instance]);
-                    }
-                    break;
-                case 'page':
-                    if ($this->table_exists('page')) {
-                        $intro = $DB->get_field('page', 'content', ['id' => $r->instance]);
-                    }
-                    break;
-            }
-
-            if ($intro !== null) {
-                $text = trim(strip_tags($intro));
-                if ($text !== '') {
-                    $totalchars += \core_text::strlen($text);
-                    $count++;
-                }
-            }
-        }
+        $this->accumulate_text_lengths('assign', 'intro', $instances['assign'], $totalchars, $count);
+        $this->accumulate_text_lengths('quiz', 'intro', $instances['quiz'], $totalchars, $count);
+        $this->accumulate_text_lengths('forum', 'intro', $instances['forum'], $totalchars, $count);
+        $this->accumulate_text_lengths('lesson', 'intro', $instances['lesson'], $totalchars, $count);
+        $this->accumulate_text_lengths('page', 'content', $instances['page'], $totalchars, $count);
 
         if ($count === 0) {
             return ['avg' => 0.0, 'norm' => 0.0];
@@ -241,5 +225,38 @@ class f01_cognitive_overload extends abstract_friction
             'avg' => $avg,
             'norm' => $norm,
         ];
+    }
+
+    /**
+     * Fetch text fields in bulk and accumulate total length.
+     *
+     * @param string $table Table name without prefix.
+     * @param string $field Text field.
+     * @param int[] $ids Record ids.
+     * @param int $totalchars Total character counter (by reference).
+     * @param int $count Non-empty record count (by reference).
+     */
+    private function accumulate_text_lengths(
+        string $table,
+        string $field,
+        array $ids,
+        int &$totalchars,
+        int &$count
+    ): void {
+        global $DB;
+
+        $ids = array_values(array_unique(array_filter($ids)));
+        if (empty($ids) || !$this->table_exists($table)) {
+            return;
+        }
+
+        $records = $DB->get_records_list($table, 'id', $ids, '', 'id,' . $field);
+        foreach ($records as $record) {
+            $text = trim(strip_tags((string)$record->$field));
+            if ($text !== '') {
+                $totalchars += \core_text::strlen($text);
+                $count++;
+            }
+        }
     }
 }

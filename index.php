@@ -62,31 +62,11 @@ if ($warmcache) {
 
 echo $OUTPUT->header();
 
-echo html_writer::tag('h2', get_string('page_title', 'coursereport_frictionradar'));
-echo html_writer::div(get_string('page_subtitle', 'coursereport_frictionradar'), 'text-muted mb-1');
-
 $data = \coursereport_frictionradar\service\friction_cache::get_course($courseid);
 
-if (!$data) {
-    $message = get_string('no_data', 'coursereport_frictionradar');
-
-    // Add "Generate now" link for course editors.
-    if (has_capability('moodle/course:update', $context)) {
-        $url = new moodle_url('/course/report/frictionradar/index.php', [
-            'id' => $course->id,
-            'warmcache' => 1,
-            'sesskey' => sesskey(),
-        ]);
-
-        $link = html_writer::link($url, get_string('warmcache_now', 'coursereport_frictionradar'));
-        $message .= ' ' . $link;
-    }
-
-    echo html_writer::div($message, 'alert alert-info');
-} else {
-    /** @var \coursereport_frictionradar\output\renderer $renderer */
-    $renderer = $PAGE->get_renderer('coursereport_frictionradar');
-    echo $renderer->friction_clock($data, $courseid);
-}
+/** @var \coursereport_frictionradar\output\renderer $renderer */
+$renderer = $PAGE->get_renderer('coursereport_frictionradar');
+$renderable = new \coursereport_frictionradar\output\friction_page($courseid, $context, $data);
+echo $renderer->render($renderable);
 
 echo $OUTPUT->footer();

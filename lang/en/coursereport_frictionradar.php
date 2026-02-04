@@ -39,6 +39,10 @@ $string['warmcache_done'] = 'Cache has been regenerated for this course.';
 $string['task_warm_cache'] = 'Friction Radar: queue nightly cache warmers';
 $string['task_warm_course'] = 'Friction Radar: warm course cache';
 $string['frictionradar:view'] = 'View Friction Radar report';
+$string['cachedef_course_friction_scores'] = 'Friction Radar course scores';
+
+$string['setting_studentroles'] = 'Student-like roles';
+$string['setting_studentroles_desc'] = 'Roles treated as student-like for engagement and attempt analysis. Leave empty to fall back to archetype "student" and the role shortname "student".';
 
 $string['friction_f01'] = 'Cognitive overload';
 $string['friction_f02'] = 'Didactic bottlenecks';

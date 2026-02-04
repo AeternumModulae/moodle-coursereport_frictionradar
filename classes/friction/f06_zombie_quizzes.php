@@ -23,6 +23,8 @@
 
 namespace coursereport_frictionradar\friction;
 
+use coursereport_frictionradar\local\role_helper;
+
 
 /**
  * F06 – Zombie Quizzes / Zombie-Quizze
@@ -232,7 +234,7 @@ class f06_zombie_quizzes extends abstract_friction
      *  quizid => ['attempts' => int, 'finished' => int, 'participants' => int]
      *
      * Student filtering:
-     * - course context role assignments with archetype=student or shortname=student
+     * - course context role assignments for configured student-like roles
      */
     private function attempt_stats_for_quizzes(int $courseid, array $quizids, int $since): array {
         global $DB;
@@ -245,7 +247,13 @@ class f06_zombie_quizzes extends abstract_friction
             return [];
         }
 
+        $roleids = role_helper::get_student_role_ids();
+        if (empty($roleids)) {
+            return [];
+        }
+
         [$insql, $params] = $DB->get_in_or_equal($quizids, SQL_PARAMS_NAMED, 'qid');
+        [$rolesql, $roleparams] = $DB->get_in_or_equal($roleids, SQL_PARAMS_NAMED, 'role');
 
         $sql = "SELECT
                     qa.quiz,
@@ -259,16 +267,15 @@ class f06_zombie_quizzes extends abstract_friction
                 JOIN {role_assignments} ra
                   ON ra.contextid = ctx.id
                  AND ra.userid = qa.userid
-                JOIN {role} r
-                  ON r.id = ra.roleid
                 WHERE qa.quiz $insql
                   AND qa.timemodified >= :since
                   AND qa.userid > 0
-                  AND (r.archetype = 'student' OR r.shortname = 'student')
+                  AND ra.roleid $rolesql
                 GROUP BY qa.quiz";
 
         $params['courseid'] = $courseid;
         $params['since'] = $since;
+        $params = array_merge($params, $roleparams);
 
         $rows = $DB->get_records_sql($sql, $params);
 

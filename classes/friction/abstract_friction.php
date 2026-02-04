@@ -51,7 +51,12 @@ abstract class abstract_friction implements friction_interface
      */
     protected function table_exists(string $tablename): bool {
         global $DB;
-        return $DB->get_manager()->table_exists($tablename);
+        static $cache = [];
+        if (array_key_exists($tablename, $cache)) {
+            return $cache[$tablename];
+        }
+        $cache[$tablename] = $DB->get_manager()->table_exists($tablename);
+        return $cache[$tablename];
     }
 
     /**

@@ -1,0 +1,86 @@
+{{!
+    This file is part of Moodle - https://moodle.org/
+
+    Moodle is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    Moodle is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+}}
+<div class="tool-frictionradar">
+    <h2>{{page_title}}</h2>
+    <div class="text-muted mb-1">{{page_subtitle}}</div>
+
+    {{^hasdata}}
+        <div class="alert alert-info">
+            {{nodata}}
+            {{#canrefresh}}
+                <a href="{{refreshurl}}">{{refreshlabel}}</a>
+            {{/canrefresh}}
+        </div>
+    {{/hasdata}}
+
+    {{#hasdata}}
+        <div class="d-flex flex-column align-items-center">
+            <div class="friction-clock-wrap">
+                {{{svg}}}
+                {{#canrefresh}}
+                    <a class="friction-refresh-btn" href="{{refreshurl}}" aria-label="{{refreshlabel}}">
+                        <i class="fa fa-rotate" aria-hidden="true"></i>
+                        <span class="accesshide">{{refreshlabel}}</span>
+                    </a>
+                {{/canrefresh}}
+            </div>
+        </div>
+
+        {{#showmeta}}
+            <div class="small text-muted tool-friction-radar-created">
+                {{generated_label}}: {{generated_at}}
+                · {{window_label}}: {{window_days}} {{days_label}}
+            </div>
+        {{/showmeta}}
+
+        <div class="mt-4">
+            <div class="row">
+                {{#legenditems}}
+                    <div class="col-12 col-md-6 col-lg-4 mb-2">
+                        <div class="d-flex align-items-center">
+                            {{#iconurl}}
+                                <img src="{{iconurl}}" alt="" aria-hidden="true"
+                                     style="width:48px; height:48px; margin-right:8px; opacity:0.85;">
+                            {{/iconurl}}
+                            <span style="display:inline-block; width:16px; height:32px; border-radius:3px;
+                                background:{{color}}; border:1px solid #E5E7EB; margin-right:10px;"></span>
+                            <button type="button"
+                                    class="btn btn-link p-0 me-auto friction-info p-2 text-decoration-none"
+                                    data-friction="{{key}}"
+                                    data-score="{{score}}"
+                                    data-explanation="{{explanation}}"
+                                    data-what="{{what_to_do}}"
+                                    data-action="{{action}}"
+                                    data-formula="{{formula}}"
+                                    data-inputs="{{inputsjson}}"
+                                    data-notes="{{notes}}"
+                                    data-ui-score="{{ui_score}}"
+                                    data-ui-formula="{{ui_formula}}"
+                                    data-ui-inputs="{{ui_inputs}}"
+                                    data-ui-param="{{ui_param}}"
+                                    data-ui-value="{{ui_value}}"
+                                    data-ui-notes="{{ui_notes}}">
+                                {{label}}
+                            </button>
+                            <strong>{{score}}</strong>
+                        </div>
+                    </div>
+                {{/legenditems}}
+            </div>
+        </div>
+    {{/hasdata}}
+</div>

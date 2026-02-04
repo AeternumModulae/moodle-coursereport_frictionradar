@@ -97,6 +97,25 @@ class f07_unclear_expectations extends abstract_friction
             return 0.0;
         }
 
+        $bytype = [
+            'assign' => [],
+            'quiz' => [],
+            'lesson' => [],
+            'workshop' => [],
+        ];
+        foreach ($cms as $cm) {
+            if (array_key_exists($cm->modname, $bytype)) {
+                $bytype[$cm->modname][] = (int)$cm->instance;
+            }
+        }
+
+        $duedates = [
+            'assign' => $this->fetch_field_map('assign', 'duedate', $bytype['assign']),
+            'quiz' => $this->fetch_field_map('quiz', 'timeclose', $bytype['quiz']),
+            'lesson' => $this->fetch_field_map('lesson', 'deadline', $bytype['lesson']),
+            'workshop' => $this->fetch_field_map('workshop', 'submissionend', $bytype['workshop']),
+        ];
+
         $mandatory = 0;
         $nodue = 0;
 
@@ -108,24 +127,16 @@ class f07_unclear_expectations extends abstract_friction
 
             switch ($cm->modname) {
                 case 'assign':
-                    if ($this->table_exists('assign')) {
-                        $duedate = $DB->get_field('assign', 'duedate', ['id' => $cm->instance]);
-                    }
+                    $duedate = $duedates['assign'][$cm->instance] ?? null;
                     break;
                 case 'quiz':
-                    if ($this->table_exists('quiz')) {
-                        $duedate = $DB->get_field('quiz', 'timeclose', ['id' => $cm->instance]);
-                    }
+                    $duedate = $duedates['quiz'][$cm->instance] ?? null;
                     break;
                 case 'lesson':
-                    if ($this->table_exists('lesson')) {
-                        $duedate = $DB->get_field('lesson', 'deadline', ['id' => $cm->instance]);
-                    }
+                    $duedate = $duedates['lesson'][$cm->instance] ?? null;
                     break;
                 case 'workshop':
-                    if ($this->table_exists('workshop')) {
-                        $duedate = $DB->get_field('workshop', 'submissionend', ['id' => $cm->instance]);
-                    }
+                    $duedate = $duedates['workshop'][$cm->instance] ?? null;
                     break;
                 default:
                     // Other mandatory modules typically have no due date concept.
@@ -171,6 +182,25 @@ class f07_unclear_expectations extends abstract_friction
             return 0.0;
         }
 
+        $bytype = [
+            'assign' => [],
+            'quiz' => [],
+            'forum' => [],
+            'lesson' => [],
+        ];
+        foreach ($rows as $row) {
+            if (array_key_exists($row->modname, $bytype)) {
+                $bytype[$row->modname][] = (int)$row->instance;
+            }
+        }
+
+        $intros = [
+            'assign' => $this->fetch_field_map('assign', 'intro', $bytype['assign']),
+            'quiz' => $this->fetch_field_map('quiz', 'intro', $bytype['quiz']),
+            'forum' => $this->fetch_field_map('forum', 'intro', $bytype['forum']),
+            'lesson' => $this->fetch_field_map('lesson', 'intro', $bytype['lesson']),
+        ];
+
         $graded = 0;
         $nodesc = 0;
 
@@ -181,24 +211,16 @@ class f07_unclear_expectations extends abstract_friction
 
             switch ($r->modname) {
                 case 'assign':
-                    if ($this->table_exists('assign')) {
-                        $intro = $DB->get_field('assign', 'intro', ['id' => $r->instance]);
-                    }
+                    $intro = $intros['assign'][$r->instance] ?? null;
                     break;
                 case 'quiz':
-                    if ($this->table_exists('quiz')) {
-                        $intro = $DB->get_field('quiz', 'intro', ['id' => $r->instance]);
-                    }
+                    $intro = $intros['quiz'][$r->instance] ?? null;
                     break;
                 case 'forum':
-                    if ($this->table_exists('forum')) {
-                        $intro = $DB->get_field('forum', 'intro', ['id' => $r->instance]);
-                    }
+                    $intro = $intros['forum'][$r->instance] ?? null;
                     break;
                 case 'lesson':
-                    if ($this->table_exists('lesson')) {
-                        $intro = $DB->get_field('lesson', 'intro', ['id' => $r->instance]);
-                    }
+                    $intro = $intros['lesson'][$r->instance] ?? null;
                     break;
             }
 
@@ -208,6 +230,30 @@ class f07_unclear_expectations extends abstract_friction
         }
 
         return min(1.0, max(0.0, $nodesc / $graded));
+    }
+
+    /**
+     * Fetch a field map in bulk for a list of ids.
+     *
+     * @param string $table Table name without prefix.
+     * @param string $field Field name.
+     * @param int[] $ids Record ids.
+     * @return array<int, mixed> Map of id => field value.
+     */
+    private function fetch_field_map(string $table, string $field, array $ids): array {
+        global $DB;
+
+        $ids = array_values(array_unique(array_filter($ids)));
+        if (empty($ids) || !$this->table_exists($table)) {
+            return [];
+        }
+
+        $records = $DB->get_records_list($table, 'id', $ids, '', 'id,' . $field);
+        $map = [];
+        foreach ($records as $record) {
+            $map[(int)$record->id] = $record->$field;
+        }
+        return $map;
     }
 
 

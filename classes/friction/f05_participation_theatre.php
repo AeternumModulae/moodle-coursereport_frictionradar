@@ -23,6 +23,8 @@
 
 namespace coursereport_frictionradar\friction;
 
+use coursereport_frictionradar\local\role_helper;
+
 
 /**
  * F05 – Participation Theatre / Passive Anwesenheit
@@ -134,13 +136,22 @@ class f05_participation_theatre extends abstract_friction
      * - substantive_total: sum(substantive) across viewers
      *
      * Notes:
-     * - Filters to roles with archetype 'student' OR shortname 'student' in this course context.
-     * - If your institution uses custom student roles without archetype/shortname, we can extend this later.
+     * - Filters to configured "student-like" roles (plugin setting), falling back to archetype/shortname.
      */
     private function student_log_stats(int $courseid, int $since): array {
         global $DB;
 
         if (!$DB->get_manager()->table_exists('logstore_standard_log')) {
+            return [
+                'viewers' => 0,
+                'passive' => 0,
+                'engaged' => 0,
+                'substantive_total' => 0,
+            ];
+        }
+
+        $roleids = role_helper::get_student_role_ids();
+        if (empty($roleids)) {
             return [
                 'viewers' => 0,
                 'passive' => 0,
@@ -156,6 +167,12 @@ class f05_participation_theatre extends abstract_friction
             'act'
         );
 
+        [$rolesql, $roleparams] = $DB->get_in_or_equal(
+            $roleids,
+            SQL_PARAMS_NAMED,
+            'role'
+        );
+
         // Get per-user counts.
         $sql = "SELECT
                     l.userid,
@@ -168,12 +185,10 @@ class f05_participation_theatre extends abstract_friction
                 JOIN {role_assignments} ra
                   ON ra.contextid = ctx.id
                  AND ra.userid = l.userid
-                JOIN {role} r
-                  ON r.id = ra.roleid
                 WHERE l.courseid = :courseid
                   AND l.timecreated >= :since
                   AND l.userid > 0
-                  AND (r.archetype = 'student' OR r.shortname = 'student')
+                  AND ra.roleid $rolesql
                 GROUP BY l.userid";
 
         $params = array_merge(
@@ -181,7 +196,8 @@ class f05_participation_theatre extends abstract_friction
                 'courseid' => $courseid,
                 'since' => $since,
             ],
-            $actionparams
+            $actionparams,
+            $roleparams
         );
 
         $rows = $DB->get_records_sql($sql, $params);
