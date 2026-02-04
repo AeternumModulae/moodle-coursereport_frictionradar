@@ -6,6 +6,19 @@ on:
   workflow_dispatch:
 
 jobs:
+  guard-settings:
+    name: Guard settings.php
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Ensure settings.php is not manually added
+        run: |
+          if [ -f settings.php ] && grep -n "ADMIN->add" settings.php; then
+            echo "ERROR: settings.php must not call \$ADMIN->add(). Moodle auto-registers report settings."
+            exit 1
+          fi
+
   php-quality:
     name: PHPCS and PHPMD
     runs-on: ubuntu-latest

@@ -24,6 +24,7 @@
 defined('MOODLE_INTERNAL') || die();
 
 if ($hassiteconfig) {
+    // Do not manually add this page to the admin tree; Moodle auto-registers it for reports.
     $settings = new admin_settingpage('coursereport_frictionradar',
         get_string('pluginname', 'coursereport_frictionradar')
     );
