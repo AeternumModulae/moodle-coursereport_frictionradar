@@ -75,6 +75,7 @@ class friction_page implements renderable, templatable
 
         $segments = $this->data['segments'] ?? [];
         $breakdown = $this->data['breakdown'] ?? [];
+        $overall = (int)($this->data['overall'] ?? 0);
         $generated = (int)($this->data['generated_at'] ?? 0);
         $window = (int)($this->data['window_days'] ?? 42);
 
