@@ -46,7 +46,8 @@ class renderer_test extends advanced_testcase
             ],
         ];
 
-        $html = $renderer->friction_clock($data, 123);
+        $renderable = new \coursereport_frictionradar\output\friction_page(123, context_system::instance(), $data);
+        $html = $renderer->render($renderable);
 
         $this->assertIsString($html);
         $this->assertStringContainsString('<svg', $html);
