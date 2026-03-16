@@ -140,9 +140,11 @@ class friction_page implements renderable, templatable
             $inputsjson = json_encode($bd['inputs'] ?? [], JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
             $notes = $bd['notes'] ?? '';
             $isskipped = ($bd['status'] ?? '') === 'skipped';
-            $actionsummary = $isskipped
-                ? get_string('action_summary_not_applicable', 'coursereport_frictionradar')
-                : $this->summarize_action($actions[$key] ?? '');
+            if ($isskipped) {
+                $actionsummary = get_string('action_summary_not_applicable', 'coursereport_frictionradar');
+            } else {
+                $actionsummary = $this->summarize_action($actions[$key] ?? '');
+            }
             $severity = $this->get_severity_data($score, $isskipped);
 
             $indicators[] = [
