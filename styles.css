@@ -22,6 +22,14 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+.tool-frictionradar {
+    padding-top: 1rem;
+}
+
+.tool-frictionradar h2 {
+    margin-top: 0;
+}
+
 .tool-frictionradar .friction-clock-wrap {
     position: relative;
     width: 100%;
