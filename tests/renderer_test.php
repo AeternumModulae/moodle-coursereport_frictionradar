@@ -59,9 +59,13 @@ class renderer_test extends advanced_testcase
     public function test_renderer_outputs_prioritised_report_sections(): void {
         $this->resetAfterTest(true);
 
+        $this->setAdminUser();
+
         global $PAGE;
         $PAGE = new moodle_page();
-        $PAGE->set_context(context_system::instance());
+        $course = $this->getDataGenerator()->create_course();
+        $context = context_course::instance($course->id);
+        $PAGE->set_context($context);
 
         /** @var \coursereport_frictionradar\output\renderer $renderer */
         $renderer = $PAGE->get_renderer('coursereport_frictionradar');
@@ -81,7 +85,7 @@ class renderer_test extends advanced_testcase
             ],
         ];
 
-        $renderable = new \coursereport_frictionradar\output\friction_page(123, context_system::instance(), $data);
+        $renderable = new \coursereport_frictionradar\output\friction_page($course->id, $context, $data);
         $html = $renderer->render($renderable);
 
         $this->assertIsString($html);

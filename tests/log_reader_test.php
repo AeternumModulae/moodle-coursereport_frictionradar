@@ -35,16 +35,10 @@ final class log_reader_test extends advanced_testcase {
         $generator = $this->getDataGenerator();
         $course = $generator->create_course();
         $user = $generator->create_user();
-        $this->setUser($user);
+        $context = \context_course::instance($course->id);
 
-        \core\event\course_viewed::create([
-            'courseid' => $course->id,
-            'context' => \context_course::instance($course->id),
-        ])->trigger();
-        \core\event\course_viewed::create([
-            'courseid' => $course->id,
-            'context' => \context_course::instance($course->id),
-        ])->trigger();
+        $this->insert_course_view_log_record($DB, $course->id, $context->id, $user->id, time());
+        $this->insert_course_view_log_record($DB, $course->id, $context->id, $user->id, time() + 1);
 
         $reader = new log_reader($DB);
         $records = array_values($reader->get_course_views($course->id, 0));
@@ -62,16 +56,10 @@ final class log_reader_test extends advanced_testcase {
         $generator = $this->getDataGenerator();
         $course = $generator->create_course();
         $user = $generator->create_user();
-        $this->setUser($user);
+        $context = \context_course::instance($course->id);
 
-        \core\event\course_viewed::create([
-            'courseid' => $course->id,
-            'context' => \context_course::instance($course->id),
-        ])->trigger();
-        \core\event\course_viewed::create([
-            'courseid' => $course->id,
-            'context' => \context_course::instance($course->id),
-        ])->trigger();
+        $this->insert_course_view_log_record($DB, $course->id, $context->id, $user->id, time());
+        $this->insert_course_view_log_record($DB, $course->id, $context->id, $user->id, time() + 1);
 
         $reader = new log_reader($DB);
         $records = array_values($reader->get_course_events($course->id, 0));
@@ -79,5 +67,46 @@ final class log_reader_test extends advanced_testcase {
         $this->assertCount(2, $records);
         $this->assertSame((int)$user->id, (int)$records[0]->userid);
         $this->assertSame((int)$user->id, (int)$records[1]->userid);
+    }
+
+    /**
+     * Insert a standard-log course viewed event.
+     *
+     * @param moodle_database $db Database handle.
+     * @param int $courseid Course id.
+     * @param int $contextid Context id.
+     * @param int $userid User id.
+     * @param int $timecreated Event timestamp.
+     * @return void
+     */
+    private function insert_course_view_log_record(
+        moodle_database $db,
+        int $courseid,
+        int $contextid,
+        int $userid,
+        int $timecreated
+    ): void {
+        $db->insert_record('logstore_standard_log', (object)[
+            'eventname' => '\core\event\course_viewed',
+            'component' => 'core',
+            'action' => 'viewed',
+            'target' => 'course',
+            'objecttable' => 'course',
+            'objectid' => $courseid,
+            'crud' => 'r',
+            'edulevel' => \core\event\base::LEVEL_PARTICIPATING,
+            'contextid' => $contextid,
+            'contextlevel' => CONTEXT_COURSE,
+            'contextinstanceid' => $courseid,
+            'userid' => $userid,
+            'courseid' => $courseid,
+            'relateduserid' => 0,
+            'anonymous' => 0,
+            'other' => '',
+            'timecreated' => $timecreated,
+            'origin' => 'web',
+            'ip' => '127.0.0.1',
+            'realuserid' => null,
+        ]);
     }
 }
