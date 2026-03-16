@@ -32,6 +32,7 @@ $string['summary_heading'] = 'Course summary';
 $string['top_issues_heading'] = 'Top issues to review';
 $string['all_indicators_heading'] = 'All indicators';
 $string['overall_score'] = 'Overall friction score';
+$string['overall_score_clock'] = 'Overall score';
 $string['friction_clock_aria'] = 'Friction clock';
 $string['generated_at'] = 'Generated';
 $string['window'] = 'Window';

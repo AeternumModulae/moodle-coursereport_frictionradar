@@ -305,7 +305,7 @@ class friction_page implements renderable, templatable
         $center .= '<text x="' . $cx . '" y="' . ($cy - 18) . '" text-anchor="middle"
             font-family="system-ui, -apple-system, Segoe UI, Roboto, Arial"
             font-size="14" fill="#6B7280">'
-            . s(get_string('overall_score', 'coursereport_frictionradar')) .
+            . s(get_string('overall_score_clock', 'coursereport_frictionradar')) .
         '</text>';
         $center .= '<text x="' . $cx . '" y="' . ($cy + 28) . '" text-anchor="middle"
             font-family="system-ui, -apple-system, Segoe UI, Roboto, Arial"
