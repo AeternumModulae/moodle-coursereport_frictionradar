@@ -70,7 +70,7 @@ function coursereport_frictionradar_extend_settings_navigation(settings_navigati
     }
 
     $parent->add(
-        get_string('navitem', 'coursereport_frictionradar'),
+        \coursereport_frictionradar\local\brand_name::get_display_name(),
         $url,
         navigation_node::TYPE_SETTING,
         null,
@@ -107,7 +107,7 @@ function coursereport_frictionradar_extend_navigation_course(
     }
 
     $parent->add(
-        get_string('navitem', 'coursereport_frictionradar'),
+        \coursereport_frictionradar\local\brand_name::get_display_name(),
         $url,
         navigation_node::TYPE_SETTING,
         null,

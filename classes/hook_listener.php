@@ -27,6 +27,7 @@ use core_course\hook\after_form_definition;
 use core_course\hook\after_form_submission;
 use core_course\hook\after_form_validation;
 use coursereport_frictionradar\local\analysis_mode;
+use coursereport_frictionradar\local\brand_name;
 use coursereport_frictionradar\local\course_settings;
 use coursereport_frictionradar\service\friction_cache;
 
@@ -56,7 +57,7 @@ class hook_listener {
         $mform->addElement(
             'header',
             'coursereport_frictionradar_header',
-            get_string('settingsheader', 'coursereport_frictionradar')
+            brand_name::get_display_name()
         );
         $mform->setExpanded('coursereport_frictionradar_header');
 
