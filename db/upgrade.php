@@ -45,8 +45,8 @@ function xmldb_coursereport_frictionradar_upgrade(int $oldversion): bool {
         $table->add_field('timemodified', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, null, null);
 
         $table->add_key('primary', XMLDB_KEY_PRIMARY, ['id']);
+        $table->add_key('courseid_uk', XMLDB_KEY_UNIQUE, ['courseid']);
         $table->add_key('courseid_fk', XMLDB_KEY_FOREIGN, ['courseid'], 'course', ['id']);
-        $table->add_index('courseid_uix', XMLDB_INDEX_UNIQUE, ['courseid']);
 
         if (!$dbman->table_exists($table)) {
             $dbman->create_table($table);
