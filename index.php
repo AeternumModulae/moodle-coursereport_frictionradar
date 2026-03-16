@@ -40,16 +40,8 @@ $PAGE->set_heading($course->fullname);
 
 // Manual cache warm trigger (synchronous).
 $warmcache = optional_param('warmcache', 0, PARAM_BOOL);
-if ($warmcache) {
-    require_sesskey();
-
-    // Who is allowed to force a cache refresh?
-    // Option A: Course editors (recommended).
-    // If you prefer, replace with your own capability like 'coursereport/frictionradar:warmcache'.
+if ($warmcache && data_submitted() && confirm_sesskey()) {
     require_capability('moodle/course:update', $context);
-
-    // Force-generate the cached values now.
-    // NOTE: This must overwrite/refresh existing cache entries.
     \coursereport_frictionradar\service\friction_cache::refresh_course($courseid);
 
     redirect(

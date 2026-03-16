@@ -22,7 +22,12 @@
         <div class="alert alert-info">
             {{nodata}}
             {{#canrefresh}}
-                <a href="{{refreshurl}}">{{refreshlabel}}</a>
+                <form method="post" action="{{refreshurl}}" class="d-inline-block ml-2">
+                    <input type="hidden" name="id" value="{{refreshcourseid}}">
+                    <input type="hidden" name="warmcache" value="{{refreshwarmcache}}">
+                    <input type="hidden" name="sesskey" value="{{refreshsesskey}}">
+                    <button type="submit" class="btn btn-link p-0 align-baseline">{{refreshlabel}}</button>
+                </form>
             {{/canrefresh}}
         </div>
     {{/hasdata}}
@@ -37,10 +42,15 @@
                         <div class="text-muted">{{overall_score}}</div>
                     </div>
                     {{#canrefresh}}
-                        <a class="btn btn-outline-secondary friction-summary-refresh" href="{{refreshurl}}">
-                            <i class="fa fa-rotate" aria-hidden="true"></i>
-                            <span>{{refreshlabel}}</span>
-                        </a>
+                        <form method="post" action="{{refreshurl}}" class="friction-summary-refresh">
+                            <input type="hidden" name="id" value="{{refreshcourseid}}">
+                            <input type="hidden" name="warmcache" value="{{refreshwarmcache}}">
+                            <input type="hidden" name="sesskey" value="{{refreshsesskey}}">
+                            <button type="submit" class="btn btn-outline-secondary">
+                                <i class="fa fa-rotate" aria-hidden="true"></i>
+                                <span>{{refreshlabel}}</span>
+                            </button>
+                        </form>
                     {{/canrefresh}}
                 </div>
 

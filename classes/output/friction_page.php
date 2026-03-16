@@ -71,11 +71,7 @@ class friction_page implements renderable, templatable
         $hasdata = !empty($this->data);
         $canrefresh = has_capability('moodle/course:update', $this->context);
         $refreshlabel = get_string('warmcache_now', 'coursereport_frictionradar');
-        $refreshurl = new \moodle_url('/course/report/frictionradar/index.php', [
-            'id' => $this->courseid,
-            'warmcache' => 1,
-            'sesskey' => sesskey(),
-        ]);
+        $refreshurl = new \moodle_url('/course/report/frictionradar/index.php');
 
         $segments = $this->data['segments'] ?? [];
         $breakdown = $this->data['breakdown'] ?? [];
@@ -208,6 +204,9 @@ class friction_page implements renderable, templatable
             'canrefresh' => $canrefresh,
             'refreshurl' => $refreshurl->out(false),
             'refreshlabel' => $refreshlabel,
+            'refreshcourseid' => $this->courseid,
+            'refreshwarmcache' => 1,
+            'refreshsesskey' => sesskey(),
             'svg' => $hasdata ? $this->build_svg(self::ORDER, $indicators) : '',
             'overall' => $overall,
             'showmeta' => ($generated > 0),

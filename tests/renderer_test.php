@@ -95,5 +95,7 @@ class renderer_test extends advanced_testcase
         $this->assertStringContainsString('All indicators', $html);
         $this->assertStringContainsString('View details', $html);
         $this->assertStringContainsString('N/A', $html);
+        $this->assertStringContainsString('<form method="post"', $html);
+        $this->assertStringContainsString('name="sesskey"', $html);
     }
 }

@@ -62,6 +62,11 @@ class course_settings {
         $now = time();
 
         if ($existing) {
+            if ($normalizedmode === analysis_mode::MODE_LIVE) {
+                $DB->delete_records(self::TABLE, ['id' => $existing->id]);
+                return $existing->analysismode !== analysis_mode::MODE_LIVE;
+            }
+
             if ($existing->analysismode === $normalizedmode) {
                 return false;
             }
@@ -72,6 +77,10 @@ class course_settings {
             return true;
         }
 
+        if ($normalizedmode === analysis_mode::MODE_LIVE) {
+            return false;
+        }
+
         $record = (object)[
             'courseid' => $courseid,
             'analysismode' => $normalizedmode,
@@ -80,6 +89,6 @@ class course_settings {
         ];
         $DB->insert_record(self::TABLE, $record);
 
-        return $normalizedmode !== analysis_mode::MODE_LIVE;
+        return true;
     }
 }

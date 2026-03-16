@@ -84,11 +84,12 @@ class queue_cache_warmers extends \core\task\scheduled_task
 
         foreach ($courses as $course) {
             $task = new warm_course_cache();
+            $task->set_component('coursereport_frictionradar');
             $task->set_custom_data(['courseid' => (int)$course->id]);
             // Randomize next run time between 02:00 and 05:00 local server time.
             $next = self::random_nightly_timestamp(2, 5);
             $task->set_next_run_time($next);
-            \core\task\manager::queue_adhoc_task($task);
+            \core\task\manager::queue_adhoc_task($task, true);
         }
     }
 

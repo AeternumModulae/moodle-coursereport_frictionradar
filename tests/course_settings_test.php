@@ -39,6 +39,8 @@ class course_settings_test extends advanced_testcase {
     public function test_save_mode_persists_structural_mode(): void {
         $this->resetAfterTest(true);
 
+        global $DB;
+
         $course = $this->getDataGenerator()->create_course();
 
         $changed = \coursereport_frictionradar\local\course_settings::save_mode(
@@ -51,5 +53,47 @@ class course_settings_test extends advanced_testcase {
             \coursereport_frictionradar\local\analysis_mode::MODE_STRUCTURAL,
             \coursereport_frictionradar\local\course_settings::get_mode($course->id)
         );
+        $this->assertTrue($DB->record_exists('coursereport_frictionradar', ['courseid' => $course->id]));
+    }
+
+    public function test_save_mode_does_not_persist_default_live_mode(): void {
+        $this->resetAfterTest(true);
+
+        global $DB;
+
+        $course = $this->getDataGenerator()->create_course();
+
+        $changed = \coursereport_frictionradar\local\course_settings::save_mode(
+            $course->id,
+            \coursereport_frictionradar\local\analysis_mode::MODE_LIVE
+        );
+
+        $this->assertFalse($changed);
+        $this->assertFalse($DB->record_exists('coursereport_frictionradar', ['courseid' => $course->id]));
+    }
+
+    public function test_save_mode_removes_persisted_setting_when_returning_to_live(): void {
+        $this->resetAfterTest(true);
+
+        global $DB;
+
+        $course = $this->getDataGenerator()->create_course();
+
+        \coursereport_frictionradar\local\course_settings::save_mode(
+            $course->id,
+            \coursereport_frictionradar\local\analysis_mode::MODE_STRUCTURAL
+        );
+
+        $changed = \coursereport_frictionradar\local\course_settings::save_mode(
+            $course->id,
+            \coursereport_frictionradar\local\analysis_mode::MODE_LIVE
+        );
+
+        $this->assertTrue($changed);
+        $this->assertSame(
+            \coursereport_frictionradar\local\analysis_mode::MODE_LIVE,
+            \coursereport_frictionradar\local\course_settings::get_mode($course->id)
+        );
+        $this->assertFalse($DB->record_exists('coursereport_frictionradar', ['courseid' => $course->id]));
     }
 }
