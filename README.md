@@ -8,6 +8,20 @@
 
 **Full description:** Friction Radar is a Moodle course report that surfaces early, aggregated signals of learning friction. It analyses activity logs and standard course data over a rolling six-week window and visualizes twelve friction indicators (plus an overall score) in a friction clock designed for reflection and improvement, not learner evaluation. The report is strictly course-level and anonymized; it does not store or display individual learner data and runs heavy calculations offline via scheduled cache warmers for performance.
 
+## Screenshots
+
+### Friction clock overview
+
+![Friction clock overview](docs/screenshots/screenshot-01-frictionradar.png)
+
+### Prioritized friction indicators
+
+![Prioritized friction indicators](docs/screenshots/screenshot-02-frictions.png)
+
+### Friction detail view
+
+![Friction detail view](docs/screenshots/screenshot-03-frictioninfo.png)
+
 ## Learning friction display
 
 ### What is Friction Radar?
