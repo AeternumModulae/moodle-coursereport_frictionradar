@@ -36,6 +36,9 @@ use templatable;
  */
 class friction_page implements renderable, templatable
 {
+    /** @var string[] */
+    private const ORDER = ['f01', 'f02', 'f03', 'f04', 'f05', 'f06', 'f07', 'f08', 'f09', 'f10', 'f11', 'f12'];
+
     /** @var int */
     private $courseid;
 
@@ -81,8 +84,6 @@ class friction_page implements renderable, templatable
         $window = (int)($this->data['window_days'] ?? 42);
         $mode = analysis_mode::normalize($this->data['analysis_mode'] ?? null);
 
-        $order = ['f01', 'f02', 'f03', 'f04', 'f05', 'f06', 'f07', 'f08', 'f09', 'f10', 'f11', 'f12'];
-
         $iconmap = [
             'f01' => 'frictions/F01_cognitive_overload',
             'f02' => 'frictions/F02_didactic_pitfalls',
@@ -98,7 +99,7 @@ class friction_page implements renderable, templatable
             'f12' => 'frictions/F12_deadline_panic',
         ];
 
-        $legenditems = [];
+        $indicators = [];
         $uiscore   = get_string('ui_score', 'coursereport_frictionradar');
         $uiformula = get_string('ui_formula', 'coursereport_frictionradar');
         $uiinputs  = get_string('ui_inputs', 'coursereport_frictionradar');
@@ -136,21 +137,29 @@ class friction_page implements renderable, templatable
             'f12' => get_string('action_f12', 'coursereport_frictionradar'),
         ];
 
-        foreach ($order as $key) {
+        foreach (self::ORDER as $key) {
             $score = array_key_exists($key, $segments) && $segments[$key] !== null ? (int)$segments[$key] : null;
             $bd = $breakdown[$key] ?? [];
             $formula = $bd['formula'] ?? '';
             $inputsjson = json_encode($bd['inputs'] ?? [], JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
             $notes = $bd['notes'] ?? '';
             $isskipped = ($bd['status'] ?? '') === 'skipped';
+            $actionsummary = $isskipped
+                ? get_string('action_summary_not_applicable', 'coursereport_frictionradar')
+                : $this->summarize_action($actions[$key] ?? '');
+            $severity = $this->get_severity_data($score, $isskipped);
 
-            $legenditems[] = [
+            $indicators[] = [
                 'key' => $key,
+                'detail_target' => 'friction-detail-' . $key,
                 'label' => get_string('friction_' . $key, 'coursereport_frictionradar'),
                 'score' => $score ?? '',
                 'scorelabel' => $isskipped ? get_string('not_applicable', 'coursereport_frictionradar') : (string)$score,
                 'color' => $isskipped ? '#D1D5DB' : $this->color_for_score((int)$score),
                 'isskipped' => $isskipped,
+                'severitylabel' => $severity['label'],
+                'severityclass' => $severity['class'],
+                'actionsummary' => $actionsummary,
                 'iconurl' => isset($iconmap[$key]) ? $output->image_url(
                     $iconmap[$key],
                     'coursereport_frictionradar'
@@ -170,6 +179,16 @@ class friction_page implements renderable, templatable
             ];
         }
 
+        $sortedindicators = $indicators;
+        usort($sortedindicators, [$this, 'compare_indicator_priority']);
+        $topissues = array_slice(
+            array_values(array_filter($sortedindicators, static function(array $indicator): bool {
+                return empty($indicator['isskipped']);
+            })),
+            0,
+            3
+        );
+
         return [
             'page_title' => get_string('page_title', 'coursereport_frictionradar'),
             'page_subtitle' => get_string('page_subtitle', 'coursereport_frictionradar'),
@@ -177,12 +196,19 @@ class friction_page implements renderable, templatable
             'analysis_mode_value' => analysis_mode::get_label($mode),
             'analysis_mode_is_structural' => !analysis_mode::includes_learner_activity($mode),
             'analysis_mode_notice' => get_string('analysis_mode_structural_notice', 'coursereport_frictionradar'),
+            'summary_heading' => get_string('summary_heading', 'coursereport_frictionradar'),
+            'top_issues_heading' => get_string('top_issues_heading', 'coursereport_frictionradar'),
+            'all_indicators_heading' => get_string('all_indicators_heading', 'coursereport_frictionradar'),
+            'overall_score' => get_string('overall_score', 'coursereport_frictionradar'),
+            'details_label' => get_string('details_label', 'coursereport_frictionradar'),
+            'next_step_label' => get_string('next_step_label', 'coursereport_frictionradar'),
+            'severity_label' => get_string('severity_label', 'coursereport_frictionradar'),
             'hasdata' => $hasdata,
             'nodata' => get_string('no_data', 'coursereport_frictionradar'),
             'canrefresh' => $canrefresh,
             'refreshurl' => $refreshurl->out(false),
             'refreshlabel' => $refreshlabel,
-            'svg' => $hasdata ? $this->build_svg($output, $segments, $order, $iconmap) : '',
+            'svg' => $hasdata ? $this->build_svg(self::ORDER, $indicators) : '',
             'overall' => $overall,
             'showmeta' => ($generated > 0),
             'generated_label' => get_string('generated_at', 'coursereport_frictionradar'),
@@ -190,7 +216,8 @@ class friction_page implements renderable, templatable
             'window_label' => get_string('window', 'coursereport_frictionradar'),
             'window_days' => $window,
             'days_label' => get_string('days', 'coursereport_frictionradar'),
-            'legenditems' => $legenditems,
+            'topissues' => $topissues,
+            'indicators' => $sortedindicators,
             'svgtitle' => get_string('friction_clock_aria', 'coursereport_frictionradar'),
             'svgtitleid' => 'frictionradar-title-' . $this->courseid,
         ];
@@ -199,13 +226,11 @@ class friction_page implements renderable, templatable
     /**
      * Build the SVG for the friction clock.
      *
-     * @param renderer_base $output Renderer.
-     * @param array $segments Segment scores.
      * @param array $order Segment order.
-     * @param array $iconmap Icon map.
+     * @param array $indicators Indicator render data.
      * @return string
      */
-    private function build_svg(renderer_base $output, array $segments, array $order, array $iconmap): string {
+    private function build_svg(array $order, array $indicators): string {
         $cx = 200;
         $cy = 250;
         $router = 200;
@@ -214,31 +239,57 @@ class friction_page implements renderable, templatable
         $delta = 360 / 12;
 
         $paths = '';
+        $indicatorlookup = [];
+
+        foreach ($indicators as $indicator) {
+            $indicatorlookup[$indicator['key']] = $indicator;
+        }
 
         for ($i = 0; $i < 12; $i++) {
             $key = $order[$i];
-            $score = array_key_exists($key, $segments) && $segments[$key] !== null ? (int)$segments[$key] : null;
+            $indicator = $indicatorlookup[$key] ?? null;
+            if ($indicator === null) {
+                continue;
+            }
+
+            $score = $indicator['score'] !== '' ? (int)$indicator['score'] : null;
 
             $a1 = deg2rad($startangle + $i * $delta);
             $a2 = deg2rad($startangle + ($i + 1) * $delta);
 
             $path = $this->donut_segment_path($cx, $cy, $router, $rinner, $a1, $a2);
-            $fill = ($score === null) ? '#D1D5DB' : $this->color_for_score($score);
+            $fill = $indicator['color'];
 
-            $paths .= '<path d="' . $path . '" fill="' . $fill . '" stroke="#E5E7EB" stroke-width="1"/>';
+            $paths .= '<a href="#' . s($indicator['detail_target']) . '"'
+                . ' class="friction-chart-segment friction-detail-trigger"'
+                . ' role="button"'
+                . ' tabindex="0"'
+                . ' aria-label="' . s($indicator['label'] . ': ' . $indicator['scorelabel']) . '"'
+                . ' data-label="' . s($indicator['label']) . '"'
+                . ' data-friction="' . s($indicator['key']) . '"'
+                . ' data-score="' . s($indicator['scorelabel']) . '"'
+                . ' data-explanation="' . s($indicator['explanation']) . '"'
+                . ' data-what="' . s($indicator['what_to_do']) . '"'
+                . ' data-action="' . s($indicator['action']) . '"'
+                . ' data-formula="' . s($indicator['formula']) . '"'
+                . ' data-inputs="' . s($indicator['inputsjson']) . '"'
+                . ' data-notes="' . s($indicator['notes']) . '"'
+                . ' data-ui-score="' . s($indicator['ui_score']) . '"'
+                . ' data-ui-formula="' . s($indicator['ui_formula']) . '"'
+                . ' data-ui-inputs="' . s($indicator['ui_inputs']) . '"'
+                . ' data-ui-param="' . s($indicator['ui_param']) . '"'
+                . ' data-ui-value="' . s($indicator['ui_value']) . '"'
+                . ' data-ui-notes="' . s($indicator['ui_notes']) . '">';
+            $paths .= '<path d="' . $path . '" fill="' . s($fill) . '" stroke="#E5E7EB" stroke-width="1"/>';
 
-            if (isset($iconmap[$key])) {
-                $iconurl = $output->image_url($iconmap[$key], 'coursereport_frictionradar')->out(false);
-
+            if (!empty($indicator['iconurl'])) {
                 $mid = deg2rad($startangle + ($i + 0.5) * $delta);
                 $ricon = ($router + $rinner) / 2;
-
                 $ix = $cx + cos($mid) * $ricon;
                 $iy = $cy + sin($mid) * $ricon;
-
                 $iconsize = 48;
 
-                $paths .= '<image href="' . s($iconurl) . '"'
+                $paths .= '<image href="' . s($indicator['iconurl']) . '"'
                     . ' x="' . ($ix - $iconsize / 2) . '"'
                     . ' y="' . ($iy - $iconsize / 2) . '"'
                     . ' width="' . $iconsize . '"'
@@ -246,6 +297,8 @@ class friction_page implements renderable, templatable
                     . ' preserveAspectRatio="xMidYMid meet"'
                     . ' />';
             }
+
+            $paths .= '</a>';
         }
 
         $center  = '<circle cx="' . $cx . '" cy="' . $cy . '" r="95" fill="#FFFFFF"'
@@ -299,6 +352,85 @@ class friction_page implements renderable, templatable
             return '#3F658F';
         }
         return '#1F3A5F';
+    }
+
+    /**
+     * Get severity label and CSS class for an indicator score.
+     *
+     * @param int|null $score Indicator score.
+     * @param bool $isskipped Whether the indicator is skipped.
+     * @return array{label:string,class:string}
+     */
+    private function get_severity_data(?int $score, bool $isskipped): array {
+        if ($isskipped || $score === null) {
+            return [
+                'label' => get_string('severity_not_applicable', 'coursereport_frictionradar'),
+                'class' => 'is-na',
+            ];
+        }
+
+        if ($score >= 75) {
+            return [
+                'label' => get_string('severity_critical', 'coursereport_frictionradar'),
+                'class' => 'is-critical',
+            ];
+        }
+
+        if ($score >= 50) {
+            return [
+                'label' => get_string('severity_high', 'coursereport_frictionradar'),
+                'class' => 'is-high',
+            ];
+        }
+
+        if ($score >= 25) {
+            return [
+                'label' => get_string('severity_moderate', 'coursereport_frictionradar'),
+                'class' => 'is-moderate',
+            ];
+        }
+
+        return [
+            'label' => get_string('severity_low', 'coursereport_frictionradar'),
+            'class' => 'is-low',
+        ];
+    }
+
+    /**
+     * Compare indicator priority for sorting.
+     *
+     * @param array $left Left indicator.
+     * @param array $right Right indicator.
+     * @return int
+     */
+    private function compare_indicator_priority(array $left, array $right): int {
+        $leftscore = $left['isskipped'] ? -1 : (int)$left['score'];
+        $rightscore = $right['isskipped'] ? -1 : (int)$right['score'];
+
+        if ($leftscore === $rightscore) {
+            return strcmp($left['key'], $right['key']);
+        }
+
+        return $rightscore <=> $leftscore;
+    }
+
+    /**
+     * Return a short action summary for list views.
+     *
+     * @param string $action Full action guidance.
+     * @return string
+     */
+    private function summarize_action(string $action): string {
+        $action = trim(preg_replace('/\s+/', ' ', $action) ?? '');
+        if ($action === '') {
+            return '';
+        }
+
+        if (preg_match('/^(.+?[.!?])(\s|$)/', $action, $matches)) {
+            return trim($matches[1]);
+        }
+
+        return \core_text::substr($action, 0, 160);
     }
 
     /**

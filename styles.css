@@ -22,47 +22,231 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-.tool-frictionradar, .tool-friction-radar-created {
+.tool-frictionradar {
     margin-top: -40px;
-}
-
-.tool-frictionradar .btn {
-    text-decoration: none !important;
-}
-
-.tool-frictionradar .friction-info {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    text-align: center;
-    max-width: 100%;
 }
 
 .tool-frictionradar .friction-clock-wrap {
     position: relative;
     width: 100%;
     max-width: 520px;
+    margin: 0 auto;
 }
 
-.tool-frictionradar .friction-refresh-btn {
-    position: absolute;
-    left: 50%;
-    top: 63.6%;
-    transform: translate(-50%, -50%);
+.tool-frictionradar .friction-summary {
+    border: 1px solid #dbe3ec;
+    box-shadow: none;
+}
+
+.tool-frictionradar .friction-summary-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 1rem;
+    margin-bottom: 1rem;
+}
+
+.tool-frictionradar .friction-summary-score {
+    font-size: clamp(2.25rem, 5vw, 3.5rem);
+    font-weight: 700;
+    line-height: 1;
+    color: #15395b;
+}
+
+.tool-frictionradar .friction-summary-refresh {
     display: inline-flex;
     align-items: center;
-    justify-content: center;
-    width: 32px;
-    height: 32px;
-    border-radius: 999px;
-    background: #F3F4F6;
-    border: 1px solid #CBD5E1;
-    color: #374151;
-    text-decoration: none;
+    gap: 0.5rem;
+    white-space: nowrap;
 }
 
-.tool-frictionradar .friction-refresh-btn:hover {
-    background: #E5E7EB;
+.tool-frictionradar .friction-summary-meta {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 0.75rem;
+}
+
+.tool-frictionradar .friction-summary-meta-item {
+    padding: 0.75rem 0.875rem;
+    border-radius: 0.75rem;
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+}
+
+.tool-frictionradar .friction-chart {
+    border: 1px solid #dbe3ec;
+    box-shadow: none;
+}
+
+.tool-frictionradar .friction-chart-segment {
+    cursor: pointer;
+}
+
+.tool-frictionradar .friction-chart-segment:focus path,
+.tool-frictionradar .friction-chart-segment:hover path {
+    stroke: #111827;
+    stroke-width: 3;
+}
+
+.tool-frictionradar .friction-section-title {
+    margin-bottom: 1rem;
+}
+
+.tool-frictionradar .friction-indicator-list {
+    display: grid;
+    gap: 0.875rem;
+}
+
+.tool-frictionradar .friction-indicator-card {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: 1rem;
+    border: 1px solid #dbe3ec;
+    border-radius: 0.875rem;
+    background: #fff;
+}
+
+.tool-frictionradar .friction-indicator-card.is-top-issue {
+    background: linear-gradient(180deg, #fff 0%, #f8fbfd 100%);
+}
+
+.tool-frictionradar .friction-indicator-main {
+    flex: 1 1 auto;
+    min-width: 0;
+}
+
+.tool-frictionradar .friction-indicator-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 1rem;
+}
+
+.tool-frictionradar .friction-indicator-title-wrap {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.75rem;
+    min-width: 0;
+}
+
+.tool-frictionradar .friction-indicator-bar {
+    display: inline-block;
+    width: 0.375rem;
+    min-width: 0.375rem;
+    height: 3rem;
+    border-radius: 999px;
+    background: #9fbad6;
+}
+
+.tool-frictionradar .friction-indicator-icon {
+    width: 2.75rem;
+    height: 2.75rem;
+    flex: 0 0 auto;
+    opacity: 0.9;
+}
+
+.tool-frictionradar .friction-indicator-title {
+    font-weight: 600;
     color: #111827;
-    text-decoration: none;
+}
+
+.tool-frictionradar .friction-indicator-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-top: 0.25rem;
+}
+
+.tool-frictionradar .friction-score,
+.tool-frictionradar .friction-severity {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.2rem 0.55rem;
+    border-radius: 999px;
+    font-size: 0.875rem;
+    font-weight: 600;
+}
+
+.tool-frictionradar .friction-score {
+    color: #15395b;
+    background: #e8f1f8;
+}
+
+.tool-frictionradar .friction-severity {
+    border: 1px solid transparent;
+}
+
+.tool-frictionradar .friction-severity.is-critical {
+    color: #7f1d1d;
+    background: #fee2e2;
+    border-color: #fecaca;
+}
+
+.tool-frictionradar .friction-severity.is-high {
+    color: #92400e;
+    background: #ffedd5;
+    border-color: #fed7aa;
+}
+
+.tool-frictionradar .friction-severity.is-moderate {
+    color: #1d4ed8;
+    background: #dbeafe;
+    border-color: #bfdbfe;
+}
+
+.tool-frictionradar .friction-severity.is-low {
+    color: #166534;
+    background: #dcfce7;
+    border-color: #bbf7d0;
+}
+
+.tool-frictionradar .friction-severity.is-na {
+    color: #475569;
+    background: #f1f5f9;
+    border-color: #cbd5e1;
+}
+
+.tool-frictionradar .friction-detail-button {
+    flex: 0 0 auto;
+    text-decoration: none !important;
+}
+
+.tool-frictionradar .friction-next-step {
+    margin-top: 0.875rem;
+    color: #334155;
+}
+
+.tool-frictionradar .friction-indicator-support {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    gap: 0.75rem;
+    margin-top: 0.875rem;
+}
+
+.tool-frictionradar .friction-indicator-support-item {
+    display: flex;
+    flex-direction: column;
+    gap: 0.125rem;
+}
+
+.tool-frictionradar .friction-indicator-support-item-wide {
+    min-width: 0;
+}
+
+@media (max-width: 767.98px) {
+    .tool-frictionradar {
+        margin-top: 0;
+    }
+
+    .tool-frictionradar .friction-summary-header,
+    .tool-frictionradar .friction-indicator-header {
+        flex-direction: column;
+    }
+
+    .tool-frictionradar .friction-summary-refresh,
+    .tool-frictionradar .friction-detail-button {
+        align-self: flex-start;
+    }
 }

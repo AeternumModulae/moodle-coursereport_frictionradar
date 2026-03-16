@@ -42,39 +42,6 @@ define([
         }
     };
 
-    const equalizeInfoButtonWidths = () => {
-        const buttons = Array.from(document.querySelectorAll('.friction-info'));
-
-        if (!buttons.length) {
-            return;
-        }
-
-        buttons.forEach(button => {
-            button.style.width = 'auto';
-        });
-
-        let maxWidth = 0;
-        buttons.forEach(button => {
-            const width = button.getBoundingClientRect().width;
-            if (width > maxWidth) {
-                maxWidth = width;
-            }
-        });
-
-        if (maxWidth > 0) {
-            const widthPx = `${Math.ceil(maxWidth)}px`;
-            buttons.forEach(button => {
-                button.style.width = widthPx;
-            });
-        }
-    };
-
-    const scheduleEqualize = () => {
-        window.requestAnimationFrame(() => {
-            window.requestAnimationFrame(equalizeInfoButtonWidths);
-        });
-    };
-
     const renderCalculationBlock = (
         uiLabel,
         uiParam,
@@ -134,62 +101,72 @@ define([
         `;
     };
 
+    const bindCalculationToggles = (root) => {
+        root.querySelectorAll('.friction-toggle').forEach(button => {
+            button.addEventListener('click', function() {
+                const details = button.nextElementSibling;
+                const arrow = button.querySelector('.friction-arrow');
+                const open = details.style.display !== 'none';
+
+                details.style.display = open ? 'none' : 'block';
+                arrow.textContent = open ? '▶' : '▼';
+            });
+        });
+    };
+
+    const buildModalBody = (trigger) => `
+        <p>
+            <strong>${esc(trigger.dataset.uiScore)}:</strong>
+            ${esc(trigger.dataset.score)}
+        </p>
+
+        <p>${nl2br(trigger.dataset.explanation)}</p>
+
+        ${renderCalculationBlock(
+            trigger.dataset.uiFormula,
+            trigger.dataset.uiParam,
+            trigger.dataset.uiValue,
+            trigger.dataset.uiNotes,
+            trigger.dataset.formula || '',
+            parseInputs(trigger.dataset.inputs || '[]'),
+            trigger.dataset.notes || ''
+        )}
+
+        <p class="mt-3"><strong>${nl2br(trigger.dataset.what)}</strong></p>
+        <p>${nl2br(trigger.dataset.action)}</p>
+    `;
+
+    const openDetails = (trigger) => {
+        const title = esc(trigger.dataset.label || trigger.textContent);
+
+        ModalFactory.create({
+            type: ModalFactory.types.DEFAULT,
+            title: title,
+            body: buildModalBody(trigger),
+            large: true
+        }).then(function(modal) {
+            modal.show();
+            bindCalculationToggles(modal.getRoot()[0]);
+        });
+    };
+
+    const isActivationKey = (event) => event.key === 'Enter' || event.key === ' ';
+
     return {
         init: function() {
+            document.querySelectorAll('.friction-detail-trigger').forEach(trigger => {
+                trigger.addEventListener('click', function(event) {
+                    event.preventDefault();
+                    openDetails(trigger);
+                });
 
-            scheduleEqualize();
-            window.addEventListener('resize', scheduleEqualize);
+                trigger.addEventListener('keydown', function(event) {
+                    if (!isActivationKey(event)) {
+                        return;
+                    }
 
-            document.querySelectorAll('.friction-info').forEach(button => {
-
-                button.addEventListener('click', function() {
-
-                    const title = esc(button.textContent);
-
-                    const body = `
-                        <p>
-                            <strong>${esc(button.dataset.uiScore)}:</strong>
-                            ${esc(button.dataset.score)}
-                        </p>
-
-                        <p>${nl2br(button.dataset.explanation)}</p>
-
-                        ${renderCalculationBlock(
-                            button.dataset.uiFormula,
-                            button.dataset.uiParam,
-                            button.dataset.uiValue,
-                            button.dataset.uiNotes,
-                            button.dataset.formula || '',
-                            parseInputs(button.dataset.inputs || '[]'),
-                            button.dataset.notes || ''
-                        )}
-
-                        <p class="mt-3"><strong>${nl2br(button.dataset.what)}</strong></p>
-                        <p>${nl2br(button.dataset.action)}</p>
-                    `;
-
-                    ModalFactory.create({
-                        type: ModalFactory.types.DEFAULT,
-                        title: title,
-                        body: body,
-                        large: true
-                    }).then(function(modal) {
-
-                        modal.show();
-
-                        const root = modal.getRoot()[0];
-
-                        root.querySelectorAll('.friction-toggle').forEach(btn => {
-                            btn.addEventListener('click', function() {
-                                const details = btn.nextElementSibling;
-                                const arrow = btn.querySelector('.friction-arrow');
-                                const open = details.style.display !== 'none';
-
-                                details.style.display = open ? 'none' : 'block';
-                                arrow.textContent = open ? '▶' : '▼';
-                            });
-                        });
-                    });
+                    event.preventDefault();
+                    openDetails(trigger);
                 });
             });
         }
