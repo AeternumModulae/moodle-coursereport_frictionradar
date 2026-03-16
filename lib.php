@@ -115,3 +115,14 @@ function coursereport_frictionradar_extend_navigation_course(
         new pix_icon('icon', '', 'coursereport_frictionradar')
     );
 }
+
+/**
+ * Get icon mapping for Font Awesome.
+ *
+ * @return array<string, string>
+ */
+function coursereport_frictionradar_get_fontawesome_icon_map(): array {
+    return [
+        'coursereport_frictionradar:icon' => 'fa-solid fa-bullseye',
+    ];
+}
