@@ -17,6 +17,12 @@
 <div class="tool-frictionradar">
     <h2>{{page_title}}</h2>
     <div class="text-muted mb-1">{{page_subtitle}}</div>
+    <div class="alert alert-secondary">
+        <strong>{{analysis_mode_label}}:</strong> {{analysis_mode_value}}
+        {{#analysis_mode_is_structural}}
+            <div>{{analysis_mode_notice}}</div>
+        {{/analysis_mode_is_structural}}
+    </div>
 
     {{^hasdata}}
         <div class="alert alert-info">
@@ -61,7 +67,7 @@
                             <button type="button"
                                     class="btn btn-link p-0 me-auto friction-info p-2 text-decoration-none"
                                     data-friction="{{key}}"
-                                    data-score="{{score}}"
+                                    data-score="{{scorelabel}}"
                                     data-explanation="{{explanation}}"
                                     data-what="{{what_to_do}}"
                                     data-action="{{action}}"
@@ -76,7 +82,7 @@
                                     data-ui-notes="{{ui_notes}}">
                                 {{label}}
                             </button>
-                            <strong>{{score}}</strong>
+                            <strong>{{scorelabel}}</strong>
                         </div>
                     </div>
                 {{/legenditems}}

@@ -44,6 +44,7 @@ class friction_cache_test extends advanced_testcase
         $this->assertIsArray($data);
         $this->assertArrayHasKey('segments', $data);
         $this->assertArrayHasKey('overall', $data);
+        $this->assertArrayHasKey('analysis_mode', $data);
     }
 
     public function test_get_course_returns_null_when_empty(): void {
@@ -54,5 +55,27 @@ class friction_cache_test extends advanced_testcase
 
         $data = \coursereport_frictionradar\service\friction_cache::get_course($course->id);
         $this->assertNull($data);
+    }
+
+    public function test_get_course_refreshes_cache_when_analysis_mode_changes(): void {
+        $this->resetAfterTest(true);
+
+        $generator = $this->getDataGenerator();
+        $course = $generator->create_course(['visible' => 1]);
+
+        \coursereport_frictionradar\service\friction_cache::warm_course($course->id);
+        \coursereport_frictionradar\local\course_settings::save_mode(
+            $course->id,
+            \coursereport_frictionradar\local\analysis_mode::MODE_STRUCTURAL
+        );
+
+        $data = \coursereport_frictionradar\service\friction_cache::get_course($course->id);
+
+        $this->assertSame(
+            \coursereport_frictionradar\local\analysis_mode::MODE_STRUCTURAL,
+            $data['analysis_mode']
+        );
+        $this->assertNull($data['segments']['f05']);
+        $this->assertNull($data['segments']['f06']);
     }
 }

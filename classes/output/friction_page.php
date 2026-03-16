@@ -23,6 +23,7 @@
 
 namespace coursereport_frictionradar\output;
 
+use coursereport_frictionradar\local\analysis_mode;
 use renderer_base;
 use renderable;
 use templatable;
@@ -78,6 +79,7 @@ class friction_page implements renderable, templatable
         $overall = (int)($this->data['overall'] ?? 0);
         $generated = (int)($this->data['generated_at'] ?? 0);
         $window = (int)($this->data['window_days'] ?? 42);
+        $mode = analysis_mode::normalize($this->data['analysis_mode'] ?? null);
 
         $order = ['f01', 'f02', 'f03', 'f04', 'f05', 'f06', 'f07', 'f08', 'f09', 'f10', 'f11', 'f12'];
 
@@ -135,17 +137,20 @@ class friction_page implements renderable, templatable
         ];
 
         foreach ($order as $key) {
-            $score = (int)($segments[$key] ?? 0);
+            $score = array_key_exists($key, $segments) && $segments[$key] !== null ? (int)$segments[$key] : null;
             $bd = $breakdown[$key] ?? [];
             $formula = $bd['formula'] ?? '';
             $inputsjson = json_encode($bd['inputs'] ?? [], JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
             $notes = $bd['notes'] ?? '';
+            $isskipped = ($bd['status'] ?? '') === 'skipped';
 
             $legenditems[] = [
                 'key' => $key,
                 'label' => get_string('friction_' . $key, 'coursereport_frictionradar'),
-                'score' => $score,
-                'color' => $this->color_for_score($score),
+                'score' => $score ?? '',
+                'scorelabel' => $isskipped ? get_string('not_applicable', 'coursereport_frictionradar') : (string)$score,
+                'color' => $isskipped ? '#D1D5DB' : $this->color_for_score((int)$score),
+                'isskipped' => $isskipped,
                 'iconurl' => isset($iconmap[$key]) ? $output->image_url(
                     $iconmap[$key],
                     'coursereport_frictionradar'
@@ -168,6 +173,10 @@ class friction_page implements renderable, templatable
         return [
             'page_title' => get_string('page_title', 'coursereport_frictionradar'),
             'page_subtitle' => get_string('page_subtitle', 'coursereport_frictionradar'),
+            'analysis_mode_label' => get_string('analysis_mode_current', 'coursereport_frictionradar'),
+            'analysis_mode_value' => analysis_mode::get_label($mode),
+            'analysis_mode_is_structural' => !analysis_mode::includes_learner_activity($mode),
+            'analysis_mode_notice' => get_string('analysis_mode_structural_notice', 'coursereport_frictionradar'),
             'hasdata' => $hasdata,
             'nodata' => get_string('no_data', 'coursereport_frictionradar'),
             'canrefresh' => $canrefresh,
@@ -208,13 +217,13 @@ class friction_page implements renderable, templatable
 
         for ($i = 0; $i < 12; $i++) {
             $key = $order[$i];
-            $score = (int)($segments[$key] ?? 0);
+            $score = array_key_exists($key, $segments) && $segments[$key] !== null ? (int)$segments[$key] : null;
 
             $a1 = deg2rad($startangle + $i * $delta);
             $a2 = deg2rad($startangle + ($i + 1) * $delta);
 
             $path = $this->donut_segment_path($cx, $cy, $router, $rinner, $a1, $a2);
-            $fill = $this->color_for_score($score);
+            $fill = ($score === null) ? '#D1D5DB' : $this->color_for_score($score);
 
             $paths .= '<path d="' . $path . '" fill="' . $fill . '" stroke="#E5E7EB" stroke-width="1"/>';
 

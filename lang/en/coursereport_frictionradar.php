@@ -40,6 +40,16 @@ $string['task_warm_cache'] = 'Friction Radar: queue nightly cache warmers';
 $string['task_warm_course'] = 'Friction Radar: warm course cache';
 $string['frictionradar:view'] = 'View Friction Radar report';
 $string['cachedef_course_friction_scores'] = 'Friction Radar course scores';
+$string['settingsheader'] = 'Friction Radar';
+$string['analysis_mode'] = 'Analysis mode';
+$string['analysis_mode_help'] = 'Use this mode for courses under construction, pilot setups, or test environments. In structural preview mode, Friction Radar ignores learner activity signals and evaluates only structural friction indicators.';
+$string['analysis_mode_live'] = 'Live course analysis';
+$string['analysis_mode_structural'] = 'Structural preview';
+$string['analysis_mode_current'] = 'Analysis mode';
+$string['analysis_mode_structural_notice'] = 'Learner activity signals are currently ignored.';
+$string['error_invalid_analysis_mode'] = 'Invalid analysis mode selected.';
+$string['not_applicable'] = 'N/A';
+$string['activity_metric_skipped_notice'] = 'Learner activity signals are ignored in structural preview mode.';
 
 $string['setting_studentroles'] = 'Student-like roles';
 $string['setting_studentroles_desc'] = 'Roles treated as student-like for engagement and attempt analysis. Leave empty to fall back to archetype "student" and the role shortname "student".';
@@ -166,7 +176,7 @@ $string['input_f12_a'] = 'Deadline density (0..1)';
 $string['input_f12_b'] = 'Deadline clustering (0..1)';
 $string['input_f12_c'] = 'Short-notice ratio (0..1)';
 
-$string['privacy:metadata'] = 'The Friction Radar tool stores only aggregated, course-level scores in cache and does not store personal data.';
+$string['privacy:metadata'] = 'The Friction Radar tool stores only a course-level analysis mode setting and aggregated course-level scores in cache. It does not store personal data.';
 
 $string['ui_score'] = 'Score';
 $string['ui_formula'] = 'Formula';

@@ -40,9 +40,14 @@ class renderer_test extends advanced_testcase
             'generated_at' => time(),
             'window_days' => 42,
             'overall' => 55,
+            'analysis_mode' => \coursereport_frictionradar\local\analysis_mode::MODE_STRUCTURAL,
             'segments' => [
-                'f01' => 10, 'f02' => 20, 'f03' => 30, 'f04' => 40, 'f05' => 50, 'f06' => 60,
+                'f01' => 10, 'f02' => 20, 'f03' => 30, 'f04' => 40, 'f05' => null, 'f06' => null,
                 'f07' => 70, 'f08' => 80, 'f09' => 90, 'f10' => 15, 'f11' => 25, 'f12' => 35,
+            ],
+            'breakdown' => [
+                'f05' => ['status' => 'skipped', 'notes' => 'Skipped'],
+                'f06' => ['status' => 'skipped', 'notes' => 'Skipped'],
             ],
         ];
 
@@ -54,5 +59,8 @@ class renderer_test extends advanced_testcase
         $this->assertStringContainsString('viewBox="0 0 400 500"', $html);
         $this->assertStringContainsString('tool-frictionradar', $html);
         $this->assertStringContainsString('friction-info', $html);
+        $this->assertStringContainsString('Analysis mode', $html);
+        $this->assertStringContainsString('Structural preview', $html);
+        $this->assertStringContainsString('N/A', $html);
     }
 }

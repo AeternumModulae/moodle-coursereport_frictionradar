@@ -36,6 +36,8 @@ use coursereport_frictionradar\friction\f09_resource_overload;
 use coursereport_frictionradar\friction\f10_hidden_dependencies;
 use coursereport_frictionradar\friction\f11_frust_scroll;
 use coursereport_frictionradar\friction\f12_deadline_panic;
+use coursereport_frictionradar\local\analysis_mode;
+use coursereport_frictionradar\local\course_settings;
 
 
 /**
@@ -83,15 +85,21 @@ class friction_calculator
      */
     public static function calculate_for_course(int $courseid, int $windowdays = 42): array {
         $frictions = self::get_frictions();
+        $mode = course_settings::get_mode($courseid);
 
-        $segments = array_fill_keys(self::ORDER, 0);
+        $segments = array_fill_keys(self::ORDER, null);
         $breakdown = [];
 
         foreach ($frictions as $friction) {
             $key = $friction->get_key();
-            $result = $friction->calculate($courseid, $windowdays);
+            if (!analysis_mode::includes_learner_activity($mode) &&
+                    analysis_mode::is_activity_based_friction($key)) {
+                $result = self::build_skipped_result();
+            } else {
+                $result = $friction->calculate($courseid, $windowdays);
+            }
 
-            $segments[$key] = (int)($result['score'] ?? 0);
+            $segments[$key] = isset($result['score']) ? (int)$result['score'] : null;
             $breakdown[$key] = (array)($result['breakdown'] ?? []);
         }
 
@@ -99,6 +107,7 @@ class friction_calculator
             'overall'      => self::overall_score($segments),
             'segments'     => $segments,
             'breakdown'    => $breakdown,
+            'analysis_mode' => $mode,
             'generated_at' => time(),
             'window_days'  => $windowdays,
         ];
@@ -133,9 +142,24 @@ class friction_calculator
      * @return int Overall score.
      */
     private static function overall_score(array $segments): int {
-        if (empty($segments)) {
+        $activesegments = array_filter($segments, static fn($score) => $score !== null);
+        if (empty($activesegments)) {
             return 0;
         }
-        return (int)round(array_sum($segments) / count($segments));
+        return (int)round(array_sum($activesegments) / count($activesegments));
+    }
+
+    /**
+     * Build the standardized result payload for a skipped activity-based friction.
+     *
+     * @return array
+     */
+    private static function build_skipped_result(): array {
+        return [
+            'breakdown' => [
+                'notes' => get_string('activity_metric_skipped_notice', 'coursereport_frictionradar'),
+                'status' => 'skipped',
+            ],
+        ];
     }
 }

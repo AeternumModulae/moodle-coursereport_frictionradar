@@ -14,17 +14,26 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 /**
- * Friction Radar report.
+ * Hook callback definitions for coursereport_frictionradar.
  *
  * @package    coursereport_frictionradar
- * @copyright  2026 Jan Svoboda <jan.svoboda@burml.com>
+ * @copyright  2026 Jan Svoboda <252793909+AeternumModulae@users.noreply.github.com>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
 defined('MOODLE_INTERNAL') || die();
 
-$plugin->component = 'coursereport_frictionradar';
-$plugin->version   = 2026031600;
-$plugin->requires  = 2024100700; // Moodle 4.5.x (approx build version).
-$plugin->maturity  = MATURITY_ALPHA;
-$plugin->release   = '0.6.0';
+$callbacks = [
+    [
+        'hook' => \core_course\hook\after_form_definition::class,
+        'callback' => \coursereport_frictionradar\hook_listener::class . '::extend_course_form_definition',
+    ],
+    [
+        'hook' => \core_course\hook\after_form_validation::class,
+        'callback' => \coursereport_frictionradar\hook_listener::class . '::validate_course_form',
+    ],
+    [
+        'hook' => \core_course\hook\after_form_submission::class,
+        'callback' => \coursereport_frictionradar\hook_listener::class . '::store_course_settings',
+    ],
+];
