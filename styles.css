@@ -22,10 +22,6 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-.tool-frictionradar {
-    margin-top: -40px;
-}
-
 .tool-frictionradar .friction-clock-wrap {
     position: relative;
     width: 100%;
@@ -236,10 +232,6 @@
 }
 
 @media (max-width: 767.98px) {
-    .tool-frictionradar {
-        margin-top: 0;
-    }
-
     .tool-frictionradar .friction-summary-header,
     .tool-frictionradar .friction-indicator-header {
         flex-direction: column;
