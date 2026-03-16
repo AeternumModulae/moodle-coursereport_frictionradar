@@ -22,65 +22,181 @@
         <div class="alert alert-info">
             {{nodata}}
             {{#canrefresh}}
-                <a href="{{refreshurl}}">{{refreshlabel}}</a>
+                <form method="post" action="{{refreshurl}}" class="d-inline-block ml-2">
+                    <input type="hidden" name="id" value="{{refreshcourseid}}">
+                    <input type="hidden" name="warmcache" value="{{refreshwarmcache}}">
+                    <input type="hidden" name="sesskey" value="{{refreshsesskey}}">
+                    <button type="submit" class="btn btn-secondary btn-sm align-baseline">{{refreshlabel}}</button>
+                </form>
             {{/canrefresh}}
         </div>
     {{/hasdata}}
 
     {{#hasdata}}
-        <div class="d-flex flex-column align-items-center">
-            <div class="friction-clock-wrap">
-                {{{svg}}}
-                {{#canrefresh}}
-                    <a class="friction-refresh-btn" href="{{refreshurl}}" aria-label="{{refreshlabel}}">
-                        <i class="fa fa-rotate" aria-hidden="true"></i>
-                        <span class="accesshide">{{refreshlabel}}</span>
-                    </a>
-                {{/canrefresh}}
-            </div>
-        </div>
-
-        {{#showmeta}}
-            <div class="small text-muted tool-friction-radar-created">
-                {{generated_label}}: {{generated_at}}
-                · {{window_label}}: {{window_days}} {{days_label}}
-            </div>
-        {{/showmeta}}
-
-        <div class="mt-4">
-            <div class="row">
-                {{#legenditems}}
-                    <div class="col-12 col-md-6 col-lg-4 mb-2">
-                        <div class="d-flex align-items-center">
-                            {{#iconurl}}
-                                <img src="{{iconurl}}" alt="" aria-hidden="true"
-                                     style="width:48px; height:48px; margin-right:8px; opacity:0.85;">
-                            {{/iconurl}}
-                            <span style="display:inline-block; width:16px; height:32px; border-radius:3px;
-                                background:{{color}}; border:1px solid #E5E7EB; margin-right:10px;"></span>
-                            <button type="button"
-                                    class="btn btn-link p-0 me-auto friction-info p-2 text-decoration-none"
-                                    data-friction="{{key}}"
-                                    data-score="{{score}}"
-                                    data-explanation="{{explanation}}"
-                                    data-what="{{what_to_do}}"
-                                    data-action="{{action}}"
-                                    data-formula="{{formula}}"
-                                    data-inputs="{{inputsjson}}"
-                                    data-notes="{{notes}}"
-                                    data-ui-score="{{ui_score}}"
-                                    data-ui-formula="{{ui_formula}}"
-                                    data-ui-inputs="{{ui_inputs}}"
-                                    data-ui-param="{{ui_param}}"
-                                    data-ui-value="{{ui_value}}"
-                                    data-ui-notes="{{ui_notes}}">
-                                {{label}}
+        <section class="friction-summary card mb-4">
+            <div class="card-body">
+                <div class="friction-summary-header">
+                    <div>
+                        <div class="text-muted small">{{summary_heading}}</div>
+                        <div class="friction-summary-score">{{overall}}</div>
+                        <div class="text-muted">{{overall_score}}</div>
+                    </div>
+                    {{#canrefresh}}
+                        <form method="post" action="{{refreshurl}}" class="friction-summary-refresh">
+                            <input type="hidden" name="id" value="{{refreshcourseid}}">
+                            <input type="hidden" name="warmcache" value="{{refreshwarmcache}}">
+                            <input type="hidden" name="sesskey" value="{{refreshsesskey}}">
+                            <button type="submit" class="btn btn-outline-secondary">
+                                <i class="fa fa-rotate" aria-hidden="true"></i>
+                                <span>{{refreshlabel}}</span>
                             </button>
-                            <strong>{{score}}</strong>
+                        </form>
+                    {{/canrefresh}}
+                </div>
+
+                <div class="friction-summary-meta">
+                    <div class="friction-summary-meta-item">
+                        <div class="text-muted small">{{analysis_mode_label}}</div>
+                        <div>{{analysis_mode_value}}</div>
+                    </div>
+                    {{#showmeta}}
+                        <div class="friction-summary-meta-item">
+                            <div class="text-muted small">{{generated_label}}</div>
+                            <div>{{generated_at}}</div>
+                        </div>
+                        <div class="friction-summary-meta-item">
+                            <div class="text-muted small">{{window_label}}</div>
+                            <div>{{window_days}} {{days_label}}</div>
+                        </div>
+                    {{/showmeta}}
+                </div>
+
+                {{#analysis_mode_is_structural}}
+                    <div class="alert alert-secondary mb-0 mt-3">{{analysis_mode_notice}}</div>
+                {{/analysis_mode_is_structural}}
+            </div>
+        </section>
+
+        <div class="row">
+            <div class="col-12 col-xl-5 mb-4">
+                <section class="friction-chart card h-100">
+                    <div class="card-body">
+                        <div class="friction-clock-wrap">
+                            {{{svg}}}
                         </div>
                     </div>
-                {{/legenditems}}
+                </section>
+            </div>
+            <div class="col-12 col-xl-7 mb-4">
+                <section class="card h-100">
+                    <div class="card-body">
+                        <h3 class="h5 friction-section-title">{{top_issues_heading}}</h3>
+
+                        <div class="friction-indicator-list friction-indicator-list-top">
+                            {{#topissues}}
+                                <article class="friction-indicator-card is-top-issue">
+                                    <div class="friction-indicator-main">
+                                        <div class="friction-indicator-header">
+                                            <div class="friction-indicator-title-wrap">
+                                                {{#iconurl}}
+                                                    <img class="friction-indicator-icon" src="{{iconurl}}" alt="" aria-hidden="true">
+                                                {{/iconurl}}
+                                                <div>
+                                                    <div class="friction-indicator-title">{{label}}</div>
+                                                    <div class="friction-indicator-meta">
+                                                        <span class="friction-score">{{scorelabel}}</span>
+                                                        <span class="friction-severity {{severityclass}}">{{severitylabel}}</span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <button type="button"
+                                                    class="btn btn-link friction-detail-trigger friction-detail-button"
+                                                    data-label="{{label}}"
+                                                    data-friction="{{key}}"
+                                                    data-score="{{scorelabel}}"
+                                                    data-explanation="{{explanation}}"
+                                                    data-what="{{what_to_do}}"
+                                                    data-action="{{action}}"
+                                                    data-formula="{{formula}}"
+                                                    data-inputs="{{inputsjson}}"
+                                                    data-notes="{{notes}}"
+                                                    data-ui-score="{{ui_score}}"
+                                                    data-ui-formula="{{ui_formula}}"
+                                                    data-ui-inputs="{{ui_inputs}}"
+                                                    data-ui-param="{{ui_param}}"
+                                                    data-ui-value="{{ui_value}}"
+                                                    data-ui-notes="{{ui_notes}}">
+                                                {{details_label}}
+                                            </button>
+                                        </div>
+                                        <p class="friction-next-step mb-0">
+                                            <strong>{{next_step_label}}:</strong> {{actionsummary}}
+                                        </p>
+                                    </div>
+                                </article>
+                            {{/topissues}}
+                        </div>
+                    </div>
+                </section>
             </div>
         </div>
+
+        <section class="card">
+            <div class="card-body">
+                <h3 class="h5 friction-section-title">{{all_indicators_heading}}</h3>
+                <div class="friction-indicator-list">
+                    {{#indicators}}
+                        <article class="friction-indicator-card" id="{{detail_target}}">
+                            <div class="friction-indicator-main">
+                                <div class="friction-indicator-header">
+                                    <div class="friction-indicator-title-wrap">
+                                        <span class="friction-indicator-bar" style="background:{{color}};"></span>
+                                        {{#iconurl}}
+                                            <img class="friction-indicator-icon" src="{{iconurl}}" alt="" aria-hidden="true">
+                                        {{/iconurl}}
+                                        <div>
+                                            <div class="friction-indicator-title">{{label}}</div>
+                                            <div class="friction-indicator-meta">
+                                                <span class="friction-score">{{scorelabel}}</span>
+                                                <span class="friction-severity {{severityclass}}">{{severitylabel}}</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <button type="button"
+                                            class="btn btn-link friction-detail-trigger friction-detail-button"
+                                            data-label="{{label}}"
+                                            data-friction="{{key}}"
+                                            data-score="{{scorelabel}}"
+                                            data-explanation="{{explanation}}"
+                                            data-what="{{what_to_do}}"
+                                            data-action="{{action}}"
+                                            data-formula="{{formula}}"
+                                            data-inputs="{{inputsjson}}"
+                                            data-notes="{{notes}}"
+                                            data-ui-score="{{ui_score}}"
+                                            data-ui-formula="{{ui_formula}}"
+                                            data-ui-inputs="{{ui_inputs}}"
+                                            data-ui-param="{{ui_param}}"
+                                            data-ui-value="{{ui_value}}"
+                                            data-ui-notes="{{ui_notes}}">
+                                        {{details_label}}
+                                    </button>
+                                </div>
+                                <div class="friction-indicator-support">
+                                    <div class="friction-indicator-support-item">
+                                        <span class="text-muted small">{{severity_label}}</span>
+                                        <span>{{severitylabel}}</span>
+                                    </div>
+                                    <div class="friction-indicator-support-item friction-indicator-support-item-wide">
+                                        <span class="text-muted small">{{next_step_label}}</span>
+                                        <span>{{actionsummary}}</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </article>
+                    {{/indicators}}
+                </div>
+            </div>
+        </section>
     {{/hasdata}}
 </div>

@@ -14,17 +14,18 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 /**
- * Friction Radar report.
+ * Tests for the brand name helper.
  *
  * @package    coursereport_frictionradar
  * @copyright  2026 Jan Svoboda <jan.svoboda@burml.com>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-defined('MOODLE_INTERNAL') || die();
-
-$plugin->component = 'coursereport_frictionradar';
-$plugin->version   = 2026031601;
-$plugin->requires  = 2024100700; // Moodle 4.5.x (approx build version).
-$plugin->maturity  = MATURITY_ALPHA;
-$plugin->release   = '0.6.1';
+/**
+ * Tests for exposed brand-name handling.
+ */
+final class brand_name_test extends advanced_testcase {
+    public function test_english_brand_is_used_for_latin_locales(): void {
+        $this->assertSame('Friction Radar', \coursereport_frictionradar\local\brand_name::get_display_name());
+    }
+}

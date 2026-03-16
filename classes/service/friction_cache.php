@@ -23,6 +23,8 @@
 
 namespace coursereport_frictionradar\service;
 
+use coursereport_frictionradar\local\course_settings;
+
 
 /**
  * Cache wrapper for friction score data.
@@ -64,6 +66,17 @@ class friction_cache
     public static function get_course(int $courseid): ?array {
         $cache = \cache::make('coursereport_frictionradar', 'course_friction_scores');
         $data = $cache->get((string)$courseid);
+        if (!is_array($data)) {
+            return null;
+        }
+
+        $currentmode = course_settings::get_mode($courseid);
+        $cachedmode = $data['analysis_mode'] ?? null;
+        if ($cachedmode !== $currentmode) {
+            self::refresh_course($courseid);
+            $data = $cache->get((string)$courseid);
+        }
+
         return is_array($data) ? $data : null;
     }
 }

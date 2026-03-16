@@ -33,23 +33,16 @@ require_capability('coursereport/frictionradar:view', $context);
 $PAGE->set_url(new moodle_url('/course/report/frictionradar/index.php', ['id' => $course->id]));
 $PAGE->set_context($context);
 $PAGE->set_course($course);
-$PAGE->requires->css(new moodle_url('/course/report/frictionradar/styles.css'));
+$cssrev = (int)filemtime(__DIR__ . '/styles.css');
+$PAGE->requires->css(new moodle_url('/course/report/frictionradar/styles.css', ['rev' => $cssrev]));
 $PAGE->set_pagelayout('incourse');
 $PAGE->set_title(get_string('page_title', 'coursereport_frictionradar'));
 $PAGE->set_heading($course->fullname);
 
 // Manual cache warm trigger (synchronous).
 $warmcache = optional_param('warmcache', 0, PARAM_BOOL);
-if ($warmcache) {
-    require_sesskey();
-
-    // Who is allowed to force a cache refresh?
-    // Option A: Course editors (recommended).
-    // If you prefer, replace with your own capability like 'coursereport/frictionradar:warmcache'.
+if ($warmcache && data_submitted() && confirm_sesskey()) {
     require_capability('moodle/course:update', $context);
-
-    // Force-generate the cached values now.
-    // NOTE: This must overwrite/refresh existing cache entries.
     \coursereport_frictionradar\service\friction_cache::refresh_course($courseid);
 
     redirect(

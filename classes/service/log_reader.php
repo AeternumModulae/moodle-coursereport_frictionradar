@@ -72,7 +72,7 @@ class log_reader
         }
 
         $sql = "
-            SELECT userid, contextinstanceid AS cmid, timecreated
+            SELECT id, userid, contextinstanceid AS cmid, timecreated
               FROM {logstore_standard_log}
              WHERE courseid = :courseid
                AND contextlevel = :contextlevel
@@ -105,7 +105,7 @@ class log_reader
         }
 
         $sql = "
-            SELECT userid, timecreated
+            SELECT id, userid, timecreated
               FROM {logstore_standard_log}
              WHERE courseid = :courseid
                AND contextlevel = :contextlevel
@@ -138,7 +138,7 @@ class log_reader
         }
 
         $sql = "
-            SELECT userid, timecreated
+            SELECT id, userid, timecreated
               FROM {logstore_standard_log}
              WHERE courseid = :courseid
                AND timecreated >= :since

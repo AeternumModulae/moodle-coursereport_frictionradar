@@ -90,6 +90,7 @@ class friction_calculator_test extends advanced_testcase
         $this->assertArrayHasKey('window_days', $data);
         $this->assertArrayHasKey('overall', $data);
         $this->assertArrayHasKey('segments', $data);
+        $this->assertArrayHasKey('analysis_mode', $data);
         $this->assertIsArray($data['segments']);
 
         $expected = ['f01', 'f02', 'f03', 'f04', 'f05', 'f06', 'f07', 'f08', 'f09', 'f10', 'f11', 'f12'];
@@ -132,5 +133,28 @@ class friction_calculator_test extends advanced_testcase
             $this->assertGreaterThanOrEqual(0, $score);
             $this->assertLessThanOrEqual(100, $score);
         }
+    }
+
+    public function test_calculate_for_course_skips_activity_metrics_in_structural_mode(): void {
+        $this->resetAfterTest(true);
+
+        $generator = $this->getDataGenerator();
+        $course = $generator->create_course(['visible' => 1]);
+
+        \coursereport_frictionradar\local\course_settings::save_mode(
+            $course->id,
+            \coursereport_frictionradar\local\analysis_mode::MODE_STRUCTURAL
+        );
+
+        $data = \coursereport_frictionradar\service\friction_calculator::calculate_for_course($course->id, 7);
+
+        $this->assertSame(
+            \coursereport_frictionradar\local\analysis_mode::MODE_STRUCTURAL,
+            $data['analysis_mode']
+        );
+        $this->assertNull($data['segments']['f05']);
+        $this->assertNull($data['segments']['f06']);
+        $this->assertSame('skipped', $data['breakdown']['f05']['status']);
+        $this->assertSame('skipped', $data['breakdown']['f06']['status']);
     }
 }

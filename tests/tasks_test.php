@@ -90,4 +90,32 @@ class tasks_test extends advanced_testcase
         $this->assertIsArray($data);
         $this->assertArrayHasKey('segments', $data);
     }
+
+    public function test_queue_cache_warmers_does_not_duplicate_existing_adhoc_tasks(): void {
+        $this->resetAfterTest(true);
+        global $DB;
+
+        $generator = $this->getDataGenerator();
+        $now = time();
+        $course = $generator->create_course(['visible' => 1, 'startdate' => $now - DAYSECS]);
+
+        $task = new queue_cache_warmers();
+        $task->execute();
+        $task->execute();
+
+        $records = $DB->get_records(
+            'task_adhoc',
+            ['classname' => '\\coursereport_frictionradar\\task\\warm_course_cache']
+        );
+
+        $coursematches = 0;
+        foreach ($records as $record) {
+            $data = json_decode($record->customdata ?? '{}');
+            if (isset($data->courseid) && (int)$data->courseid === (int)$course->id) {
+                $coursematches++;
+            }
+        }
+
+        $this->assertSame(1, $coursematches);
+    }
 }
